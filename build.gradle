@@ -76,6 +76,10 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
+        compileOnly   "org.projectlombok:lombok:1.18.20"
+        annotationProcessor "org.projectlombok:lombok:1.18.20"
+        implementation "com.google.dagger:dagger:2.35.1"
+        annotationProcessor "com.google.dagger:dagger-compiler:2.35.1"
         
     }
 }

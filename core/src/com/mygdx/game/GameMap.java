@@ -8,17 +8,19 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.List;
+
 public class GameMap {
 
-    private final int TILE_SIZE = 50;
-    private final int CACHE_SIZE = 5;
+    public static final int TILE_SIZE = 50;
+    public static final int CACHE_SIZE = 5;
 
     TextureRegion dirt;
     TextureRegion dirtLeft;
     TextureRegion sky;
 
-    public static int DIRT = 0x000000;
-    public static int SKY = 0xffffff;
+    public static final int DIRT = 0x000000;
+    public static final int SKY = 0xffffff;
 
     static int DIRT_LEFT = 0xFF0000;
     static int DIRT_RIGHT = 0xC80000;
@@ -95,6 +97,11 @@ public class GameMap {
         cache.end();
 
     }
+
+    public int[][] getMapTilesType() {
+        return mapTilesType;
+    }
+
 
     public void dispose() {
         this.cache.dispose();

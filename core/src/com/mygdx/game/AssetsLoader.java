@@ -13,7 +13,13 @@ public class AssetsLoader {
     public enum TextureType {
         BEAR("bear_sprite.png"),
         SKY("sky.png"),
-        MAP_TILES("maptileset.png");
+        MAP_TILES("maptileset.png"),
+        CAT("cat1.png"),
+        CAT_2("cat2.png"),
+        BEAR_1("bear1.png"),
+        BEAR_2("bear2.png"),
+        BOX("box.png");
+
 
         TextureType(String name) {
             this.name = name;
