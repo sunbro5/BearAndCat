@@ -10,14 +10,8 @@ import com.mygdx.game.entity.EntityType;
 import com.mygdx.game.entity.MoveAbleEntity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 public class WorldPhysics {
@@ -34,15 +28,18 @@ public class WorldPhysics {
 
     private final List<MoveAbleEntity> entities = new ArrayList<>();
 
-    public WorldPhysics(int[][] mapTilesType) {
-        initTerrain(mapTilesType);
+    public WorldPhysics() {
     }
 
     public void addEntity(MoveAbleEntity entity) {
         entities.add(entity);
     }
 
-    private void initTerrain(int[][] mapTilesType) {
+    public void addEntities(List<MoveAbleEntity> entities) {
+        this.entities.addAll(entities);
+    }
+
+    public void initTerrain(int[][] mapTilesType) {
         terrain = new Rectangle[mapTilesType.length][mapTilesType[0].length];
         terrainPositionWidth = mapTilesType[0].length * TILE_SIZE;
         terrainPositionHeight = mapTilesType.length * TILE_SIZE;
@@ -58,19 +55,19 @@ public class WorldPhysics {
         }
     }
 
-    public TerrainCollision entityMoveTo(Rectangle rectangle, Vector2 velocity) {
+    public TerrainCollision entityMoveWithTerrain(Rectangle rectangle, Vector2 velocity) {
         Rectangle rectangleMove = new Rectangle(rectangle);
         rectangleMove.y += velocity.y;
         Direction horizontalDirection = Direction.ofHorizontal(velocity.y);
         boolean onGround = false;
-        if (checkCollision(rectangleMove, horizontalDirection)) {
+        if (checkTerrainCollision(rectangleMove, horizontalDirection)) {
             velocity.y = 0;
             if (horizontalDirection == Direction.DOWN) {
                 onGround = true;
             }
         }
         rectangleMove.x += velocity.x;
-        if (checkCollision(rectangleMove, Direction.ofVertical(velocity.x))) {
+        if (checkTerrainCollision(rectangleMove, Direction.ofVertical(velocity.x))) {
             velocity.x = 0;
         }
         return new TerrainCollision(rectangleMove, onGround);
@@ -90,22 +87,27 @@ public class WorldPhysics {
                     boolean onTop = false;
                     if (horizontalDirection == Direction.DOWN && !entityToMove.isOnGround() && rectangle.y > entity.getPosition().y) {
                         if (entity.canWalkOn() && (!rectangle.overlaps(entity.getPosition()) || entityToMove.getIsOnTopOf() == entity.getEntityType())) {
-                            // sit on other entity
-//                            rectangle.y = entity.getPosition().y + entity.getPosition().height + POSITION_OFFSET;
-//                            velocity.y = 0;
-                            velocity.y = -(rectangle.y - (entity.getPosition().y + entity.getPosition().height));
+                            float velocityToLand = -(rectangle.y - (entity.getPosition().y + entity.getPosition().height));
+                            if (velocityToLand <= 0 || ((entity instanceof ControlAbleEntity))) {
+                                velocity.y = velocityToLand;
+                            }
                         }
                         onTop = true;
                     }
-                    if (entity.canPush()) {
+                    if (entity.canPush() && entityToMove.isOnGround()) {
                         Rectangle rectangleMoveX = new Rectangle(rectangle);
-                        rectangleMove.x += velocity.x;
-                        if (rectangleMoveX.overlaps(entity.getPosition()) ){ //&& !rectangle.overlaps(entity.getPosition())) {
+                        rectangleMoveX.x += velocity.x;
+                        if (rectangleMoveX.overlaps(entity.getPosition()) && !rectangle.overlaps(entity.getPosition())) {
 
                             Direction verticalDirection = Direction.ofVertical(velocity.x);
                             if (verticalDirection != null) {
                                 Vector2 pushVelocity = new Vector2(velocity.x, 0);
-                                entity.forceMove(pushVelocity);
+                                MoveAbleEntity.ForceMoveResponse response = entity.forceMove(pushVelocity);
+                                if (response.isPushed()) {
+                                    velocity.x = response.getPushedX();
+                                } else {
+                                    velocity.x = 0;
+                                }
                             }
                         }
                     }
@@ -117,7 +119,7 @@ public class WorldPhysics {
     }
 
 
-    private boolean checkCollision(Rectangle rectangle, Direction direction) {
+    private boolean checkTerrainCollision(Rectangle rectangle, Direction direction) {
         if (direction == null) {
             return false;
         }
@@ -173,10 +175,9 @@ public class WorldPhysics {
     public static class TerrainCollision {
         Rectangle moveTo;
         boolean onGround;
-
     }
 
-    enum Direction {
+    public enum Direction {
         RIGHT,
         LEFT,
         UP,

@@ -16,7 +16,7 @@ import com.mygdx.game.utils.TextureUtils;
 public class Bear extends ControlAbleEntity {
 
     public Bear(AssetsLoader assetsLoader, WorldPhysics worldPhysics) {
-        super(worldPhysics, new Rectangle(500, 52, 100, 30), new Rectangle(500, 52, 100, 50));
+        super(worldPhysics, new Rectangle(500, 52, 100, 30), new Rectangle(-4, 0, +4, +20));
         Texture bearSpriteTexture = assetsLoader.getTexture(AssetsLoader.TextureType.BEAR_1);
 
         TextureRegion[][] tmp = TextureRegion.split(bearSpriteTexture, bearSpriteTexture.getWidth() / 10, bearSpriteTexture.getHeight() / 8);
@@ -26,7 +26,6 @@ public class Bear extends ControlAbleEntity {
         walkAnimation = new Animation<>(1f / ((float) walkFrames.length), walkFrames);
         TextureRegion[] standFrames = new TextureRegion[]{tmp[0][0], tmp[0][0], tmp[0][1], tmp[0][1], tmp[0][2], tmp[0][2], tmp[0][3], tmp[0][3]};
         standAnimation = new Animation<>(1f / ((float) standFrames.length), standFrames);
-        idleAnimation = new Animation<>(1f / ((float) standFrames.length), standFrames);
     }
 
     @Override

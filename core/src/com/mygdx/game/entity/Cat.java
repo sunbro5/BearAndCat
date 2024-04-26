@@ -11,7 +11,7 @@ import com.mygdx.game.utils.TextureUtils;
 public class Cat extends ControlAbleEntity {
 
     public Cat(AssetsLoader assetsLoader, WorldPhysics worldPhysics) {
-        super(worldPhysics, new Rectangle(600, 52, 50, 25), new Rectangle(600, 52, 50, 25));
+        super(worldPhysics, new Rectangle(600, 52, 50, 25), new Rectangle(0, 0, 0, 0));
         Texture bearSpriteTexture = assetsLoader.getTexture(AssetsLoader.TextureType.CAT);
 
         TextureRegion[][] tmp = TextureRegion.split(bearSpriteTexture, bearSpriteTexture.getWidth() / 10, bearSpriteTexture.getHeight() / 3);

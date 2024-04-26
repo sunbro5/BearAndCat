@@ -7,8 +7,14 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.mygdx.game.entity.Box;
+import com.mygdx.game.entity.MoveAbleEntity;
+import com.mygdx.game.physics.WorldPhysics;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
 
 public class GameMap {
 
@@ -19,11 +25,14 @@ public class GameMap {
     TextureRegion dirtLeft;
     TextureRegion sky;
 
+    TextureRegion box;
+
     public static final int DIRT = 0x000000;
     public static final int SKY = 0xffffff;
 
     static int DIRT_LEFT = 0xFF0000;
     static int DIRT_RIGHT = 0xC80000;
+    public static int BOX = 0x8c4600;
 
     int[][] mapTilesType;
 
@@ -31,13 +40,24 @@ public class GameMap {
 
     SpriteCache cache;
 
-    public GameMap(AssetsLoader assetsLoader) {
+    @Getter
+    private List<MoveAbleEntity> moveAbleEntities = new ArrayList<>();
+
+    private WorldPhysics worldPhysics;
+    private AssetsLoader assetsLoader;
+
+    public GameMap(WorldPhysics worldPhysics, AssetsLoader assetsLoader) {
+        this.worldPhysics = worldPhysics;
+        this.assetsLoader = assetsLoader;
         loadMapTiles(assetsLoader.getPixmap());
         this.cache = new SpriteCache(this.mapTilesType.length * this.mapTilesType[0].length, false);
         this.cacheBlocks = new int[(int) Math.ceil(this.mapTilesType.length / ( (float) (CACHE_SIZE)))][(int) Math.ceil(this.mapTilesType[0].length / ( (float) (CACHE_SIZE)))];
         this.sky = new TextureRegion(assetsLoader.getTexture(AssetsLoader.TextureType.SKY),10,10,20,20);
         this.dirt = new TextureRegion(assetsLoader.getTexture(AssetsLoader.TextureType.MAP_TILES),60,186,26,26);
         this.dirtLeft = new TextureRegion(assetsLoader.getTexture(AssetsLoader.TextureType.MAP_TILES),37,186,26,26);
+        Texture tileset = assetsLoader.getTexture(AssetsLoader.TextureType.MAP_TILES_2);
+        this.box = new TextureRegion(tileset,16,48,16,16);
+        this.dirt = new TextureRegion(tileset,16,13,16,18);
         createBlocks();
     }
 
@@ -64,14 +84,17 @@ public class GameMap {
                         if (mapTilesType[x][y] == DIRT) {
                             cache.add(dirt, screenPosX, screenPosY, TILE_SIZE, TILE_SIZE);
                         }
-                        if (mapTilesType[x][y] == SKY) {
-                            cache.add(sky, screenPosX, screenPosY, TILE_SIZE, TILE_SIZE);
-                        }
                         if (mapTilesType[x][y] == DIRT_LEFT) {
                             cache.add(dirtLeft, screenPosX, screenPosY, TILE_SIZE, TILE_SIZE);
                         }
                         if (mapTilesType[x][y] == DIRT_RIGHT) {
                             cache.add(dirtLeft, screenPosX + TILE_SIZE, screenPosY, - TILE_SIZE, TILE_SIZE);
+                        }
+                        if (mapTilesType[x][y] == DIRT_RIGHT) {
+                            cache.add(dirtLeft, screenPosX + TILE_SIZE, screenPosY, - TILE_SIZE, TILE_SIZE);
+                        }
+                        if (mapTilesType[x][y] == BOX) {
+                            moveAbleEntities.add(new Box(screenPosX + TILE_SIZE, screenPosY, worldPhysics, box));
                         }
                     }
                 }
@@ -86,7 +109,7 @@ public class GameMap {
 
     public void render(OrthographicCamera cam) {
         cache.setProjectionMatrix(cam.combined);
-        Gdx.gl.glDisable(GL20.GL_BLEND);
+        Gdx.gl.glEnable(GL20.GL_BLEND);
 
         cache.begin();
         for (int blockY = 0; blockY < cacheBlocks[0].length; blockY++) { // TODO draw only what is needed

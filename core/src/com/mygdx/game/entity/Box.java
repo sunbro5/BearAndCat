@@ -2,6 +2,7 @@ package com.mygdx.game.entity;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.AssetsLoader;
 import com.mygdx.game.physics.WorldPhysics;
@@ -9,13 +10,13 @@ import com.mygdx.game.physics.WorldPhysics;
 public class Box extends MoveAbleEntity {
 
     private Rectangle drawRectangle;
-    private Texture texture;
+    private TextureRegion texture;
 
 
-    public Box(WorldPhysics worldPhysics, AssetsLoader assetsLoader) {
+    public Box(float x, float y, WorldPhysics worldPhysics, TextureRegion texture) {
         super(worldPhysics);
-        Rectangle rectangle = new Rectangle(700, 50, 50, 50);
-        this.texture = assetsLoader.getTexture(AssetsLoader.TextureType.BOX);
+        Rectangle rectangle = new Rectangle(700, 150, 49, 49);
+        this.texture = texture;
         this.drawRectangle = rectangle;
         this.position = rectangle;
     }
@@ -30,6 +31,7 @@ public class Box extends MoveAbleEntity {
     public void update(float delta) {
         this.drawRectangle.x = position.x;
         this.drawRectangle.y = position.y;
+        super.update(delta);
     }
 
     @Override

@@ -25,7 +25,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
     private float idleTimeout = 4;
 
-    private Rectangle drawRectangle;
+    private final Rectangle drawRectangle;
 
     private Vector2 velocity = new Vector2();
 
@@ -76,7 +76,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
             case STAND:
                 idleTimeout -= delta;
 
-                if (idleTimeout < 0) {
+                if (idleTimeout < 0 && idleAnimation != null) {
                     currentFrame = idleAnimation.getKeyFrame(stateTime, false);
                     break;
                 }
@@ -101,7 +101,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         } else {
             onGround = false;
         }
-        WorldPhysics.TerrainCollision response = worldPhysics.entityMoveTo(position, velocity);
+        WorldPhysics.TerrainCollision response = worldPhysics.entityMoveWithTerrain(position, velocity);
         if (response.isOnGround()) {
             isOnTopOf = null;
         }
@@ -112,15 +112,18 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
             haveOnTop.setDirection(this.direction);
         }
         velocity.x = 0;
-        this.drawRectangle.x = position.x;
-        this.drawRectangle.y = position.y;
     }
 
     public void render(SpriteBatch spriteBatch) {
+        float x = position.x + drawRectangle.x;
+        float y = position.y + drawRectangle.y;
+        float width = position.width + drawRectangle.width;
+        float height = position.height + drawRectangle.height;
+
         if (direction == Direction.LEFT) {
-            spriteBatch.draw(currentFrame, drawRectangle.x + drawRectangle.width, drawRectangle.y, -drawRectangle.width, drawRectangle.height);
+            spriteBatch.draw(currentFrame, x + width, y, -width, height);
         } else {
-            spriteBatch.draw(currentFrame, drawRectangle.x, drawRectangle.y, drawRectangle.width, drawRectangle.height);
+            spriteBatch.draw(currentFrame, x, y, width, height);
         }
     }
 
