@@ -1,21 +1,18 @@
 package com.mygdx.game.entity;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.mygdx.game.AssetsLoader;
 import com.mygdx.game.physics.WorldPhysics;
 
 public class Box extends MoveAbleEntity {
 
-    private Rectangle drawRectangle;
-    private TextureRegion texture;
+    private final Rectangle drawRectangle;
+    private final TextureRegion texture;
 
 
-    public Box(float x, float y, WorldPhysics worldPhysics, TextureRegion texture) {
-        super(worldPhysics);
-        Rectangle rectangle = new Rectangle(700, 150, 49, 49);
+    public Box(float x, float y, TextureRegion texture) {
+        Rectangle rectangle = new Rectangle(x, y, 49, 49);
         this.texture = texture;
         this.drawRectangle = rectangle;
         this.position = rectangle;
@@ -28,10 +25,10 @@ public class Box extends MoveAbleEntity {
     }
 
     @Override
-    public void update(float delta) {
+    public void update(float delta, WorldPhysics worldPhysics) {
         this.drawRectangle.x = position.x;
         this.drawRectangle.y = position.y;
-        super.update(delta);
+        super.update(delta, worldPhysics);
     }
 
     @Override

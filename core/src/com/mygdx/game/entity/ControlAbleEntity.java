@@ -4,15 +4,17 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.physics.WorldPhysics;
+
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public abstract class ControlAbleEntity extends MoveAbleEntity {
 
     private static final int CAMERA_OFFSET = 100;
-    private static final int JUMP_VELOCITY_STRENGTH = 25;
-
     protected Animation<TextureRegion> idleAnimation;
 
     protected Animation<TextureRegion> standAnimation;
@@ -27,21 +29,26 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
     private final Rectangle drawRectangle;
 
-    private Vector2 velocity = new Vector2();
-
+    @Getter
     private Direction direction = Direction.RIGHT;
 
+    @Getter
     private ControlAbleEntity haveOnTop;
 
+    @Getter
+    @Setter
     private EntityType isOnTopOf;
 
     private boolean jumping = false;
 
-    public ControlAbleEntity(WorldPhysics worldPhysics, Rectangle position, Rectangle drawRectangle) {
-        super(worldPhysics);
+    public ControlAbleEntity(Rectangle position, Rectangle drawRectangle) {
         this.position = position;
         this.drawRectangle = drawRectangle;
     }
+
+    public abstract float getJumpVelocity();
+
+    public abstract float getMoveVelocity();
 
     public void jump() {
         if (onGround || isOnTopOf != null) {
@@ -54,7 +61,8 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         this.move = move;
     }
 
-    public void update(float delta) {
+    @Override
+    public void update(float delta, WorldPhysics worldPhysics) {
         if (haveOnTop != null && haveOnTop.isOnTopOf == null) {
             haveOnTop = null;
         }
@@ -62,13 +70,13 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
         switch (this.move) {
             case LEFT:
-                velocity.x = -5;
+                velocity.x = - getMoveVelocity();
                 currentFrame = walkAnimation.getKeyFrame(stateTime, true);
                 direction = Direction.LEFT;
                 idleTimeout = 4;
                 break;
             case RIGHT:
-                velocity.x = 5;
+                velocity.x = getMoveVelocity();
                 currentFrame = walkAnimation.getKeyFrame(stateTime, true);
                 direction = Direction.RIGHT;
                 idleTimeout = 4;
@@ -86,7 +94,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         this.move = Move.STAND;
 
         if (jumping) {
-            velocity.y = JUMP_VELOCITY_STRENGTH;
+            velocity.y = getJumpVelocity();
             onGround = false;
             jumping = false;
             isOnTopOf = null;
@@ -95,21 +103,24 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         float deltaGravity = (WorldPhysics.GRAVITY * delta);
         velocity.y -= deltaGravity;
 
-        WorldPhysics.EntityCollision entityCollision = worldPhysics.entitiesCollisionCheck(this, position, velocity);
-        if (entityCollision.isOnTopOf()) {
-            isOnTopOf = entityCollision.getEntityType();
-        } else {
-            onGround = false;
+        List<WorldPhysics.EntityCollision> entityCollisions = worldPhysics.entitiesCollisionCheck(this);
+        for (WorldPhysics.EntityCollision collision : entityCollisions) {
+            if (collision.isOnTopOf()) {
+                setIsOnTopOf(collision.getEntityType());
+            } else {
+                setOnGround(false);
+            }
         }
         WorldPhysics.TerrainCollision response = worldPhysics.entityMoveWithTerrain(position, velocity);
         if (response.isOnGround()) {
-            isOnTopOf = null;
+            setIsOnTopOf(null);
         }
-        this.position = response.getMoveTo();
-        this.onGround = response.isOnGround();
-        if (haveOnTop != null) {
-            haveOnTop.forceMove(velocity);
-            haveOnTop.setDirection(this.direction);
+        position.x = response.getMoveTo().x;
+        position.y = response.getMoveTo().y;
+        setOnGround(response.isOnGround());
+        if (getHaveOnTop() != null) {
+            worldPhysics.forceMove(getHaveOnTop(), velocity);
+            getHaveOnTop().setDirection(getDirection());
         }
         velocity.x = 0;
     }
@@ -133,12 +144,11 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
     public enum Move {
         STAND,
-        IDLE,
         RIGHT,
-        LEFT;
+        LEFT
     }
 
-    enum Direction {
+    public enum Direction {
         RIGHT,
         LEFT
     }
@@ -149,10 +159,6 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
     public boolean isOnGround() {
         return onGround;
-    }
-
-    public EntityType getIsOnTopOf() {
-        return isOnTopOf;
     }
 
     public void setHaveOnTop(ControlAbleEntity haveOnTop) {

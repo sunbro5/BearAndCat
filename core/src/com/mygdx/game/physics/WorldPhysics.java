@@ -1,13 +1,14 @@
 package com.mygdx.game.physics;
 
-import static com.mygdx.game.GameMap.DIRT;
-import static com.mygdx.game.GameMap.TILE_SIZE;
+import static com.mygdx.game.level.LevelLoader.TILE_SIZE;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.entity.EntityType;
 import com.mygdx.game.entity.MoveAbleEntity;
+import com.mygdx.game.level.LevelData;
+import com.mygdx.game.map.TilesetType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,41 +19,55 @@ public class WorldPhysics {
 
     public static final int GRAVITY = 100;
     private static final int COLLISION_DEPTH_CHECK = 1;
-
     private static final float POSITION_OFFSET = 0.1f;
+    private final Rectangle[][] terrain;
+    private final int terrainPositionWidth;
+    private final int terrainPositionHeight;
+    private final LevelData levelData;
 
-    private Rectangle[][] terrain;
+    List<MoveAbleEntity> collisionEntities;
 
-    private int terrainPositionWidth;
-    private int terrainPositionHeight;
-
-    private final List<MoveAbleEntity> entities = new ArrayList<>();
-
-    public WorldPhysics() {
+    public WorldPhysics(LevelData levelData) {
+        this.levelData = levelData;
+        terrainPositionWidth = levelData.getMapTiles()[0].length * TILE_SIZE;
+        terrainPositionHeight = levelData.getMapTiles().length * TILE_SIZE;
+        terrain = createTerrainColMap(levelData.getMapTiles());
     }
 
-    public void addEntity(MoveAbleEntity entity) {
-        entities.add(entity);
+    public void update(float delta) {
+        collisionEntities = getSortedCollisionEntities(levelData);
     }
 
-    public void addEntities(List<MoveAbleEntity> entities) {
-        this.entities.addAll(entities);
+    private List<MoveAbleEntity> getSortedCollisionEntities(LevelData levelData) {
+        List<MoveAbleEntity> collEntities = new ArrayList<>();
+        if (levelData.getControlEntity() == levelData.getBear()) {
+            collEntities.add(levelData.getBear());
+            collEntities.add(levelData.getCat());
+        } else {
+            collEntities.add(levelData.getCat());
+            collEntities.add(levelData.getBear());
+        }
+        collEntities.addAll(levelData.getMoveAbleEntities());
+        return collEntities;
     }
 
-    public void initTerrain(int[][] mapTilesType) {
-        terrain = new Rectangle[mapTilesType.length][mapTilesType[0].length];
-        terrainPositionWidth = mapTilesType[0].length * TILE_SIZE;
-        terrainPositionHeight = mapTilesType.length * TILE_SIZE;
+    private Rectangle[][] createTerrainColMap(int[][] mapTilesType) {
+        Rectangle[][] terrain = new Rectangle[mapTilesType.length][mapTilesType[0].length];
 
         for (int mapY = 0; mapY < mapTilesType[0].length; mapY++) {
             for (int mapX = 0; mapX < mapTilesType.length; mapX++) {
                 int x = mapX * TILE_SIZE;
                 int y = mapY * TILE_SIZE;
-                if (mapTilesType[mapX][mapY] == DIRT) {
+                TilesetType type = TilesetType.typeByColor(mapTilesType[mapX][mapY]);
+                if (type == null) {
+                    continue;
+                }
+                if (type.isCollision()) {
                     terrain[mapX][mapY] = new Rectangle(x, y, TILE_SIZE, TILE_SIZE);
                 }
             }
         }
+        return terrain;
     }
 
     public TerrainCollision entityMoveWithTerrain(Rectangle rectangle, Vector2 velocity) {
@@ -73,49 +88,71 @@ public class WorldPhysics {
         return new TerrainCollision(rectangleMove, onGround);
     }
 
-    public EntityCollision entitiesCollisionCheck(ControlAbleEntity entityToMove, Rectangle rectangle, Vector2 velocity) {
-        if (velocity.x == 0 && velocity.y == 0) {
-            return new EntityCollision(null, false);
+    public List<EntityCollision> entitiesCollisionCheck(ControlAbleEntity entityToMove) {
+        List<EntityCollision> collisions = new ArrayList<>();
+        if (entityToMove.getVelocity().x == 0 && entityToMove.getVelocity().y == 0) {
+            return collisions;
         }
-        Rectangle rectangleMove = new Rectangle(rectangle);
-        rectangleMove.y += velocity.y;
-        rectangleMove.x += velocity.x;
-        for (MoveAbleEntity entity : entities) {
-            if (entity.getEntityType() != entityToMove.getEntityType()) {
-                if (rectangleMove.overlaps(entity.getPosition())) {
-                    Direction horizontalDirection = Direction.ofHorizontal(velocity.y);
+        Rectangle moveFrom = entityToMove.getPosition();
+        Rectangle moveTo = new Rectangle(entityToMove.getPosition());
+        moveTo.y += entityToMove.getVelocity().y;
+        moveTo.x += entityToMove.getVelocity().x;
+        for (MoveAbleEntity entity : collisionEntities) {
+            if (!entity.equals(entityToMove)) { //NOT entityToMove
+                if (moveTo.overlaps(entity.getPosition())) {
+                    Direction horizontalDirection = Direction.ofHorizontal(entityToMove.getVelocity().y);
                     boolean onTop = false;
-                    if (horizontalDirection == Direction.DOWN && !entityToMove.isOnGround() && rectangle.y > entity.getPosition().y) {
-                        if (entity.canWalkOn() && (!rectangle.overlaps(entity.getPosition()) || entityToMove.getIsOnTopOf() == entity.getEntityType())) {
-                            float velocityToLand = -(rectangle.y - (entity.getPosition().y + entity.getPosition().height));
+                    //check if entityToMove jumped on another entity
+                    if (horizontalDirection == Direction.DOWN && !entityToMove.isOnGround() && moveFrom.y > entity.getPosition().y) {
+                        if (entity.canWalkOn() && (!moveFrom.overlaps(entity.getPosition()) || entityToMove.getIsOnTopOf() == entity.getEntityType())) {
+                            float velocityToLand = -(moveFrom.y - (entity.getPosition().y + entity.getPosition().height));
                             if (velocityToLand <= 0 || ((entity instanceof ControlAbleEntity))) {
-                                velocity.y = velocityToLand;
+                                entityToMove.getVelocity().y = velocityToLand;
                             }
                         }
                         onTop = true;
                     }
+                    // check if entityToMove pushing another entity
                     if (entity.canPush() && entityToMove.isOnGround()) {
-                        Rectangle rectangleMoveX = new Rectangle(rectangle);
-                        rectangleMoveX.x += velocity.x;
-                        if (rectangleMoveX.overlaps(entity.getPosition()) && !rectangle.overlaps(entity.getPosition())) {
+                        Rectangle rectangleMoveX = new Rectangle(moveFrom);
+                        rectangleMoveX.x += entityToMove.getVelocity().x;
+                        if (rectangleMoveX.overlaps(entity.getPosition()) && !moveFrom.overlaps(entity.getPosition())) {
 
-                            Direction verticalDirection = Direction.ofVertical(velocity.x);
+                            Direction verticalDirection = Direction.ofVertical(entityToMove.getVelocity().x);
                             if (verticalDirection != null) {
-                                Vector2 pushVelocity = new Vector2(velocity.x, 0);
-                                MoveAbleEntity.ForceMoveResponse response = entity.forceMove(pushVelocity);
+                                Vector2 pushVelocity = new Vector2(entityToMove.getVelocity().x, 0);
+                                ForceMoveResponse response = forceMove(entity, pushVelocity);
                                 if (response.isPushed()) {
-                                    velocity.x = response.getPushedX();
+                                    entityToMove.getVelocity().x = response.getPushedX();
                                 } else {
-                                    velocity.x = 0;
+                                    entityToMove.getVelocity().x = 0;
                                 }
                             }
                         }
                     }
-                    return new EntityCollision(entity.getEntityType(), onTop);
+                    collisions.add(new EntityCollision(entity.getEntityType(), onTop));
                 }
             }
         }
-        return new EntityCollision(null, false);
+        return collisions;
+    }
+
+    public ForceMoveResponse forceMove(MoveAbleEntity entity, Vector2 velocity) {
+        Vector2 forceVelocity = new Vector2(velocity.x, 0);
+        WorldPhysics.Direction direction = WorldPhysics.Direction.ofVertical(forceVelocity.x);
+        if (direction == null) {
+            return new ForceMoveResponse(false, 0);
+        }
+        float startingPosition = entity.getPosition().x;
+        WorldPhysics.TerrainCollision response = entityMoveWithTerrain(entity.getPosition(), forceVelocity);
+        entity.getPosition().x = response.getMoveTo().x;
+        entity.getPosition().y = response.getMoveTo().y;
+        entity.setOnGround(response.isOnGround());
+        if (startingPosition == entity.getPosition().x) {
+            return new ForceMoveResponse(false, 0);
+        }
+        return new ForceMoveResponse(true, entity.getPosition().x - startingPosition);
+
     }
 
 
@@ -175,6 +212,12 @@ public class WorldPhysics {
     public static class TerrainCollision {
         Rectangle moveTo;
         boolean onGround;
+    }
+
+    @Value
+    public static class ForceMoveResponse {
+        boolean pushed;
+        float pushedX;
     }
 
     public enum Direction {

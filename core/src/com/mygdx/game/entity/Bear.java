@@ -1,25 +1,17 @@
 package com.mygdx.game.entity;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.mygdx.game.AssetsLoader;
-import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.utils.TextureUtils;
 
 public class Bear extends ControlAbleEntity {
 
-    public Bear(AssetsLoader assetsLoader, WorldPhysics worldPhysics) {
-        super(worldPhysics, new Rectangle(500, 52, 100, 30), new Rectangle(-4, 0, +4, +20));
-        Texture bearSpriteTexture = assetsLoader.getTexture(AssetsLoader.TextureType.BEAR_1);
+    public Bear(int x, int y, Texture texture) {
+        super(new Rectangle(x, y, 99, 30), new Rectangle(-4, 0, +4, +20));
 
-        TextureRegion[][] tmp = TextureRegion.split(bearSpriteTexture, bearSpriteTexture.getWidth() / 10, bearSpriteTexture.getHeight() / 8);
+        TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 10, texture.getHeight() / 8);
         TextureUtils.cropTextures(tmp, 3, 5,15 ,1);
 
         TextureRegion[] walkFrames = new TextureRegion[]{tmp[0][0], tmp[1][0], tmp[1][3], tmp[1][4], tmp[1][5]};
@@ -41,5 +33,15 @@ public class Bear extends ControlAbleEntity {
     @Override
     public boolean canPush() {
         return false;
+    }
+
+    @Override
+    public float getJumpVelocity() {
+        return 20;
+    }
+
+    @Override
+    public float getMoveVelocity() {
+        return 8;
     }
 }

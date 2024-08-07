@@ -1,36 +1,42 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.TimeUtils;
+import com.mygdx.game.level.LevelData;
+import com.mygdx.game.level.LevelLoader;
+import com.mygdx.game.screens.MainMenuScreen;
 
-import java.util.Iterator;
+import lombok.Getter;
 
 public class MyGdxGame extends Game {
 
+    @Getter
+    private int gameLevel = 0;
+
+    private LevelLoader levelLoader;
+
+    @Getter
+    private AssetsLoader assetsLoader;
+
     public void create() {
+        this.assetsLoader = new AssetsLoader();
+        this.levelLoader = new LevelLoader(assetsLoader);
         this.setScreen(new MainMenuScreen(this));
+    }
+
+    public LevelData getGameLevelData() {
+        return levelLoader.getLevel(gameLevel);
+    }
+
+    public boolean incrementGameLevel() {
+        if (levelLoader.getLevelSize() >= gameLevel +1) {
+            return false;
+        }
+        gameLevel++;
+        return true;
+    }
+
+    public void resetGameLevel() {
+        gameLevel = 1;
     }
 
     public void render() {
@@ -38,7 +44,7 @@ public class MyGdxGame extends Game {
     }
 
     public void dispose() {
+        assetsLoader.dispose();
     }
-
 
 }

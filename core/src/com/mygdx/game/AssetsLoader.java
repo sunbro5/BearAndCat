@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.util.HashMap;
@@ -20,7 +19,8 @@ public class AssetsLoader {
         BEAR_1("bear1.png"),
         BEAR_2("bear2.png"),
         BACKGROUND("Background.png"),
-        FRONT_BACKGROUND("Middleground.png");
+        FRONT_BACKGROUND("Middleground.png"),
+        STAR("Star.png");
 
 
         TextureType(String name) {
@@ -30,10 +30,8 @@ public class AssetsLoader {
     }
 
     private final Map<TextureType, Texture> textures = new HashMap<>();
-    private final Pixmap pixmap;
 
     public AssetsLoader() {
-        pixmap = new Pixmap(Gdx.files.internal("level1.png"));
         loadTextures();
     }
 
@@ -44,10 +42,6 @@ public class AssetsLoader {
         }
     }
 
-    public Pixmap getPixmap() {
-        return pixmap;
-    }
-
     public Texture getTexture(TextureType textureType) {
         return this.textures.get(textureType);
     }
@@ -56,7 +50,6 @@ public class AssetsLoader {
         for (Texture texture : textures.values()) {
             texture.dispose();
         }
-        pixmap.dispose();
     }
 
 }
