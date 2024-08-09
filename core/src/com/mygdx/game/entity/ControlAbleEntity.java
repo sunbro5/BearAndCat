@@ -122,6 +122,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
             worldPhysics.forceMove(getHaveOnTop(), velocity);
             getHaveOnTop().setDirection(getDirection());
         }
+        worldPhysics.pickAbleEntitiesCheck(position);
         velocity.x = 0;
     }
 

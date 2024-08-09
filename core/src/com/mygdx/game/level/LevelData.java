@@ -28,8 +28,8 @@ public class LevelData implements Disposable {
     int[][] cacheBlocks;
     Texture backGround;
     Texture frontBackGround;
-
-    List<DrawableEntity> allDrawEntities;
+    int score;
+    int starsCount;
 
     public LevelData(ControlAbleEntity bear, ControlAbleEntity cat, List<MoveAbleEntity> moveAbleEntities, List<PickAbleEntity> pickAbleEntities, Rectangle endRectangle, int[][] mapTiles, SpriteCache mapCache, int[][] cacheBlocks, Texture backGround, Texture frontBackGround) {
         this.bear = bear;
@@ -43,16 +43,22 @@ public class LevelData implements Disposable {
         this.cacheBlocks = cacheBlocks;
         this.backGround = backGround;
         this.frontBackGround = frontBackGround;
-        this.allDrawEntities = joinAllEntities(bear, cat, moveAbleEntities, pickAbleEntities);
+        this.score = 0;
+        this.starsCount = pickAbleEntities.size();
     }
 
-    private List<DrawableEntity> joinAllEntities(ControlAbleEntity bear, ControlAbleEntity cat, List<MoveAbleEntity> moveAbleEntities, List<PickAbleEntity> pickAbleEntities) {
-        List<DrawableEntity> result = new ArrayList<>();
-        result.add(bear);
-        result.add(cat);
-        result.addAll(moveAbleEntities);
-        result.addAll(pickAbleEntities);
-        return result;
+    public List<DrawableEntity> getAllDrawEntities(){
+        List<DrawableEntity> collEntities = new ArrayList<>();
+        if (getControlEntity() == getBear()) {
+            collEntities.add(getBear());
+            collEntities.add(getCat());
+        } else {
+            collEntities.add(getCat());
+            collEntities.add(getBear());
+        }
+        collEntities.addAll(getMoveAbleEntities());
+        collEntities.addAll(getPickAbleEntities());
+        return collEntities;
     }
 
     @Override

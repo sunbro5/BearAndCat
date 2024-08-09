@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.entity.EntityType;
 import com.mygdx.game.entity.MoveAbleEntity;
+import com.mygdx.game.entity.PickAbleEntity;
 import com.mygdx.game.level.LevelData;
 import com.mygdx.game.map.TilesetType;
 
@@ -135,6 +136,19 @@ public class WorldPhysics {
             }
         }
         return collisions;
+    }
+
+    public void pickAbleEntitiesCheck(Rectangle entityMoved){
+        List<PickAbleEntity> pickAbleEntities = levelData.getPickAbleEntities();
+        List<PickAbleEntity> pickAbleToRemove = new ArrayList<>();
+        for (PickAbleEntity pickAbleEntity : pickAbleEntities) {
+            if(entityMoved.overlaps(pickAbleEntity.getPosition())){
+                levelData.setScore(levelData.getScore() + 1);
+                pickAbleToRemove.add(pickAbleEntity);
+                System.out.println("PICK");
+            }
+        }
+        pickAbleEntities.removeAll(pickAbleToRemove);
     }
 
     public ForceMoveResponse forceMove(MoveAbleEntity entity, Vector2 velocity) {

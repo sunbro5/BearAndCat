@@ -6,11 +6,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.physics.WorldPhysics;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @RequiredArgsConstructor
 public abstract class PickAbleEntity implements DrawableEntity {
 
+    @Getter
     private final Rectangle position;
     protected Animation<TextureRegion> animation;
     private TextureRegion currentFrame;

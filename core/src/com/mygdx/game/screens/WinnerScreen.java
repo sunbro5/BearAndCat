@@ -43,9 +43,8 @@ public class WinnerScreen implements Screen {
 
         spriteBatch.begin();
         spriteBatch.draw(backGround, 0, 0, 1000, 500);
-        font.getData().setScale(4);
-        font.draw(spriteBatch, "You finished the game! Congratulations !", 400, 450, 200, Align.center, false);
         font.getData().setScale(3);
+        font.draw(spriteBatch, "You finished the game! Congratulations !", 400, 450, 200, Align.center, false);
         font.draw(spriteBatch, "Pres anything", 400, 200, 200, Align.center, false);
         spriteBatch.end();
 
