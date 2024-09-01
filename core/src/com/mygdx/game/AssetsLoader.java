@@ -10,7 +10,6 @@ import java.util.Map;
 public class AssetsLoader {
 
     public enum TextureType {
-        BEAR("bear_sprite.png"),
         SKY("sky.png"),
         MAP_TILES("maptileset.png"),
         MAP_TILES_2("Tileset.png"),

@@ -28,7 +28,7 @@ public class MyGdxGame extends Game {
     }
 
     public boolean incrementGameLevel() {
-        if (levelLoader.getLevelSize() >= gameLevel +1) {
+        if (gameLevel + 1 > levelLoader.getLevelSize()) {
             return false;
         }
         gameLevel++;

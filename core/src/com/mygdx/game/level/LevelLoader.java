@@ -36,6 +36,7 @@ public class LevelLoader {
 
         //TODO here add your levels
         levels.add("level1.png");
+        levels.add("level2.png");
     }
 
     public LevelData getLevel(int index) {

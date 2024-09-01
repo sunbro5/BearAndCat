@@ -52,7 +52,6 @@ public class WinnerScreen implements Screen {
             game.setScreen(new MainMenuScreen(game));
             dispose();
         }
-        System.out.println("CREATE WINNER");
     }
 
     @Override

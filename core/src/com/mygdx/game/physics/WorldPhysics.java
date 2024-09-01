@@ -2,6 +2,7 @@ package com.mygdx.game.physics;
 
 import static com.mygdx.game.level.LevelLoader.TILE_SIZE;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.entity.ControlAbleEntity;
@@ -73,8 +74,8 @@ public class WorldPhysics {
 
     public TerrainCollision entityMoveWithTerrain(Rectangle rectangle, Vector2 velocity) {
         Rectangle rectangleMove = new Rectangle(rectangle);
-        rectangleMove.y += velocity.y;
         Direction horizontalDirection = Direction.ofHorizontal(velocity.y);
+        rectangleMove.y += velocity.y;
         boolean onGround = false;
         if (checkTerrainCollision(rectangleMove, horizontalDirection)) {
             velocity.y = 0;
@@ -122,7 +123,7 @@ public class WorldPhysics {
                             Direction verticalDirection = Direction.ofVertical(entityToMove.getVelocity().x);
                             if (verticalDirection != null) {
                                 Vector2 pushVelocity = new Vector2(entityToMove.getVelocity().x, 0);
-                                ForceMoveResponse response = forceMove(entity, pushVelocity);
+                                ForceMoveResponse response = forceMove(entity, pushVelocity, entityToMove);
                                 if (response.isPushed()) {
                                     entityToMove.getVelocity().x = response.getPushedX();
                                 } else {
@@ -138,34 +139,63 @@ public class WorldPhysics {
         return collisions;
     }
 
-    public void pickAbleEntitiesCheck(Rectangle entityMoved){
+    public void pickAbleEntitiesCheck(Rectangle entityMoved) {
         List<PickAbleEntity> pickAbleEntities = levelData.getPickAbleEntities();
         List<PickAbleEntity> pickAbleToRemove = new ArrayList<>();
         for (PickAbleEntity pickAbleEntity : pickAbleEntities) {
-            if(entityMoved.overlaps(pickAbleEntity.getPosition())){
+            if (entityMoved.overlaps(pickAbleEntity.getPosition())) {
                 levelData.setScore(levelData.getScore() + 1);
                 pickAbleToRemove.add(pickAbleEntity);
-                System.out.println("PICK");
+                Gdx.app.log("", "Pick");
             }
         }
         pickAbleEntities.removeAll(pickAbleToRemove);
     }
 
-    public ForceMoveResponse forceMove(MoveAbleEntity entity, Vector2 velocity) {
+    public ForceMoveResponse forceMove(MoveAbleEntity entity, Vector2 velocity, ControlAbleEntity entityToMove) {
         Vector2 forceVelocity = new Vector2(velocity.x, 0);
-        WorldPhysics.Direction direction = WorldPhysics.Direction.ofVertical(forceVelocity.x);
+        Direction direction = Direction.ofVertical(forceVelocity.x);
         if (direction == null) {
             return new ForceMoveResponse(false, 0);
         }
         float startingPosition = entity.getPosition().x;
-        WorldPhysics.TerrainCollision response = entityMoveWithTerrain(entity.getPosition(), forceVelocity);
+        TerrainCollision response = entityMoveWithTerrain(entity.getPosition(), forceVelocity);
+        entity.setWasPushed(true);
         entity.getPosition().x = response.getMoveTo().x;
         entity.getPosition().y = response.getMoveTo().y;
-        entity.setOnGround(response.isOnGround());
+        //entity.setOnGround(response.isOnGround());
         if (startingPosition == entity.getPosition().x) {
+            if (entity.isOnGround()) {
+                System.out.println(entity.getForcePushCount());
+                if (entity.canPush() && entity.getForcePushCount() > 10) {
+                    swapEntities(entity, entityToMove);
+                } else {
+                    entity.setForcePushCount(entity.getForcePushCount() + 1);
+                }
+            }
             return new ForceMoveResponse(false, 0);
         }
         return new ForceMoveResponse(true, entity.getPosition().x - startingPosition);
+    }
+
+    private void swapEntities(MoveAbleEntity entity, ControlAbleEntity entityToMove) {
+        if (entity.getPosition().x > entityToMove.getPosition().x) {
+            float swapXPosition = entity.getPosition().x + entity.getPosition().width;
+            if (entityToMove.getHaveOnTop() != null) {
+                float entityToMoveDistance = swapXPosition - entityToMove.getPosition().width - entityToMove.getPosition().x;
+                entityToMove.getHaveOnTop().getPosition().x = entityToMove.getHaveOnTop().getPosition().x + entityToMoveDistance;
+            }
+            entityToMove.getPosition().x = swapXPosition - entityToMove.getPosition().width;
+            entity.getPosition().x = swapXPosition - entityToMove.getPosition().width - entity.getPosition().width;
+        } else {
+            float swapXPosition = entity.getPosition().x;
+            if (entityToMove.getHaveOnTop() != null) {
+                float entityToMoveDistance = entityToMove.getPosition().x - swapXPosition;
+                entityToMove.getHaveOnTop().getPosition().x = entityToMove.getHaveOnTop().getPosition().x - entityToMoveDistance;
+            }
+            entityToMove.getPosition().x = swapXPosition;
+            entity.getPosition().x = swapXPosition + entityToMove.getPosition().width;
+        }
 
     }
 

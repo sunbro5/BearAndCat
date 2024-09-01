@@ -19,6 +19,14 @@ public abstract class MoveAbleEntity implements DrawableEntity {
     @Getter
     protected Vector2 velocity = new Vector2();
 
+    @Getter
+    @Setter
+    protected int forcePushCount = 0;
+
+    @Getter
+    @Setter
+    protected boolean wasPushed = false;
+
     public MoveAbleEntity() {
     }
 
@@ -37,5 +45,10 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         position.x = response.getMoveTo().x;
         position.y = response.getMoveTo().y;
         setOnGround(response.isOnGround());
+        if (wasPushed) {
+            wasPushed = false;
+        } else {
+            forcePushCount = 0;
+        }
     }
 }

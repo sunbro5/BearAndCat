@@ -119,11 +119,12 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         position.y = response.getMoveTo().y;
         setOnGround(response.isOnGround());
         if (getHaveOnTop() != null) {
-            worldPhysics.forceMove(getHaveOnTop(), velocity);
+            worldPhysics.forceMove(getHaveOnTop(), velocity, this);
             getHaveOnTop().setDirection(getDirection());
         }
         worldPhysics.pickAbleEntitiesCheck(position);
         velocity.x = 0;
+        setForcePushCount(0);
     }
 
     public void render(SpriteBatch spriteBatch) {

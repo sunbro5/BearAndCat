@@ -49,7 +49,6 @@ public class LevelScreen implements Screen {
         if (levelData.getBear().getPosition().overlaps(levelData.getEndRectangle()) && levelData.getCat().getPosition().overlaps(levelData.getEndRectangle())) {
             if(game.incrementGameLevel()){
                 game.setScreen(new BeforeLevelScreen(game));
-                dispose();
             } else {
                 game.setScreen(new WinnerScreen(game));
             }
