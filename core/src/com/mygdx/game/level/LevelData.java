@@ -34,6 +34,7 @@ public class LevelData implements Disposable {
     public LevelData(ControlAbleEntity bear, ControlAbleEntity cat, List<MoveAbleEntity> moveAbleEntities, List<PickAbleEntity> pickAbleEntities, Rectangle endRectangle, int[][] mapTiles, SpriteCache mapCache, int[][] cacheBlocks, Texture backGround, Texture frontBackGround) {
         this.bear = bear;
         this.cat = cat;
+        bear.setHaveControl(true);
         this.controlEntity = bear;
         this.moveAbleEntities = moveAbleEntities;
         this.pickAbleEntities = pickAbleEntities;

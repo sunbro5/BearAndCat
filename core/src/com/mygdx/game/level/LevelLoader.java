@@ -37,12 +37,14 @@ public class LevelLoader {
         //TODO here add your levels
         levels.add("level1.png");
         levels.add("level2.png");
+        levels.add("level3.png");
     }
 
     public LevelData getLevel(int index) {
-        if(index >= levels.size() + 1){
+        if(index >= levels.size()){
             return null;
         }
+        System.out.println(index);
         return loadLevel(levels.get(index));
     }
 
@@ -109,7 +111,7 @@ public class LevelLoader {
                         TextureRegion textureRegion = mapTextures.get(type);
                         switch (type) {
                             case BOX: {
-                                moveAbleEntities.add(new Box(screenPosX + TILE_SIZE, screenPosY, textureRegion));
+                                moveAbleEntities.add(new Box(screenPosX, screenPosY, textureRegion));
                                 break;
                             }
                             case STAR: {

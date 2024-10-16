@@ -41,6 +41,9 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
     private boolean jumping = false;
 
+    @Setter
+    private boolean haveControl = false;
+
     public ControlAbleEntity(Rectangle position, Rectangle drawRectangle) {
         this.position = position;
         this.drawRectangle = drawRectangle;
@@ -70,7 +73,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
         switch (this.move) {
             case LEFT:
-                velocity.x = - getMoveVelocity();
+                velocity.x = -getMoveVelocity();
                 currentFrame = walkAnimation.getKeyFrame(stateTime, true);
                 direction = Direction.LEFT;
                 idleTimeout = 4;
@@ -111,14 +114,27 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
                 setOnGround(false);
             }
         }
+
         WorldPhysics.TerrainCollision response = worldPhysics.entityMoveWithTerrain(position, velocity);
         if (response.isOnGround()) {
             setIsOnTopOf(null);
         }
-        position.x = response.getMoveTo().x;
-        position.y = response.getMoveTo().y;
+        float moveToX = response.getMoveTo().x;
+        float moveToY = response.getMoveTo().y;
+
+        if (haveOnTop != null) {
+            WorldPhysics.TerrainCollision responseOnTop = worldPhysics.entityMoveWithTerrain(haveOnTop.position, velocity);
+            if (responseOnTop.isHitCeiling()) {
+                moveToY = responseOnTop.getMoveTo().y - position.height;
+                velocity.y = 0;
+                moveToX = position.x;
+            }
+        }
+
+        position.x = moveToX;
+        position.y = moveToY;
         setOnGround(response.isOnGround());
-        if (getHaveOnTop() != null) {
+        if (getHaveOnTop() != null && haveControl) {
             worldPhysics.forceMove(getHaveOnTop(), velocity, this);
             getHaveOnTop().setDirection(getDirection());
         }

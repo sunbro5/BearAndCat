@@ -9,7 +9,7 @@ import com.mygdx.game.utils.TextureUtils;
 public class Bear extends ControlAbleEntity {
 
     public Bear(int x, int y, Texture texture) {
-        super(new Rectangle(x, y, 99, 30), new Rectangle(-4, 0, +4, +20));
+        super(new Rectangle(x, y, 90, 30), new Rectangle(-9, 0, +8, +20));
 
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 10, texture.getHeight() / 8);
         TextureUtils.cropTextures(tmp, 3, 5,15 ,1);

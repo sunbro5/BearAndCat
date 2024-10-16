@@ -1,5 +1,7 @@
 package com.mygdx.game.renderer;
 
+import static com.mygdx.game.level.LevelLoader.TILE_SIZE;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
@@ -7,11 +9,16 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Disposable;
 import com.mygdx.game.entity.DrawableEntity;
 import com.mygdx.game.level.LevelData;
+
+import lombok.Getter;
+import lombok.Setter;
 
 
 public class WorldRenderer implements Disposable {
@@ -24,12 +31,18 @@ public class WorldRenderer implements Disposable {
     private final FPSLogger fpsLogger;
     private final BitmapFont font;
 
-    public WorldRenderer() {
+    @Getter
+    @Setter
+    private boolean lerpCamera = false;
+
+    public WorldRenderer(Rectangle startPosition) {
         spriteBatch = new SpriteBatch();
         backgroundSpriteBatch = new SpriteBatch();
         hudSpriteBatch = new SpriteBatch();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1000, 500);
+        camera.position.x = startPosition.x;
+        camera.position.y = startPosition.y;
         backGroundCamera = new OrthographicCamera();
         backGroundCamera.setToOrtho(false, 1000, 500);
         fpsLogger = new FPSLogger();
@@ -38,11 +51,9 @@ public class WorldRenderer implements Disposable {
     }
 
     public void render(float delta, LevelData levelData) {
-
         ScreenUtils.clear(0, 0, 0f, 1);
         camera.update();
 
-        camera.position.lerp(levelData.getControlEntity().getCameraPositionVector(), 4f * delta);
         backgroundSpriteBatch.setProjectionMatrix(backGroundCamera.combined);
 
         renderBackGround(levelData);
@@ -89,6 +100,10 @@ public class WorldRenderer implements Disposable {
         backgroundSpriteBatch.draw(levelData.getBackGround(), 0, 0, 0, 0, 1000, 500, 1, 1, 0, backGroundOffset, 0, 500, 200, false, false);
         backgroundSpriteBatch.draw(levelData.getFrontBackGround(), 0, 0, 0, 0, 1000, 500, 1, 1, 0, frontBackGroundOffset, 0, 500, 200, false, false);
         backgroundSpriteBatch.end();
+    }
+
+    public Vector3 getCameraPosition(){
+        return camera.position;
     }
 
     @Override

@@ -40,7 +40,7 @@ public class WorldPhysics {
         collisionEntities = getSortedCollisionEntities(levelData);
     }
 
-    private List<MoveAbleEntity> getSortedCollisionEntities(LevelData levelData) {
+    private List<MoveAbleEntity> getSortedCollisionEntities(LevelData levelData) { //TODO add priority to entities
         List<MoveAbleEntity> collEntities = new ArrayList<>();
         if (levelData.getControlEntity() == levelData.getBear()) {
             collEntities.add(levelData.getBear());
@@ -72,22 +72,28 @@ public class WorldPhysics {
         return terrain;
     }
 
+    /**
+     * TODO fix bug when bear jump coll hit x and cat on top move x, change TerrainCollision to velocity
+     */
     public TerrainCollision entityMoveWithTerrain(Rectangle rectangle, Vector2 velocity) {
         Rectangle rectangleMove = new Rectangle(rectangle);
         Direction horizontalDirection = Direction.ofHorizontal(velocity.y);
         rectangleMove.y += velocity.y;
         boolean onGround = false;
+        boolean hitCeiling = false;
         if (checkTerrainCollision(rectangleMove, horizontalDirection)) {
             velocity.y = 0;
             if (horizontalDirection == Direction.DOWN) {
                 onGround = true;
+            } else if (horizontalDirection == Direction.UP) {
+                hitCeiling = true;
             }
         }
         rectangleMove.x += velocity.x;
         if (checkTerrainCollision(rectangleMove, Direction.ofVertical(velocity.x))) {
             velocity.x = 0;
         }
-        return new TerrainCollision(rectangleMove, onGround);
+        return new TerrainCollision(rectangleMove, onGround, hitCeiling);
     }
 
     public List<EntityCollision> entitiesCollisionCheck(ControlAbleEntity entityToMove) {
@@ -108,8 +114,10 @@ public class WorldPhysics {
                     if (horizontalDirection == Direction.DOWN && !entityToMove.isOnGround() && moveFrom.y > entity.getPosition().y) {
                         if (entity.canWalkOn() && (!moveFrom.overlaps(entity.getPosition()) || entityToMove.getIsOnTopOf() == entity.getEntityType())) {
                             float velocityToLand = -(moveFrom.y - (entity.getPosition().y + entity.getPosition().height));
+                            float moveUpToEntity = entity.getPosition().y + entity.getPosition().height;
                             if (velocityToLand <= 0 || ((entity instanceof ControlAbleEntity))) {
-                                entityToMove.getVelocity().y = velocityToLand;
+                                entityToMove.getPosition().y = moveUpToEntity + 1;
+                                entityToMove.getVelocity().y = -1;
                             }
                         }
                         onTop = true;
@@ -166,7 +174,6 @@ public class WorldPhysics {
         //entity.setOnGround(response.isOnGround());
         if (startingPosition == entity.getPosition().x) {
             if (entity.isOnGround()) {
-                System.out.println(entity.getForcePushCount());
                 if (entity.canPush() && entity.getForcePushCount() > 10) {
                     swapEntities(entity, entityToMove);
                 } else {
@@ -256,6 +263,7 @@ public class WorldPhysics {
     public static class TerrainCollision {
         Rectangle moveTo;
         boolean onGround;
+        boolean hitCeiling;
     }
 
     @Value

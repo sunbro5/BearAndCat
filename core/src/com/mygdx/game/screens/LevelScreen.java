@@ -19,10 +19,12 @@ public class LevelScreen implements Screen {
     private final WorldRenderer worldRenderer;
     private final LevelData levelData;
 
+    private float secondInit = 0;
+
     public LevelScreen(MyGdxGame game, LevelData levelData) {
         this.game = game;
         this.worldPhysics = new WorldPhysics(levelData);
-        this.worldRenderer = new WorldRenderer();
+        this.worldRenderer = new WorldRenderer(levelData.getEndRectangle());
         this.levelData = levelData;
     }
 
@@ -40,6 +42,12 @@ public class LevelScreen implements Screen {
         for (DrawableEntity entity : levelData.getAllDrawEntities()) {
             entity.update(delta, worldPhysics);
         }
+        if (secondInit > 0.5f) {
+            worldRenderer.getCameraPosition().lerp(levelData.getControlEntity().getCameraPositionVector(), 2f * delta);
+        } else {
+            secondInit += delta;
+        }
+
         //render
         worldRenderer.render(delta, levelData);
         worldRenderer.renderScore(levelData);
@@ -47,7 +55,7 @@ public class LevelScreen implements Screen {
 
     private void handleFinish() {
         if (levelData.getBear().getPosition().overlaps(levelData.getEndRectangle()) && levelData.getCat().getPosition().overlaps(levelData.getEndRectangle())) {
-            if(game.incrementGameLevel()){
+            if (game.incrementGameLevel()) {
                 game.setScreen(new BeforeLevelScreen(game));
             } else {
                 game.setScreen(new WinnerScreen(game));
@@ -77,11 +85,15 @@ public class LevelScreen implements Screen {
     public void switchControlEntity() {
         if (levelData.getControlEntity() instanceof Bear) {
             levelData.setControlEntity(levelData.getCat());
+            levelData.getCat().setHaveControl(true);
+            levelData.getBear().setHaveControl(false);
         } else {
             if (levelData.getCat().getIsOnTopOf() == EntityType.BEAR) {
                 levelData.getBear().setHaveOnTop(levelData.getCat());
             }
             levelData.setControlEntity(levelData.getBear());
+            levelData.getCat().setHaveControl(false);
+            levelData.getBear().setHaveControl(true);
         }
     }
 
