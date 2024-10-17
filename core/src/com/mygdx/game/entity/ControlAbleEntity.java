@@ -110,6 +110,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         for (WorldPhysics.EntityCollision collision : entityCollisions) {
             if (collision.isOnTopOf()) {
                 setIsOnTopOf(collision.getEntityType());
+                break;
             } else {
                 setOnGround(false);
             }
