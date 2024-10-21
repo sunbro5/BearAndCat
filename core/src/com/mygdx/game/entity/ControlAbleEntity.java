@@ -103,8 +103,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
             isOnTopOf = null;
         }
 
-        float deltaGravity = (WorldPhysics.GRAVITY * delta);
-        velocity.y -= deltaGravity;
+        effectOfGravity(delta);
 
         List<WorldPhysics.EntityCollision> entityCollisions = worldPhysics.entitiesCollisionCheck(this);
         for (WorldPhysics.EntityCollision collision : entityCollisions) {

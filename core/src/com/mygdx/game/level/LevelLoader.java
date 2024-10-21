@@ -33,11 +33,11 @@ public class LevelLoader {
 
     public LevelLoader(AssetsLoader assetsLoader) {
         this.assetsLoader = assetsLoader;
-
-        //TODO here add your levels
+        
         levels.add("level1.png");
         levels.add("level2.png");
         levels.add("level3.png");
+        levels.add("level4.png");
     }
 
     public LevelData getLevel(int index) {

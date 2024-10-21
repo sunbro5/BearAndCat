@@ -27,6 +27,8 @@ public abstract class MoveAbleEntity implements DrawableEntity {
     @Setter
     protected boolean wasPushed = false;
 
+    protected int maxFallSpeed = 50;
+
     public MoveAbleEntity() {
     }
 
@@ -38,8 +40,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
 
     @Override
     public void update(float delta, WorldPhysics worldPhysics) {
-        float deltaGravity = (WorldPhysics.GRAVITY * delta);
-        velocity.y -= deltaGravity;
+        effectOfGravity(delta);
 
         WorldPhysics.TerrainCollision response = worldPhysics.entityMoveWithTerrain(position, velocity);
         position.x = response.getMoveTo().x;
@@ -50,5 +51,13 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         } else {
             forcePushCount = 0;
         }
+    }
+
+    protected void effectOfGravity(float delta) {
+        if (velocity.y > maxFallSpeed) {
+            return;
+        }
+        float deltaGravity = (WorldPhysics.GRAVITY * delta);
+        velocity.y -= deltaGravity;
     }
 }
