@@ -45,7 +45,8 @@ public class WinnerScreen implements Screen {
         spriteBatch.draw(backGround, 0, 0, 1000, 500);
         font.getData().setScale(3);
         font.draw(spriteBatch, "You finished the game! Congratulations !", 400, 450, 200, Align.center, false);
-        font.draw(spriteBatch, "Pres anything", 400, 200, 200, Align.center, false);
+        font.draw(spriteBatch, "Score: " + game.getFinalScore() + "/" + game.getMaxFinalScore(), 400, 350, 200, Align.center, false);
+        font.draw(spriteBatch, "Press anything!", 400, 200, 200, Align.center, false);
         spriteBatch.end();
 
         if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {

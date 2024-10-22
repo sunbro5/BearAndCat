@@ -4,6 +4,9 @@ import com.badlogic.gdx.Game;
 import com.mygdx.game.level.LevelData;
 import com.mygdx.game.level.LevelLoader;
 import com.mygdx.game.screens.MainMenuScreen;
+import com.sun.tools.javac.util.Pair;
+
+import java.util.List;
 
 import lombok.Getter;
 
@@ -11,6 +14,12 @@ public class MyGdxGame extends Game {
 
     @Getter
     private int gameLevel = 0;
+
+    @Getter
+    private int finalScore;
+
+    @Getter
+    private int maxFinalScore;
 
     private LevelLoader levelLoader;
 
@@ -27,7 +36,9 @@ public class MyGdxGame extends Game {
         return levelLoader.getLevel(gameLevel);
     }
 
-    public boolean incrementGameLevel() {
+    public boolean levelFinished(int score, int starsCount) {
+        finalScore += score;
+        maxFinalScore += starsCount;
         if (gameLevel + 1 > levelLoader.getLevelSize() -1) {
             return false;
         }

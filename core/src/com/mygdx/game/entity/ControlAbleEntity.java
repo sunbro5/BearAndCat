@@ -66,7 +66,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
     @Override
     public void update(float delta, WorldPhysics worldPhysics) {
-        if (haveOnTop != null && haveOnTop.isOnTopOf == null) {
+        if (haveOnTop != null && haveOnTop.isOnTopOf != getEntityType()) {
             haveOnTop = null;
         }
         stateTime += delta;

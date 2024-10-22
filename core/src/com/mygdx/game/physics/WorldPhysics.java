@@ -110,14 +110,18 @@ public class WorldPhysics {
                 if (moveTo.overlaps(entity.getPosition())) {
                     Direction horizontalDirection = Direction.ofHorizontal(entityToMove.getVelocity().y);
                     boolean onTop = false;
+
                     //check if entityToMove jumped on another entity
                     if (horizontalDirection == Direction.DOWN && !entityToMove.isOnGround() && moveFrom.y > entity.getPosition().y) {
                         if (entity.canWalkOn() && (!moveFrom.overlaps(entity.getPosition()) || entityToMove.getIsOnTopOf() == entity.getEntityType())) {
-                            float velocityToLand = -(moveFrom.y - (entity.getPosition().y + entity.getPosition().height));
+                            boolean isOn = (entity.getPosition().y + entity.getPosition().height) <= moveFrom.y;
                             float moveUpToEntity = entity.getPosition().y + entity.getPosition().height;
-                            if (velocityToLand <= 0 || ((entity instanceof ControlAbleEntity))) {
+                            if (isOn || ((entity instanceof ControlAbleEntity))) {
                                 entityToMove.getPosition().y = moveUpToEntity + 1;
                                 entityToMove.getVelocity().y = -1;
+                                if (entity instanceof ControlAbleEntity) {
+                                    ((ControlAbleEntity) entity).setHaveOnTop(entityToMove); // TODO this should not be there, workaroud, ControlableEntity need tohave both isOnTop and haveOnTop ControlableEntity attribute or different approach
+                                }
                             }
                         }
                         onTop = true;

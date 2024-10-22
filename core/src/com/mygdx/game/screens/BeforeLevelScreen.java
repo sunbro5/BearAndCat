@@ -47,7 +47,7 @@ public class BeforeLevelScreen implements Screen {
         font.getData().setScale(4);
         font.draw(spriteBatch, "Level " + (game.getGameLevel() + 1) +", Find green box!", 400, 450, 200, Align.center, false);
         font.getData().setScale(3);
-        font.draw(spriteBatch, "Pres anything to continue", 400, 200, 200, Align.center, false);
+        font.draw(spriteBatch, "Press anything to continue", 400, 200, 200, Align.center, false);
         spriteBatch.end();
 
         if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
