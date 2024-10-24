@@ -160,6 +160,10 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         return new Vector3(position.x + (position.width / 2), position.y + (position.height / 2) + CAMERA_OFFSET, 0);
     }
 
+    public String toString() {
+        return "ControlAbleEntity( onground=" + onGround + " " + "haveOnTop=" + this.haveOnTop + ", isOnTopOf=" + this.isOnTopOf + ", jumping=" + this.jumping + ", haveControl=" + this.haveControl + ")";
+    }
+
     public enum Move {
         STAND,
         RIGHT,
@@ -177,6 +181,10 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
     public boolean isOnGround() {
         return onGround;
+    }
+
+    public boolean inAir() {
+        return !onGround && isOnTopOf == null;
     }
 
     public void setHaveOnTop(ControlAbleEntity haveOnTop) {

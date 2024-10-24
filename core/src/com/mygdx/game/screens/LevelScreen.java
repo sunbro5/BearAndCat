@@ -83,6 +83,11 @@ public class LevelScreen implements Screen {
     }
 
     public void switchControlEntity() {
+        if (someOneJumping()) {
+            return;
+        }
+        System.out.println("Bear " + levelData.getBear());
+        System.out.println("Cat " + levelData.getCat());
         if (levelData.getControlEntity() instanceof Bear) {
             levelData.setControlEntity(levelData.getCat());
             levelData.getCat().setHaveControl(true);
@@ -95,6 +100,10 @@ public class LevelScreen implements Screen {
             levelData.getCat().setHaveControl(false);
             levelData.getBear().setHaveControl(true);
         }
+    }
+
+    private boolean someOneJumping(){
+        return levelData.getCat().inAir() || levelData.getBear().inAir();
     }
 
 

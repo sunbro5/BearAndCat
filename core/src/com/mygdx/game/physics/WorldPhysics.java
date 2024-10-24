@@ -190,11 +190,12 @@ public class WorldPhysics {
     }
 
     private void swapEntities(MoveAbleEntity entity, ControlAbleEntity entityToMove) {
+        // entity is on right side
         if (entity.getPosition().x > entityToMove.getPosition().x) {
             float swapXPosition = entity.getPosition().x + entity.getPosition().width;
             if (entityToMove.getHaveOnTop() != null) {
                 float entityToMoveDistance = swapXPosition - entityToMove.getPosition().width - entityToMove.getPosition().x;
-                entityToMove.getHaveOnTop().getPosition().x = entityToMove.getHaveOnTop().getPosition().x + entityToMoveDistance;
+                entityToMove.getHaveOnTop().getPosition().x = Math.min(entityToMove.getHaveOnTop().getPosition().x + entityToMoveDistance, swapXPosition - entityToMove.getHaveOnTop().getPosition().width);
             }
             entityToMove.getPosition().x = swapXPosition - entityToMove.getPosition().width;
             entity.getPosition().x = swapXPosition - entityToMove.getPosition().width - entity.getPosition().width;
@@ -202,12 +203,11 @@ public class WorldPhysics {
             float swapXPosition = entity.getPosition().x;
             if (entityToMove.getHaveOnTop() != null) {
                 float entityToMoveDistance = entityToMove.getPosition().x - swapXPosition;
-                entityToMove.getHaveOnTop().getPosition().x = entityToMove.getHaveOnTop().getPosition().x - entityToMoveDistance;
+                entityToMove.getHaveOnTop().getPosition().x = Math.max(entityToMove.getHaveOnTop().getPosition().x - entityToMoveDistance, swapXPosition);
             }
             entityToMove.getPosition().x = swapXPosition;
             entity.getPosition().x = swapXPosition + entityToMove.getPosition().width;
         }
-
     }
 
 
