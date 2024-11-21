@@ -1,5 +1,7 @@
 package com.mygdx.game.map;
 
+import static com.mygdx.game.level.LevelLoader.TILE_SIZE;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -22,6 +24,7 @@ public enum TilesetType {
     DIRT_3_2(0xE13232, 9, 3, true), // 225,50,50
     DIRT_3_LEFT(0xE13264, 7, 3, true), // 225,50,100
     DIRT_3_RIGHT(0xE16432, 10, 3, true), // 225,100,50
+    DIRT_3_1_SMALL(0xE19664, 8, 4, true, 20), // 225,150,100
     END_1(0x0A0101, 5, 6, false), // 10,1,1 --
     END_2(0x0A0000, 6, 6, false), // 10,0,0 --
     END_3(0x0A0001, 5, 7, false), // 10,0,1
@@ -32,6 +35,11 @@ public enum TilesetType {
     private final int tilesetX;
     private final int tilesetY;
     private final boolean collision;
+    private final int tileHeight;
+
+    TilesetType (int typeColour, int tilesetX, int tilesetY, boolean collision){
+        this(typeColour, tilesetX, tilesetY, collision, TILE_SIZE);
+    }
 
     public static TilesetType typeByColor(int typeColour) {
         for (TilesetType type : TilesetType.values()) {

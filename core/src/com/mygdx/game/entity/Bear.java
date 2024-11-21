@@ -4,12 +4,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygdx.game.behavior.BehaviorType;
 import com.mygdx.game.utils.TextureUtils;
+import com.sun.tools.javac.util.List;
+
+import java.util.ArrayList;
 
 public class Bear extends ControlAbleEntity {
 
     public Bear(int x, int y, Texture texture) {
-        super(new Rectangle(x, y, 90, 30), new Rectangle(-9, 0, +8, +20));
+        super(new Rectangle(x, y, 90, 30), new Rectangle(-9, 0, +8, +20),
+                new ArrayList<>(),
+                new ArrayList<>());
 
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 10, texture.getHeight() / 8);
         TextureUtils.cropTextures(tmp, 3, 5,15 ,1);
@@ -18,11 +24,6 @@ public class Bear extends ControlAbleEntity {
         walkAnimation = new Animation<>(1f / ((float) walkFrames.length), walkFrames);
         TextureRegion[] standFrames = new TextureRegion[]{tmp[0][0], tmp[0][0], tmp[0][1], tmp[0][1], tmp[0][2], tmp[0][2], tmp[0][3], tmp[0][3]};
         standAnimation = new Animation<>(1f / ((float) standFrames.length), standFrames);
-    }
-
-    @Override
-    public EntityType getEntityType() {
-        return EntityType.BEAR;
     }
 
     @Override

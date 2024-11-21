@@ -7,8 +7,8 @@ import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.entity.Bear;
 import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.entity.DrawableEntity;
-import com.mygdx.game.entity.EntityType;
 import com.mygdx.game.level.LevelData;
+import com.mygdx.game.physics.collision.CollisionHandler;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.renderer.WorldRenderer;
 
@@ -18,6 +18,7 @@ public class LevelScreen implements Screen {
     private final WorldPhysics worldPhysics;
     private final WorldRenderer worldRenderer;
     private final LevelData levelData;
+    private final CollisionHandler collisionHandler;
 
     private float secondInit = 0;
 
@@ -26,6 +27,7 @@ public class LevelScreen implements Screen {
         this.worldPhysics = new WorldPhysics(levelData);
         this.worldRenderer = new WorldRenderer(levelData.getEndRectangle());
         this.levelData = levelData;
+        this.collisionHandler = new CollisionHandler();
     }
 
     @Override
@@ -40,7 +42,7 @@ public class LevelScreen implements Screen {
         handleFinish();
         worldPhysics.update(delta);
         for (DrawableEntity entity : levelData.getAllDrawEntities()) {
-            entity.update(delta, worldPhysics);
+            entity.update(delta, worldPhysics, collisionHandler);
         }
         if (secondInit > 0.5f) {
             worldRenderer.getCameraPosition().lerp(levelData.getControlEntity().getCameraPositionVector(), 2f * delta);
@@ -93,9 +95,6 @@ public class LevelScreen implements Screen {
             levelData.getCat().setHaveControl(true);
             levelData.getBear().setHaveControl(false);
         } else {
-            if (levelData.getCat().getIsOnTopOf() == EntityType.BEAR) {
-                levelData.getBear().setHaveOnTop(levelData.getCat());
-            }
             levelData.setControlEntity(levelData.getBear());
             levelData.getCat().setHaveControl(false);
             levelData.getBear().setHaveControl(true);

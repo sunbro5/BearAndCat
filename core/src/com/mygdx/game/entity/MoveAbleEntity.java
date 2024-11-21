@@ -2,7 +2,15 @@ package com.mygdx.game.entity;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.behavior.BehaviorType;
+import com.mygdx.game.behavior.EntityBehavior;
+import com.mygdx.game.physics.collision.CollisionHandler;
 import com.mygdx.game.physics.WorldPhysics;
+import com.mygdx.game.physics.collision.CollisionStrategy;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +18,10 @@ import lombok.Setter;
 public abstract class MoveAbleEntity implements DrawableEntity {
 
     @Getter
-    protected Rectangle position;
+    protected final Rectangle position;
+
+    @Getter
+    protected final Rectangle drawRectangle;
 
     @Getter
     @Setter
@@ -26,31 +37,47 @@ public abstract class MoveAbleEntity implements DrawableEntity {
     @Getter
     @Setter
     protected boolean wasPushed = false;
-
     protected int maxFallSpeed = 50;
 
-    public MoveAbleEntity() {
+    protected final Map<BehaviorType, EntityBehavior> states = new HashMap<>();
+    protected final List<BehaviorType> possibleStates;
+    protected final List<CollisionStrategy> possibleCollisionStrategies;
+
+    public MoveAbleEntity(Rectangle position, Rectangle drawRectangle, List<BehaviorType> possibleStates,
+                          List<CollisionStrategy> possibleCollisionStrategies) {
+        this.position = position;
+        this.drawRectangle = drawRectangle;
+        this.possibleStates = possibleStates;
+        this.possibleCollisionStrategies = possibleCollisionStrategies;
     }
 
     public abstract boolean canWalkOn();
 
     public abstract boolean canPush();
 
-    public abstract EntityType getEntityType();
-
     @Override
-    public void update(float delta, WorldPhysics worldPhysics) {
+    public void update(float delta, WorldPhysics worldPhysics, CollisionHandler collisionHandler) {
         effectOfGravity(delta);
 
         WorldPhysics.TerrainCollision response = worldPhysics.entityMoveWithTerrain(position, velocity);
-        position.x = response.getMoveTo().x;
-        position.y = response.getMoveTo().y;
         setOnGround(response.isOnGround());
-        if (wasPushed) {
-            wasPushed = false;
-        } else {
-            forcePushCount = 0;
+        this.velocity = response.getVelocity();
+
+        List<WorldPhysics.EntityCollision> entityCollisions = worldPhysics.entitiesCollisionCheck(this);
+        this.velocity = collisionHandler.handleCollision(this, entityCollisions, possibleCollisionStrategies);
+
+        setFinalPosition();
+
+        for (EntityBehavior entityState: states.values()) {
+            entityState.update(delta);
         }
+
+        this.velocity.x = 0;
+    }
+
+    protected void setFinalPosition(){
+        this.position.x += velocity.x;
+        this.position.y += velocity.y;
     }
 
     protected void effectOfGravity(float delta) {

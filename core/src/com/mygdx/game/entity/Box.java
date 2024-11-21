@@ -3,21 +3,22 @@ package com.mygdx.game.entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygdx.game.behavior.BehaviorType;
+import com.mygdx.game.behavior.IsOnTop;
 import com.mygdx.game.physics.WorldPhysics;
+import com.mygdx.game.physics.collision.CollisionHandler;
+import com.sun.tools.javac.util.List;
+
+import java.util.ArrayList;
 
 public class Box extends MoveAbleEntity {
-
-    private final Rectangle drawRectangle;
     private final TextureRegion texture;
 
-
     public Box(float x, float y, TextureRegion texture) {
-        Rectangle rectangle = new Rectangle(x, y, 49, 49);
+        super(new Rectangle(x, y, 49, 49), new Rectangle(x, y, 49, 49),
+                new ArrayList<>(), new ArrayList<>());
         this.texture = texture;
-        this.drawRectangle = rectangle;
-        this.position = rectangle;
     }
-
 
     @Override
     public void render(SpriteBatch spriteBatch) {
@@ -25,10 +26,10 @@ public class Box extends MoveAbleEntity {
     }
 
     @Override
-    public void update(float delta, WorldPhysics worldPhysics) {
+    public void update(float delta, WorldPhysics worldPhysics, CollisionHandler collisionHandler) {
         this.drawRectangle.x = position.x;
         this.drawRectangle.y = position.y;
-        super.update(delta, worldPhysics);
+        super.update(delta, worldPhysics, collisionHandler);
     }
 
     @Override
@@ -41,8 +42,4 @@ public class Box extends MoveAbleEntity {
         return true;
     }
 
-    @Override
-    public EntityType getEntityType() {
-        return EntityType.BOX;
-    }
 }

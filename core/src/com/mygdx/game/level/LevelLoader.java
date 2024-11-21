@@ -12,7 +12,6 @@ import com.mygdx.game.entity.Bear;
 import com.mygdx.game.entity.Box;
 import com.mygdx.game.entity.Cat;
 import com.mygdx.game.entity.ControlAbleEntity;
-import com.mygdx.game.entity.EntityType;
 import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.entity.PickAbleEntity;
 import com.mygdx.game.entity.Star;
@@ -33,15 +32,18 @@ public class LevelLoader {
 
     public LevelLoader(AssetsLoader assetsLoader) {
         this.assetsLoader = assetsLoader;
-        
-        levels.add("level1.png");
-        levels.add("level2.png");
-        levels.add("level3.png");
-        levels.add("level4.png");
+
+//        levels.add("level1.png");
+//        levels.add("level2.png");
+//        levels.add("level3.png");
+//        levels.add("level4.png");
+        levels.add("level5.png");
+        levels.add("level6.png");
+        levels.add("level7.png");
     }
 
     public LevelData getLevel(int index) {
-        if(index >= levels.size()){
+        if (index >= levels.size()) {
             return null;
         }
         System.out.println(index);
@@ -121,16 +123,18 @@ public class LevelLoader {
                             case BEAR_AND_CAT: {
                                 cat = new Cat(screenPosX + TILE_SIZE, screenPosY + 40, assetsLoader.getTexture(AssetsLoader.TextureType.CAT));
                                 bear = new Bear(screenPosX + TILE_SIZE, screenPosY, assetsLoader.getTexture(AssetsLoader.TextureType.BEAR_1));
-                                bear.setHaveOnTop(cat);
-                                cat.setIsOnTopOf(EntityType.BEAR);
+//                                bear.setHaveOnTop(cat); TODO
+//                                cat.setIsOnTopOf(EntityType.BEAR);
                                 break;
                             }
-                            case END_3: {
+                            case END_3: { // bottom left
                                 endRectangle = new Rectangle(screenPosX, screenPosY, TILE_SIZE * 2, TILE_SIZE * 2);
                                 cache.add(textureRegion, screenPosX, screenPosY, TILE_SIZE, TILE_SIZE);
                             }
                             default: {
-                                cache.add(textureRegion, screenPosX, screenPosY, TILE_SIZE, TILE_SIZE);
+                                Rectangle tile = calculateTile(type, screenPosX, screenPosY);
+                                //textureRegion = TextureUtils.cropTileSet(textureRegion, (int) tile.width, (int) tile.height);
+                                cache.add(textureRegion, tile.x, tile.y, tile.width, tile.height);
                             }
                         }
                     }
@@ -139,5 +143,16 @@ public class LevelLoader {
             }
         }
         return new LevelData(bear, cat, moveAbleEntities, pickAbleEntities, endRectangle, mapTiles, cache, cacheBlocks, backGround, frontBackGround);
+    }
+
+    /**
+     * Smaller size of tile is pushed to UP
+     */
+    public static Rectangle calculateTile(TilesetType type, int x, int y) {
+        int tileHeight = type.getTileHeight();
+        if (tileHeight != TILE_SIZE) {
+            y += TILE_SIZE - type.getTileHeight();
+        }
+        return new Rectangle(x, y, TILE_SIZE, tileHeight);
     }
 }

@@ -4,8 +4,12 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.mygdx.game.behavior.BehaviorType;
+import com.mygdx.game.physics.collision.CollisionHandler;
 import com.mygdx.game.physics.WorldPhysics;
+import com.mygdx.game.physics.collision.CollisionStrategy;
 
 import java.util.List;
 
@@ -16,37 +20,25 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
     private static final int CAMERA_OFFSET = 100;
     protected Animation<TextureRegion> idleAnimation;
-
     protected Animation<TextureRegion> standAnimation;
     protected Animation<TextureRegion> walkAnimation;
     private TextureRegion currentFrame;
-
     private float stateTime;
 
     private Move move = Move.STAND;
-
     private float idleTimeout = 4;
-
-    private final Rectangle drawRectangle;
 
     @Getter
     private Direction direction = Direction.RIGHT;
-
-    @Getter
-    private ControlAbleEntity haveOnTop;
-
-    @Getter
-    @Setter
-    private EntityType isOnTopOf;
 
     private boolean jumping = false;
 
     @Setter
     private boolean haveControl = false;
 
-    public ControlAbleEntity(Rectangle position, Rectangle drawRectangle) {
-        this.position = position;
-        this.drawRectangle = drawRectangle;
+    public ControlAbleEntity(Rectangle position, Rectangle drawRectangle, List<BehaviorType> possibleStates,
+                             List<CollisionStrategy> possibleCollisionStrategies) {
+        super(position, drawRectangle, possibleStates, possibleCollisionStrategies);
     }
 
     public abstract float getJumpVelocity();
@@ -54,7 +46,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
     public abstract float getMoveVelocity();
 
     public void jump() {
-        if (onGround || isOnTopOf != null) {
+        if (onGround || states.containsKey(BehaviorType.IS_ON_TOP)) {
             jumping = true;
         }
 
@@ -65,10 +57,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
     }
 
     @Override
-    public void update(float delta, WorldPhysics worldPhysics) {
-        if (haveOnTop != null && haveOnTop.isOnTopOf != getEntityType()) {
-            haveOnTop = null;
-        }
+    public void update(float delta, WorldPhysics worldPhysics, CollisionHandler collisionHandler) {
         stateTime += delta;
 
         switch (this.move) {
@@ -100,47 +89,36 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
             velocity.y = getJumpVelocity();
             onGround = false;
             jumping = false;
-            isOnTopOf = null;
         }
 
-        effectOfGravity(delta);
-
-        List<WorldPhysics.EntityCollision> entityCollisions = worldPhysics.entitiesCollisionCheck(this);
-        for (WorldPhysics.EntityCollision collision : entityCollisions) {
-            if (collision.isOnTopOf()) {
-                setIsOnTopOf(collision.getEntityType());
-                break;
-            } else {
-                setOnGround(false);
-            }
-        }
-
-        WorldPhysics.TerrainCollision response = worldPhysics.entityMoveWithTerrain(position, velocity);
-        if (response.isOnGround()) {
-            setIsOnTopOf(null);
-        }
-        float moveToX = response.getMoveTo().x;
-        float moveToY = response.getMoveTo().y;
-
-        if (haveOnTop != null) {
-            WorldPhysics.TerrainCollision responseOnTop = worldPhysics.entityMoveWithTerrain(haveOnTop.position, velocity);
-            if (responseOnTop.isHitCeiling()) {
-                moveToY = responseOnTop.getMoveTo().y - position.height;
-                velocity.y = 0;
-                moveToX = position.x;
-            }
-        }
-
-        position.x = moveToX;
-        position.y = moveToY;
-        setOnGround(response.isOnGround());
-        if (getHaveOnTop() != null && haveControl) {
-            worldPhysics.forceMove(getHaveOnTop(), velocity, this);
-            getHaveOnTop().setDirection(getDirection());
-        }
         worldPhysics.pickAbleEntitiesCheck(position);
-        velocity.x = 0;
-        setForcePushCount(0);
+        super.update(delta, worldPhysics, collisionHandler);
+    }
+
+    public WorldPhysics.ForceMoveResponse forceMove(MoveAbleEntity entity, Vector2 velocity, ControlAbleEntity entityToMove) {
+//        Vector2 forceVelocity = new Vector2(velocity.x, 0);
+//        WorldPhysics.Direction direction = WorldPhysics.Direction.ofVertical(forceVelocity.x);
+//        if (direction == null) {
+//            return new WorldPhysics.ForceMoveResponse(false, 0);
+//        }
+//        float startingPosition = entity.getPosition().x;
+//        WorldPhysics.TerrainCollision response = entityMoveWithTerrain(entity.getPosition(), forceVelocity);
+//        entity.setWasPushed(true);
+//        entity.getPosition().x = response.getMoveTo().x;
+//        entity.getPosition().y = response.getMoveTo().y;
+//        //entity.setOnGround(response.isOnGround());
+//        if (startingPosition == entity.getPosition().x) {
+//            if (entity.isOnGround()) {
+//                if (entity.canPush() && entity.getForcePushCount() > 10) {
+//                    swapEntities(entity, entityToMove);
+//                } else {
+//                    entity.setForcePushCount(entity.getForcePushCount() + 1);
+//                }
+//            }
+//            return new WorldPhysics.ForceMoveResponse(false, 0);
+//        }
+//        return new WorldPhysics.ForceMoveResponse(true, entity.getPosition().x - startingPosition);
+        return null;
     }
 
     public void render(SpriteBatch spriteBatch) {
@@ -158,10 +136,6 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
     public Vector3 getCameraPositionVector() {
         return new Vector3(position.x + (position.width / 2), position.y + (position.height / 2) + CAMERA_OFFSET, 0);
-    }
-
-    public String toString() {
-        return "ControlAbleEntity( onground=" + onGround + " " + "haveOnTop=" + this.haveOnTop + ", isOnTopOf=" + this.isOnTopOf + ", jumping=" + this.jumping + ", haveControl=" + this.haveControl + ")";
     }
 
     public enum Move {
@@ -184,14 +158,8 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
     }
 
     public boolean inAir() {
-        return !onGround && isOnTopOf == null;
+        return !onGround && !states.containsKey(BehaviorType.IS_ON_TOP);
     }
 
-    public void setHaveOnTop(ControlAbleEntity haveOnTop) {
-        this.haveOnTop = haveOnTop;
-    }
 
-    public void setDirection(Direction direction) {
-        this.direction = direction;
-    }
 }

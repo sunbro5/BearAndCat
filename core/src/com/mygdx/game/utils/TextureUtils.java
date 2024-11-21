@@ -1,5 +1,7 @@
 package com.mygdx.game.utils;
 
+import static com.mygdx.game.level.LevelLoader.TILE_SIZE;
+
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class TextureUtils {
@@ -16,5 +18,11 @@ public class TextureUtils {
     }
     public static TextureRegion cropTexture(TextureRegion region, int x1, int x2, int y1, int y2) {
         return new TextureRegion(region, x1, y1, region.getRegionWidth() - (x1 + x2 ), region.getRegionHeight() - (y1 + y2));
+    }
+
+    public static TextureRegion cropTileSet(TextureRegion region, int width, int height){
+        int tileX = TILE_SIZE - width;
+        int tileY = TILE_SIZE - height;
+        return cropTexture(region, 0, tileX, 0, tileY);
     }
 }
