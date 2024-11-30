@@ -13,6 +13,7 @@ public class AssetsLoader {
         SKY("sky.png"),
         MAP_TILES("maptileset.png"),
         MAP_TILES_2("Tileset.png"),
+        BOX_3("box3.png"),
         CAT("cat1.png"),
         CAT_2("cat2.png"),
         BEAR_1("bear1.png"),

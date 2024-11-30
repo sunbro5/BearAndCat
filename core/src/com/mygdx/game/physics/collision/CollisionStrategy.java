@@ -4,8 +4,8 @@ import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.physics.WorldPhysics;
 
 public interface CollisionStrategy {
-    boolean apply(WorldPhysics.EntityCollision collision);
+    boolean apply(MoveAbleEntity entity, WorldPhysics.EntityCollision collision);
 
-    CollisionHandlerResult handle(MoveAbleEntity entity, WorldPhysics.EntityCollision collision);
+    CollisionHandlerResult handle(MoveAbleEntity entity, WorldPhysics.EntityCollision collision, WorldPhysics worldPhysics);
 
 }

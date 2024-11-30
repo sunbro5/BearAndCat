@@ -5,17 +5,19 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.behavior.BehaviorType;
+import com.mygdx.game.physics.collision.CollisionStrategy;
+import com.mygdx.game.physics.collision.PushStrategy;
 import com.mygdx.game.utils.TextureUtils;
-import com.sun.tools.javac.util.List;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Bear extends ControlAbleEntity {
 
     public Bear(int x, int y, Texture texture) {
-        super(new Rectangle(x, y, 90, 30), new Rectangle(-9, 0, +8, +20),
-                new ArrayList<>(),
-                new ArrayList<>());
+        super(new Rectangle(x, y, 90, 30), new Rectangle(-9, 0, +8, +20));
 
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 10, texture.getHeight() / 8);
         TextureUtils.cropTextures(tmp, 3, 5,15 ,1);
@@ -27,12 +29,24 @@ public class Bear extends ControlAbleEntity {
     }
 
     @Override
+    protected Set<BehaviorType> initBehaviour() {
+        return new HashSet<>();
+    }
+
+    @Override
+    protected List<CollisionStrategy> initCollisionStrategies() {
+        List<CollisionStrategy> strategies = new ArrayList<>();
+        strategies.add(new PushStrategy());
+        return strategies;
+    }
+
+    @Override
     public boolean canWalkOn() {
         return true;
     }
 
     @Override
-    public boolean canPush() {
+    public boolean canBePush() {
         return false;
     }
 

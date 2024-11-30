@@ -35,7 +35,7 @@ public class LevelLoader {
 
 //        levels.add("level1.png");
 //        levels.add("level2.png");
-//        levels.add("level3.png");
+        levels.add("levelxx.png");
 //        levels.add("level4.png");
         levels.add("level5.png");
         levels.add("level6.png");
@@ -113,7 +113,8 @@ public class LevelLoader {
                         TextureRegion textureRegion = mapTextures.get(type);
                         switch (type) {
                             case BOX: {
-                                moveAbleEntities.add(new Box(screenPosX, screenPosY, textureRegion));
+                                //moveAbleEntities.add(new Box(screenPosX, screenPosY, textureRegion));
+                                moveAbleEntities.add(new Box(screenPosX, screenPosY, assetsLoader.getTexture(AssetsLoader.TextureType.BOX_3)));
                                 break;
                             }
                             case STAR: {

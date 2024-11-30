@@ -42,7 +42,7 @@ public class LevelScreen implements Screen {
         handleFinish();
         worldPhysics.update(delta);
         for (DrawableEntity entity : levelData.getAllDrawEntities()) {
-            entity.update(delta, worldPhysics, collisionHandler);
+            entity.update(delta, worldPhysics);
         }
         if (secondInit > 0.5f) {
             worldRenderer.getCameraPosition().lerp(levelData.getControlEntity().getCameraPositionVector(), 2f * delta);

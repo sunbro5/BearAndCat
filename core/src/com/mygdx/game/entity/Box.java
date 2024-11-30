@@ -1,22 +1,24 @@
 package com.mygdx.game.entity;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.behavior.BehaviorType;
-import com.mygdx.game.behavior.IsOnTop;
 import com.mygdx.game.physics.WorldPhysics;
-import com.mygdx.game.physics.collision.CollisionHandler;
-import com.sun.tools.javac.util.List;
+import com.mygdx.game.physics.collision.CollisionStrategy;
+import com.mygdx.game.physics.collision.PushStrategy;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Box extends MoveAbleEntity {
-    private final TextureRegion texture;
+    private final Texture texture;
 
-    public Box(float x, float y, TextureRegion texture) {
-        super(new Rectangle(x, y, 49, 49), new Rectangle(x, y, 49, 49),
-                new ArrayList<>(), new ArrayList<>());
+    public Box(float x, float y, Texture texture) {
+        super(new Rectangle(x, y, 49, 49), new Rectangle(x, y, 49, 49)
+        );
         this.texture = texture;
     }
 
@@ -26,10 +28,24 @@ public class Box extends MoveAbleEntity {
     }
 
     @Override
-    public void update(float delta, WorldPhysics worldPhysics, CollisionHandler collisionHandler) {
+    public void update(float delta, WorldPhysics worldPhysics) {
         this.drawRectangle.x = position.x;
         this.drawRectangle.y = position.y;
-        super.update(delta, worldPhysics, collisionHandler);
+        super.update(delta, worldPhysics);
+    }
+
+    @Override
+    protected Set<BehaviorType> initBehaviour() {
+        Set<BehaviorType> behaviors = new HashSet<>();
+        behaviors.add(BehaviorType.WALL_PUSH);
+        return behaviors;
+    }
+
+    @Override
+    protected List<CollisionStrategy> initCollisionStrategies() {
+        List<CollisionStrategy> strategies = new ArrayList<>();
+        strategies.add(new PushStrategy());
+        return strategies;
     }
 
     @Override
@@ -38,7 +54,7 @@ public class Box extends MoveAbleEntity {
     }
 
     @Override
-    public boolean canPush() {
+    public boolean canBePush() {
         return true;
     }
 

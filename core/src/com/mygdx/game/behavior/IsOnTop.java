@@ -1,5 +1,7 @@
 package com.mygdx.game.behavior;
 
+import com.mygdx.game.entity.MoveAbleEntity;
+
 public class IsOnTop implements EntityBehavior {
     @Override
     public BehaviorType getType() {
@@ -8,6 +10,11 @@ public class IsOnTop implements EntityBehavior {
 
     @Override
     public void update(float delta) {
+
+    }
+
+    @Override
+    public void onCollision(MoveAbleEntity moveAbleEntity) {
 
     }
 }

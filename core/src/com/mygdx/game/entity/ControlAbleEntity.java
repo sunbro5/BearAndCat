@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.behavior.BehaviorType;
-import com.mygdx.game.physics.collision.CollisionHandler;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.physics.collision.CollisionStrategy;
 
@@ -36,9 +35,8 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
     @Setter
     private boolean haveControl = false;
 
-    public ControlAbleEntity(Rectangle position, Rectangle drawRectangle, List<BehaviorType> possibleStates,
-                             List<CollisionStrategy> possibleCollisionStrategies) {
-        super(position, drawRectangle, possibleStates, possibleCollisionStrategies);
+    public ControlAbleEntity(Rectangle position, Rectangle drawRectangle) {
+        super(position, drawRectangle);
     }
 
     public abstract float getJumpVelocity();
@@ -57,7 +55,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
     }
 
     @Override
-    public void update(float delta, WorldPhysics worldPhysics, CollisionHandler collisionHandler) {
+    public void update(float delta, WorldPhysics worldPhysics) {
         stateTime += delta;
 
         switch (this.move) {
@@ -92,7 +90,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         }
 
         worldPhysics.pickAbleEntitiesCheck(position);
-        super.update(delta, worldPhysics, collisionHandler);
+        super.update(delta, worldPhysics);
     }
 
     public WorldPhysics.ForceMoveResponse forceMove(MoveAbleEntity entity, Vector2 velocity, ControlAbleEntity entityToMove) {
