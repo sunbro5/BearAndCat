@@ -93,32 +93,6 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         super.update(delta, worldPhysics);
     }
 
-    public WorldPhysics.ForceMoveResponse forceMove(MoveAbleEntity entity, Vector2 velocity, ControlAbleEntity entityToMove) {
-//        Vector2 forceVelocity = new Vector2(velocity.x, 0);
-//        WorldPhysics.Direction direction = WorldPhysics.Direction.ofVertical(forceVelocity.x);
-//        if (direction == null) {
-//            return new WorldPhysics.ForceMoveResponse(false, 0);
-//        }
-//        float startingPosition = entity.getPosition().x;
-//        WorldPhysics.TerrainCollision response = entityMoveWithTerrain(entity.getPosition(), forceVelocity);
-//        entity.setWasPushed(true);
-//        entity.getPosition().x = response.getMoveTo().x;
-//        entity.getPosition().y = response.getMoveTo().y;
-//        //entity.setOnGround(response.isOnGround());
-//        if (startingPosition == entity.getPosition().x) {
-//            if (entity.isOnGround()) {
-//                if (entity.canPush() && entity.getForcePushCount() > 10) {
-//                    swapEntities(entity, entityToMove);
-//                } else {
-//                    entity.setForcePushCount(entity.getForcePushCount() + 1);
-//                }
-//            }
-//            return new WorldPhysics.ForceMoveResponse(false, 0);
-//        }
-//        return new WorldPhysics.ForceMoveResponse(true, entity.getPosition().x - startingPosition);
-        return null;
-    }
-
     public void render(SpriteBatch spriteBatch) {
         float x = position.x + drawRectangle.x;
         float y = position.y + drawRectangle.y;

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.behavior.BehaviorType;
 import com.mygdx.game.physics.collision.CollisionStrategy;
+import com.mygdx.game.physics.collision.LandOnTopStrategy;
 import com.mygdx.game.physics.collision.PushStrategy;
 import com.mygdx.game.utils.TextureUtils;
 
@@ -33,18 +34,21 @@ public class Cat extends ControlAbleEntity {
 
     @Override
     protected Set<BehaviorType> initBehaviour() {
-        return new HashSet<>();
+        Set<BehaviorType> behaviors = new HashSet<>();
+        behaviors.add(BehaviorType.IS_ON_TOP);
+        return behaviors;
     }
 
     @Override
     protected List<CollisionStrategy> initCollisionStrategies() {
         List<CollisionStrategy> strategies = new ArrayList<>();
         strategies.add(new PushStrategy());
+        strategies.add(new LandOnTopStrategy());
         return strategies;
     }
 
     @Override
-    public boolean canWalkOn() {
+    public boolean canBeOnTop() {
         return false;
     }
 

@@ -127,41 +127,6 @@ public class WorldPhysics {
                         velocityToCollision.x = entity.getPosition().x - (entityToMove.getPosition().x + entityToMove.getPosition().width) - 2;
                     }
                     collisions.add(new EntityCollision(entity, velocityToCollision, horizontalDirection, verticalDirection));
-
-//                    //check if entityToMove jumped on another entity
-//                    if (horizontalDirection == Direction.DOWN && !entityToMove.isOnGround() && moveFrom.y > entity.getPosition().y + entity.getPosition().height - POSITION_OFFSET) {
-//                        if (entity.canWalkOn() && (!moveFrom.overlaps(entity.getPosition()) || entityToMove.getIsOnTopOf() == entity.getEntityType())) {
-//                            boolean isOn = (entity.getPosition().y + entity.getPosition().height) <= moveFrom.y;
-//                            float moveUpToEntity = entity.getPosition().y + entity.getPosition().height;
-//                            if (isOn || ((entity instanceof ControlAbleEntity))) {
-//                                System.out.println("WTF");
-//                                entityToMove.getPosition().y = moveUpToEntity + 1;
-//                                entityToMove.getVelocity().y = -1;
-//                                if (entity instanceof ControlAbleEntity) {
-//                                    ((ControlAbleEntity) entity).setHaveOnTop(entityToMove); // TODO this should not be there, workaroud, ControlableEntity need tohave both isOnTop and haveOnTop ControlableEntity attribute or different approach
-//                                }
-//                            }
-//                        }
-//                        onTop = true;
-//                    }
-//                    // check if entityToMove pushing another entity
-//                    if (entity.canPush() && entityToMove.isOnGround()) {
-//                        Rectangle rectangleMoveX = new Rectangle(moveFrom);
-//                        rectangleMoveX.x += entityToMove.getVelocity().x;
-//                        if (rectangleMoveX.overlaps(entity.getPosition()) && !moveFrom.overlaps(entity.getPosition())) {
-//
-//                            Direction verticalDirection = Direction.ofVertical(entityToMove.getVelocity().x);
-//                            if (verticalDirection != null) {
-//                                Vector2 pushVelocity = new Vector2(entityToMove.getVelocity().x, 0);
-//                                ForceMoveResponse response = forceMove(entity, pushVelocity, entityToMove);
-//                                if (response.isPushed()) {
-//                                    entityToMove.getVelocity().x = response.getPushedX();
-//                                } else {
-//                                    entityToMove.getVelocity().x = 0;
-//                                }
-//                            }
-//                        }
-//                    }
                 }
             }
         }
@@ -186,19 +151,11 @@ public class WorldPhysics {
         if (entity.getPosition().x > entityToMove.getPosition().x) {
             // entity is on right side
             float swapXPosition = entity.getPosition().x + entity.getPosition().width;
-//            if (entityToMove.getHaveOnTop() != null) { TODO
-//                float entityToMoveDistance = swapXPosition - entityToMove.getPosition().width - entityToMove.getPosition().x;
-//                entityToMove.getHaveOnTop().getPosition().x = Math.min(entityToMove.getHaveOnTop().getPosition().x + entityToMoveDistance, swapXPosition - entityToMove.getHaveOnTop().getPosition().width);
-//            }
             entityToMove.getPosition().x = swapXPosition - entityToMove.getPosition().width;
             entity.getPosition().x = swapXPosition - entityToMove.getPosition().width - entity.getPosition().width;
         } else {
             // entity is on left side
             float swapXPosition = entity.getPosition().x;
-//            if (entityToMove.getHaveOnTop() != null) { TODO
-//                float entityToMoveDistance = entityToMove.getPosition().x - swapXPosition;
-//                entityToMove.getHaveOnTop().getPosition().x = Math.max(entityToMove.getHaveOnTop().getPosition().x - entityToMoveDistance, swapXPosition);
-//            }
             entityToMove.getPosition().x = swapXPosition;
             entity.getPosition().x = swapXPosition + entityToMove.getPosition().width;
         }

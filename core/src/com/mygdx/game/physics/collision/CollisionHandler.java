@@ -24,7 +24,7 @@ public class CollisionHandler {
         return resultVelocity;
     }
 
-    private static void setSmallerValueToVelocity(Vector2 resultVelocity, Vector2 velocityFromCollision) {
+    public static void setSmallerValueToVelocity(Vector2 resultVelocity, Vector2 velocityFromCollision) { // TODO utils ?
         if (Math.abs(resultVelocity.x) > Math.abs(velocityFromCollision.x)) {
             resultVelocity.x = velocityFromCollision.x;
         }

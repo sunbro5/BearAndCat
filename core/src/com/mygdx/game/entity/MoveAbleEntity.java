@@ -2,6 +2,7 @@ package com.mygdx.game.entity;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.behavior.BehaviorHandler;
 import com.mygdx.game.behavior.BehaviorType;
 import com.mygdx.game.behavior.EntityBehavior;
 import com.mygdx.game.physics.WorldPhysics;
@@ -56,43 +57,41 @@ public abstract class MoveAbleEntity implements DrawableEntity {
 
     protected abstract List<CollisionStrategy> initCollisionStrategies();
 
-    public abstract boolean canWalkOn();
+    public abstract boolean canBeOnTop();
 
     public abstract boolean canBePush();
 
     @Override
     public void update(float delta, WorldPhysics worldPhysics) {
+        effectOfGravity(worldPhysics.getLastDelta());
         this.velocity = move(this.velocity, worldPhysics);
-
-        for (EntityBehavior entityState: states.values()) {
-            entityState.update(delta);
-        }
-
+        this.velocity = BehaviorHandler.handleBehavior(states, this, worldPhysics);
+        setFinalPosition();
         this.velocity.x = 0;
     }
 
-    public Vector2 forceMove(Vector2 velocity, WorldPhysics worldPhysics){
+    public Vector2 forceMove(Vector2 velocity, WorldPhysics worldPhysics) {
         Vector2 velocityBefore = this.velocity;
         Vector2 resultVelocity = move(velocity, worldPhysics);
+        setFinalPosition();
         this.velocity = velocityBefore;
         return resultVelocity;
     }
 
-    private Vector2 move(Vector2 velocity, WorldPhysics worldPhysics){
+    private Vector2 move(Vector2 velocity, WorldPhysics worldPhysics) {
         this.velocity = velocity;
-        effectOfGravity(worldPhysics.getLastDelta());
         WorldPhysics.TerrainCollision response = worldPhysics.entityMoveWithTerrain(this.position, this.velocity);
         setOnGround(response.isOnGround());
+
         this.velocity = response.getVelocity();
 
-        List<WorldPhysics.EntityCollision> entityCollisions = worldPhysics.entitiesCollisionCheck( this);
+        List<WorldPhysics.EntityCollision> entityCollisions = worldPhysics.entitiesCollisionCheck(this);
         this.velocity = CollisionHandler.handleCollision(this, entityCollisions, possibleCollisionStrategies, worldPhysics);
 
-        setFinalPosition();
         return this.velocity;
     }
 
-    protected void setFinalPosition(){
+    protected void setFinalPosition() {
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
     }

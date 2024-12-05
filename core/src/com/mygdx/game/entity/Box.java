@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.behavior.BehaviorType;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.physics.collision.CollisionStrategy;
+import com.mygdx.game.physics.collision.LandOnTopStrategy;
 import com.mygdx.game.physics.collision.PushStrategy;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class Box extends MoveAbleEntity {
     @Override
     protected Set<BehaviorType> initBehaviour() {
         Set<BehaviorType> behaviors = new HashSet<>();
+        behaviors.add(BehaviorType.HAVE_ON_TOP);
+        behaviors.add(BehaviorType.IS_ON_TOP);
         behaviors.add(BehaviorType.WALL_PUSH);
         return behaviors;
     }
@@ -45,11 +48,12 @@ public class Box extends MoveAbleEntity {
     protected List<CollisionStrategy> initCollisionStrategies() {
         List<CollisionStrategy> strategies = new ArrayList<>();
         strategies.add(new PushStrategy());
+        strategies.add(new LandOnTopStrategy());
         return strategies;
     }
 
     @Override
-    public boolean canWalkOn() {
+    public boolean canBeOnTop() {
         return true;
     }
 
