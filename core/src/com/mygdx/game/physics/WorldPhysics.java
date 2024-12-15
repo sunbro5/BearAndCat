@@ -5,7 +5,6 @@ import static com.mygdx.game.level.LevelLoader.TILE_SIZE;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.entity.PickAbleEntity;
 import com.mygdx.game.level.LevelData;
@@ -86,7 +85,7 @@ public class WorldPhysics {
         boolean onGround = false;
         boolean hitCeiling = false;
 
-        if (checkTerrainCollision(resultPosition, resultVelocity, horizontalDirection)) {
+        if (checkTerrainCollision(position, resultPosition, resultVelocity, horizontalDirection)) {
             if (horizontalDirection == Direction.DOWN) {
                 onGround = true;
             } else if (horizontalDirection == Direction.UP) {
@@ -94,7 +93,7 @@ public class WorldPhysics {
             }
         }
         resultPosition.x += velocity.x;
-        checkTerrainCollision(resultPosition, resultVelocity, Direction.ofVertical(velocity.x));
+        checkTerrainCollision(position, resultPosition, resultVelocity, Direction.ofVertical(velocity.x));
         return new TerrainCollision(resultVelocity, onGround, hitCeiling);
     }
 
@@ -110,27 +109,48 @@ public class WorldPhysics {
         for (MoveAbleEntity entity : collisionEntities) {
             if (!entity.equals(entityToMove)) { //NOT itself
                 if (moveTo.overlaps(entity.getPosition()) && !entityToMove.getPosition().overlaps(entity.getPosition())) {
-                    System.out.println("HIT");
-                    HorizontalDirection horizontalDirection = HorizontalDirection.ofHorizontal(entityToMove.getVelocity().y);
-                    VerticalDirection verticalDirection = VerticalDirection.ofVertical(entityToMove.getVelocity().x);
+                    //System.out.println("HIT");
+                    VerticalDirection verticalDirection = getHorizontalCollision(entityToMove.getPosition(), entity.getPosition(), VerticalDirection.of(entityToMove.getVelocity().y));
+                    HorizontalDirection horizontalDirection = getVerticalCollision(entityToMove.getPosition(), entity.getPosition(), HorizontalDirection.of(entityToMove.getVelocity().x));
+
                     Vector2 velocityToCollision = new Vector2(entityToMove.getVelocity());
 
-                    if (horizontalDirection == HorizontalDirection.UP) {
+                    if (verticalDirection == VerticalDirection.UP) {
                         velocityToCollision.y = entity.getPosition().y - (entityToMove.getPosition().y + entityToMove.getPosition().height);
-                    } else if (horizontalDirection == HorizontalDirection.DOWN) {
+                    } else if (verticalDirection == VerticalDirection.DOWN) {
                         velocityToCollision.y = -(entityToMove.getPosition().y - (entity.getPosition().y + entity.getPosition().height));
                     }
 
-                    if (verticalDirection == VerticalDirection.LEFT) {
+                    if (horizontalDirection == HorizontalDirection.LEFT) {
                         velocityToCollision.x = -(entityToMove.getPosition().x - (entity.getPosition().x + entity.getPosition().width)) + 2;
-                    } else if (verticalDirection == VerticalDirection.RIGHT) {
+                    } else if (horizontalDirection == HorizontalDirection.RIGHT) {
                         velocityToCollision.x = entity.getPosition().x - (entityToMove.getPosition().x + entityToMove.getPosition().width) - 2;
                     }
-                    collisions.add(new EntityCollision(entity, velocityToCollision, horizontalDirection, verticalDirection));
+                    collisions.add(new EntityCollision(entity, velocityToCollision, verticalDirection, horizontalDirection));
                 }
             }
         }
         return collisions;
+    }
+
+    private VerticalDirection getHorizontalCollision(Rectangle entityToMovePosition, Rectangle checkedEntityPosition, VerticalDirection verticalDirection) {
+        return verticalDirection; //TODO
+    }
+
+    // TODO maybe handle under ?
+    private HorizontalDirection getVerticalCollision(Rectangle entityToMovePosition, Rectangle checkedEntityPosition, HorizontalDirection horizontalDirection) {
+        if (horizontalDirection == HorizontalDirection.LEFT) {
+            if ((entityToMovePosition.x < (checkedEntityPosition.x + checkedEntityPosition.width)) || // entity did not hit right side
+                    (entityToMovePosition.y >= (checkedEntityPosition.y + checkedEntityPosition.height))) { // entity was above
+                return null;
+            }
+        } else if (horizontalDirection == HorizontalDirection.RIGHT) {
+            if (((entityToMovePosition.x + entityToMovePosition.width) > checkedEntityPosition.x) ||
+                    (entityToMovePosition.y >= (checkedEntityPosition.y + checkedEntityPosition.height))) { // entity did not hit right side
+                return null;
+            }
+        }
+        return horizontalDirection;
     }
 
     public void pickAbleEntitiesCheck(Rectangle entityMoved) {
@@ -162,7 +182,7 @@ public class WorldPhysics {
     }
 
 
-    private boolean checkTerrainCollision(Rectangle rectangle, Vector2 resultVelocity, Direction direction) {
+    private boolean checkTerrainCollision(Rectangle position, Rectangle rectangle, Vector2 resultVelocity, Direction direction) {
         if (direction == null) {
             return false;
         }
@@ -187,20 +207,20 @@ public class WorldPhysics {
                 if (checkedRectangle != null && rectangle.overlaps(checkedRectangle)) {
                     switch (direction) {
                         case RIGHT:
-                            rectangle.x = Math.round(checkedRectangle.x - rectangle.width);
-                            resultVelocity.x = Math.round(checkedRectangle.x - (rectangle.x + rectangle.width));
+                            rectangle.x = checkedRectangle.x - rectangle.width;
+                            resultVelocity.x = checkedRectangle.x - (position.x + position.width);
                             break;
                         case LEFT:
-                            rectangle.x = Math.round(checkedRectangle.x + checkedRectangle.width);
-                            resultVelocity.x = -Math.round((rectangle.x - (checkedRectangle.x + checkedRectangle.width)));
+                            rectangle.x = checkedRectangle.x + checkedRectangle.width;
+                            resultVelocity.x = -(position.x - (checkedRectangle.x + checkedRectangle.width));
                             break;
                         case UP:
-                            rectangle.y = Math.round(checkedRectangle.y - rectangle.height);
-                            resultVelocity.y = Math.round(checkedRectangle.y - (rectangle.y + rectangle.height));
+                            rectangle.y = checkedRectangle.y - rectangle.height;
+                            resultVelocity.y = checkedRectangle.y - (position.y + position.height);
                             break;
                         case DOWN:
-                            rectangle.y = Math.round(checkedRectangle.y + checkedRectangle.height);
-                            resultVelocity.y = -Math.round((rectangle.y - (checkedRectangle.y + checkedRectangle.height)));
+                            rectangle.y = checkedRectangle.y + checkedRectangle.height;
+                            resultVelocity.y = - (position.y - (checkedRectangle.y + checkedRectangle.height));
                             break;
                     }
                     return true;
@@ -214,8 +234,8 @@ public class WorldPhysics {
     public static class EntityCollision {
         MoveAbleEntity moveAbleEntity;
         Vector2 velocityToCollision;
-        HorizontalDirection horizontalDirection;
         VerticalDirection verticalDirection;
+        HorizontalDirection horizontalDirection;
     }
 
     @Value
@@ -231,11 +251,11 @@ public class WorldPhysics {
         float pushedX;
     }
 
-    public enum VerticalDirection {
+    public enum HorizontalDirection {
         RIGHT,
         LEFT;
 
-        public static VerticalDirection ofVertical(float value) {
+        public static HorizontalDirection of(float value) {
             if (value > 0) {
                 return RIGHT;
             }
@@ -246,11 +266,11 @@ public class WorldPhysics {
         }
     }
 
-    public enum HorizontalDirection {
+    public enum VerticalDirection {
         UP,
         DOWN;
 
-        public static HorizontalDirection ofHorizontal(float value) {
+        public static VerticalDirection of(float value) {
             if (value > 0) {
                 return UP;
             }

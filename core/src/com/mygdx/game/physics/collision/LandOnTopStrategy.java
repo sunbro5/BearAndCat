@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.behavior.BehaviorType;
 import com.mygdx.game.behavior.HaveOnTop;
 import com.mygdx.game.behavior.IsOnTop;
+import com.mygdx.game.entity.Box;
+import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.physics.WorldPhysics;
 
@@ -11,7 +13,8 @@ public class LandOnTopStrategy implements CollisionStrategy {
 
     @Override
     public boolean apply(MoveAbleEntity entity, WorldPhysics.EntityCollision collision) {
-        return collision.getHorizontalDirection() == WorldPhysics.HorizontalDirection.DOWN &&
+        return (entity instanceof ControlAbleEntity || (entity instanceof Box && collision.getMoveAbleEntity() instanceof Box) ) &&
+                collision.getVerticalDirection() == WorldPhysics.VerticalDirection.DOWN &&
                 collision.getMoveAbleEntity().canBeOnTop() &&
                 entity.getPossibleStates().contains(BehaviorType.IS_ON_TOP) &&
                 collision.getMoveAbleEntity().getPossibleStates().contains(BehaviorType.HAVE_ON_TOP);

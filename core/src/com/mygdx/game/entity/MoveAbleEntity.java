@@ -1,5 +1,7 @@
 package com.mygdx.game.entity;
 
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.behavior.BehaviorHandler;
@@ -92,6 +94,9 @@ public abstract class MoveAbleEntity implements DrawableEntity {
     }
 
     protected void setFinalPosition() {
+        if (this.velocity.y == 0 && this.velocity.x == 0) {
+            return;
+        }
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
     }
@@ -102,5 +107,13 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         }
         float deltaGravity = (WorldPhysics.GRAVITY * delta);
         velocity.y -= deltaGravity;
+    }
+
+    @Override
+    public String toString() {
+        return "MoveAbleEntity{" + this.getClass().getName() +
+                ", states=" + states +
+                ", position=" + position +
+                '}';
     }
 }

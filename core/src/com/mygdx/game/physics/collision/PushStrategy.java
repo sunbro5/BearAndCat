@@ -10,7 +10,7 @@ public class PushStrategy implements CollisionStrategy {
 
     @Override
     public boolean apply(MoveAbleEntity entity, WorldPhysics.EntityCollision collision) {
-        return collision.getMoveAbleEntity().canBePush() && collision.getVerticalDirection() != null;
+        return collision.getMoveAbleEntity().canBePush() && collision.getHorizontalDirection() != null;
     }
 
     @Override
@@ -20,6 +20,7 @@ public class PushStrategy implements CollisionStrategy {
         velocity.x -= velocityOffset;
         Vector2 resultVelocity = collision.getMoveAbleEntity().forceMove(velocity, worldPhysics);
         resultVelocity.x += velocityOffset;
+        resultVelocity.y = entity.getVelocity().y;
 
         if (resultVelocity.x == 0) {
             if (collision.getMoveAbleEntity().getPossibleStates().contains(BehaviorType.WALL_PUSH)) {

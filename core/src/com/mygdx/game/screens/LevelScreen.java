@@ -3,10 +3,13 @@ package com.mygdx.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.entity.Bear;
 import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.entity.DrawableEntity;
+import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.level.LevelData;
 import com.mygdx.game.physics.collision.CollisionHandler;
 import com.mygdx.game.physics.WorldPhysics;
@@ -18,7 +21,6 @@ public class LevelScreen implements Screen {
     private final WorldPhysics worldPhysics;
     private final WorldRenderer worldRenderer;
     private final LevelData levelData;
-    private final CollisionHandler collisionHandler;
 
     private float secondInit = 0;
 
@@ -27,7 +29,8 @@ public class LevelScreen implements Screen {
         this.worldPhysics = new WorldPhysics(levelData);
         this.worldRenderer = new WorldRenderer(levelData.getEndRectangle());
         this.levelData = levelData;
-        this.collisionHandler = new CollisionHandler();
+
+        TiledMap map = new TmxMapLoader().load("level1.tmx");
     }
 
     @Override
@@ -82,14 +85,24 @@ public class LevelScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT)) {
             switchControlEntity();
         }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+            printEntities();
+        }
+    }
+
+    private void printEntities() {
+        for (MoveAbleEntity entity : levelData.getMoveAbleEntities()) {
+            Gdx.app.log("", entity.toString());
+        }
+        Gdx.app.log("", levelData.getControlEntity().toString());
     }
 
     public void switchControlEntity() {
         if (someOneJumping()) {
             return;
         }
-        System.out.println("Bear " + levelData.getBear());
-        System.out.println("Cat " + levelData.getCat());
+        Gdx.app.log("", "Bear " + levelData.getBear());
+        Gdx.app.log("", "Cat " + levelData.getCat());
         if (levelData.getControlEntity() instanceof Bear) {
             levelData.setControlEntity(levelData.getCat());
             levelData.getCat().setHaveControl(true);
@@ -101,7 +114,7 @@ public class LevelScreen implements Screen {
         }
     }
 
-    private boolean someOneJumping(){
+    private boolean someOneJumping() {
         return levelData.getCat().inAir() || levelData.getBear().inAir();
     }
 
