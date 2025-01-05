@@ -27,7 +27,7 @@ public class LevelScreen implements Screen {
     public LevelScreen(MyGdxGame game, LevelData levelData) {
         this.game = game;
         this.worldPhysics = new WorldPhysics(levelData);
-        this.worldRenderer = new WorldRenderer(levelData.getEndRectangle());
+        this.worldRenderer = new WorldRenderer(levelData);
         this.levelData = levelData;
 
         TiledMap map = new TmxMapLoader().load("level1.tmx");

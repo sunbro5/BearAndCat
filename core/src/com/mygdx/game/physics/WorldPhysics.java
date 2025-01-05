@@ -1,8 +1,10 @@
 package com.mygdx.game.physics;
 
 import static com.mygdx.game.level.LevelLoader.TILE_SIZE;
+import static com.mygdx.game.level.LevelLoader.WALL_LAYER;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.entity.MoveAbleEntity;
@@ -19,10 +21,10 @@ import lombok.Value;
 
 public class WorldPhysics {
 
-    public static final int GRAVITY = 100;
+    public static final int GRAVITY = 25;
     private static final int COLLISION_DEPTH_CHECK = 1;
     private static final float POSITION_OFFSET = 0.1f;
-    private final Rectangle[][] terrain;
+    private final Rectangle[][] walls;
     private final int terrainPositionWidth;
     private final int terrainPositionHeight;
     private final LevelData levelData;
@@ -33,9 +35,10 @@ public class WorldPhysics {
 
     public WorldPhysics(LevelData levelData) {
         this.levelData = levelData;
-        terrainPositionWidth = levelData.getMapTiles()[0].length * TILE_SIZE;
-        terrainPositionHeight = levelData.getMapTiles().length * TILE_SIZE;
-        terrain = createTerrainCollisionMap(levelData.getMapTiles());
+        TiledMapTileLayer wallLayer = (TiledMapTileLayer) levelData.getTerrain().getLayers().get(WALL_LAYER);
+        terrainPositionWidth = wallLayer.getWidth() * wallLayer.getTileWidth();
+        terrainPositionHeight = wallLayer.getHeight() * wallLayer.getTileHeight();
+        walls = levelData.getWalls();
     }
 
     public void update(float delta) {
@@ -54,26 +57,6 @@ public class WorldPhysics {
         }
         collEntities.addAll(levelData.getMoveAbleEntities());
         return collEntities;
-    }
-
-    private Rectangle[][] createTerrainCollisionMap(int[][] mapTilesType) {
-        Rectangle[][] terrain = new Rectangle[mapTilesType.length][mapTilesType[0].length];
-
-        for (int mapY = 0; mapY < mapTilesType[0].length; mapY++) {
-            for (int mapX = 0; mapX < mapTilesType.length; mapX++) {
-                int x = mapX * TILE_SIZE;
-                int y = mapY * TILE_SIZE;
-                TilesetType type = TilesetType.typeByColor(mapTilesType[mapX][mapY]);
-                if (type == null) {
-                    continue;
-                }
-                if (type.isCollision()) {
-                    Rectangle rectangle = LevelLoader.calculateTile(type, x, y);
-                    terrain[mapX][mapY] = rectangle;
-                }
-            }
-        }
-        return terrain;
     }
 
     public TerrainCollision entityMoveWithTerrain(Rectangle position, Vector2 velocity) {
@@ -203,7 +186,7 @@ public class WorldPhysics {
 
         for (int tilesY = fromTilesY; tilesY <= toTilesY; tilesY++) {
             for (int tilesX = fromTilesX; tilesX <= toTilesX; tilesX++) {
-                Rectangle checkedRectangle = terrain[tilesX][tilesY];
+                Rectangle checkedRectangle = walls[tilesY][tilesX];
                 if (checkedRectangle != null && rectangle.overlaps(checkedRectangle)) {
                     switch (direction) {
                         case RIGHT:

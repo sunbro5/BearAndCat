@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
@@ -30,24 +31,26 @@ public class WorldRenderer implements Disposable {
     private final OrthographicCamera backGroundCamera;
     private final FPSLogger fpsLogger;
     private final BitmapFont font;
+    private final OrthogonalTiledMapRenderer renderer;
 
     @Getter
     @Setter
     private boolean lerpCamera = false;
 
-    public WorldRenderer(Rectangle startPosition) {
+    public WorldRenderer(LevelData levelData) {
         spriteBatch = new SpriteBatch();
         backgroundSpriteBatch = new SpriteBatch();
         hudSpriteBatch = new SpriteBatch();
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 1000, 500);
-        camera.position.x = startPosition.x;
-        camera.position.y = startPosition.y;
+        camera.setToOrtho(false, 400, 200);
+        camera.position.x = levelData.getEndRectangle().x;
+        camera.position.y = levelData.getEndRectangle().y;
         backGroundCamera = new OrthographicCamera();
         backGroundCamera.setToOrtho(false, 1000, 500);
         fpsLogger = new FPSLogger();
         font = new BitmapFont();
         font.getData().setScale(2);
+        renderer = new OrthogonalTiledMapRenderer(levelData.getTerrain(), 1);
     }
 
     public void render(float delta, LevelData levelData) {
@@ -57,7 +60,7 @@ public class WorldRenderer implements Disposable {
         backgroundSpriteBatch.setProjectionMatrix(backGroundCamera.combined);
 
         renderBackGround(levelData);
-        renderGameMap(levelData);
+        renderGameMap();
 
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
@@ -77,20 +80,9 @@ public class WorldRenderer implements Disposable {
         hudSpriteBatch.end();
     }
 
-    private void renderGameMap(LevelData levelData) {
-        SpriteCache cache = levelData.getMapCache();
-        int[][] cacheBlocks = levelData.getCacheBlocks();
-
-        cache.setProjectionMatrix(camera.combined);
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-
-        cache.begin();
-        for (int blockY = 0; blockY < cacheBlocks[0].length; blockY++) { // TODO draw only what is needed
-            for (int blockX = 0; blockX < cacheBlocks.length; blockX++) {
-                cache.draw(cacheBlocks[blockX][blockY]);
-            }
-        }
-        cache.end();
+    private void renderGameMap() {
+        renderer.setView(camera);
+        renderer.render();
     }
 
     private void renderBackGround(LevelData levelData) {
