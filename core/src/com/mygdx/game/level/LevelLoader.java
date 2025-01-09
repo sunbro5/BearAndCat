@@ -72,6 +72,10 @@ public class LevelLoader {
         Rectangle[][] wallTileset = getTileCells(walls);
         TiledMapTileLayer terrainEntities = (TiledMapTileLayer) map.getLayers().get("terrainEntities");
         terrainEntities.setVisible(false);
+        List<Rectangle> boxes = getTileCellsByType(terrainEntities).get("box");
+        for (Rectangle box: boxes) {
+            moveAbleEntities.add(new Box(box, assetsLoader.getTexture(AssetsLoader.TextureType.BOX_2)));
+        }
 
         MapLayer entities = map.getLayers().get("entities");
         Map<String, List<Rectangle>> entitiesByType = getTileCellsByType(entities);

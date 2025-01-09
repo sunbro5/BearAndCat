@@ -17,9 +17,8 @@ import java.util.Set;
 public class Box extends MoveAbleEntity {
     private final Texture texture;
 
-    public Box(float x, float y, Texture texture) {
-        super(new Rectangle(x, y, 49, 49), new Rectangle(x, y, 49, 49)
-        );
+    public Box(Rectangle rectangle, Texture texture) {
+        super(rectangle, rectangle);
         this.texture = texture;
     }
 
