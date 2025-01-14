@@ -8,4 +8,6 @@ public interface DrawableEntity {
     void render(SpriteBatch spriteBatch);
 
     void update(float delta, WorldPhysics worldPhysics);
+
+    void afterUpdate();
 }

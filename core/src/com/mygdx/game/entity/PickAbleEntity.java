@@ -28,4 +28,9 @@ public abstract class PickAbleEntity implements DrawableEntity {
         stateTime += delta;
         currentFrame = animation.getKeyFrame(stateTime, true);
     }
+
+    @Override
+    public void afterUpdate() {
+
+    }
 }

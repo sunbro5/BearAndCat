@@ -1,14 +1,11 @@
 package com.mygdx.game.renderer;
 
-import static com.mygdx.game.level.LevelLoader.TILE_SIZE;
-
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.SpriteCache;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -17,6 +14,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Disposable;
 import com.mygdx.game.entity.DrawableEntity;
 import com.mygdx.game.level.LevelData;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,12 +31,14 @@ public class WorldRenderer implements Disposable {
     private final FPSLogger fpsLogger;
     private final BitmapFont font;
     private final OrthogonalTiledMapRenderer renderer;
+    private final AtomicBoolean renderDebug;
+    private final ShapeRenderer debugRenderer;
 
     @Getter
     @Setter
     private boolean lerpCamera = false;
 
-    public WorldRenderer(LevelData levelData) {
+    public WorldRenderer(LevelData levelData, AtomicBoolean renderDebug) {
         spriteBatch = new SpriteBatch();
         backgroundSpriteBatch = new SpriteBatch();
         hudSpriteBatch = new SpriteBatch();
@@ -51,6 +52,8 @@ public class WorldRenderer implements Disposable {
         font = new BitmapFont();
         font.getData().setScale(2);
         renderer = new OrthogonalTiledMapRenderer(levelData.getTerrain(), 1);
+        this.renderDebug = renderDebug;
+        debugRenderer = new ShapeRenderer();
     }
 
     public void render(float delta, LevelData levelData) {
@@ -68,9 +71,27 @@ public class WorldRenderer implements Disposable {
         for (DrawableEntity entity : levelData.getAllDrawEntities()) {
             entity.render(spriteBatch);
         }
-
         spriteBatch.end();
+
+        if(renderDebug.get()){
+            renderDebug(levelData);
+        }
+
         fpsLogger.log();
+    }
+
+    private void renderDebug (LevelData levelData) {
+        debugRenderer.setProjectionMatrix(camera.combined);
+        debugRenderer.begin(ShapeRenderer.ShapeType.Line);
+
+        debugRenderer.setColor(Color.RED);
+        Rectangle bear = levelData.getBear().getPosition();
+        debugRenderer.rect(bear.x, bear.y, bear.width, bear.height);
+        Rectangle cat = levelData.getCat().getPosition();
+        debugRenderer.setColor(Color.BLUE);
+        debugRenderer.rect(cat.x, cat.y, cat.width, cat.height);
+
+        debugRenderer.end();
     }
 
     public void renderScore(LevelData levelData) {

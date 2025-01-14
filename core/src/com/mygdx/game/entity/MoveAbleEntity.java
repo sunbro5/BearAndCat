@@ -1,7 +1,6 @@
 package com.mygdx.game.entity;
 
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.behavior.BehaviorHandler;
@@ -40,7 +39,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
 
     @Getter
     @Setter
-    protected boolean wasPushed = false;
+    protected boolean wasForceMoved = false;
     protected int maxFallSpeed = 50;
     @Getter
     protected final Map<BehaviorType, EntityBehavior> states = new HashMap<>();
@@ -65,17 +64,25 @@ public abstract class MoveAbleEntity implements DrawableEntity {
 
     @Override
     public void update(float delta, WorldPhysics worldPhysics) {
-        effectOfGravity(worldPhysics.getLastDelta());
+        if (wasForceMoved) {
+            return;
+        }
+        effectOfGravity(delta);
         this.velocity = move(this.velocity, worldPhysics);
-        this.velocity = BehaviorHandler.handleBehavior(states, this, worldPhysics);
         setFinalPosition();
         this.velocity.x = 0;
     }
 
+    public void afterUpdate(){
+        wasForceMoved = false;
+    }
+
     public Vector2 forceMove(Vector2 velocity, WorldPhysics worldPhysics) {
-        Vector2 velocityBefore = this.velocity;
+        this.wasForceMoved = true;
+        Vector2 velocityBefore = new Vector2(this.velocity);
         Vector2 resultVelocity = move(velocity, worldPhysics);
         setFinalPosition();
+        velocityBefore.y = 0;
         this.velocity = velocityBefore;
         return resultVelocity;
     }
@@ -89,7 +96,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
 
         List<WorldPhysics.EntityCollision> entityCollisions = worldPhysics.entitiesCollisionCheck(this);
         this.velocity = CollisionHandler.handleCollision(this, entityCollisions, possibleCollisionStrategies, worldPhysics);
-
+        this.velocity = BehaviorHandler.handleBehavior(states, this, worldPhysics);
         return this.velocity;
     }
 
@@ -97,6 +104,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         if (this.velocity.y == 0 && this.velocity.x == 0) {
             return;
         }
+        Gdx.app.debug("","Velocity " +this.getClass().getName() + " = " + velocity);
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
     }
@@ -112,7 +120,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
     @Override
     public String toString() {
         return "MoveAbleEntity{" + this.getClass().getName() +
-                ", states=" + states +
+                //", states=" + states +
                 ", position=" + position +
                 '}';
     }

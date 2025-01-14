@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class IsOnTop implements EntityBehavior {
 
-    private final float OFFSET_CHECK = -4f;
+    private final float OFFSET_CHECK = -1f;
 
     private final MoveAbleEntity entity;
 
@@ -23,9 +23,11 @@ public class IsOnTop implements EntityBehavior {
 
     @Override
     public BehaviorResult update(MoveAbleEntity moveAbleEntity, WorldPhysics worldPhysics) {
+        Rectangle haveOnTopPosition = new Rectangle(entity.getPosition().x, entity.getPosition().y + OFFSET_CHECK, entity.getPosition().width, entity.getPosition().height);
         Rectangle checkPosition = new Rectangle(moveAbleEntity.getPosition());
         checkPosition.y += Math.min(entity.getVelocity().y + OFFSET_CHECK, OFFSET_CHECK);
-        if (entity.getPosition().overlaps(moveAbleEntity.getPosition()) || !entity.getPosition().overlaps(checkPosition)) {
+        WorldPhysics.VerticalDirection direction = WorldPhysics.VerticalDirection.of(moveAbleEntity.getVelocity().y);
+        if (direction == WorldPhysics.VerticalDirection.UP || haveOnTopPosition.overlaps(moveAbleEntity.getPosition()) || !entity.getPosition().overlaps(checkPosition)) {
             Gdx.app.log("", "Not on top");
             return new BehaviorResult(moveAbleEntity.getVelocity(), true);
         }

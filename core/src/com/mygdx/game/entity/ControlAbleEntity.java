@@ -17,7 +17,7 @@ import lombok.Setter;
 
 public abstract class ControlAbleEntity extends MoveAbleEntity {
 
-    private static final int CAMERA_OFFSET = 20;
+    private static final int CAMERA_OFFSET = 30;
     protected Animation<TextureRegion> idleAnimation;
     protected Animation<TextureRegion> standAnimation;
     protected Animation<TextureRegion> walkAnimation;

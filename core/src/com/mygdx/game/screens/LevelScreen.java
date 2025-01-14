@@ -15,6 +15,8 @@ import com.mygdx.game.physics.collision.CollisionHandler;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.renderer.WorldRenderer;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class LevelScreen implements Screen {
 
     private final MyGdxGame game;
@@ -23,14 +25,13 @@ public class LevelScreen implements Screen {
     private final LevelData levelData;
 
     private float secondInit = 0;
+    private AtomicBoolean renderDebug = new AtomicBoolean(false);
 
     public LevelScreen(MyGdxGame game, LevelData levelData) {
         this.game = game;
         this.worldPhysics = new WorldPhysics(levelData);
-        this.worldRenderer = new WorldRenderer(levelData);
+        this.worldRenderer = new WorldRenderer(levelData, renderDebug);
         this.levelData = levelData;
-
-        TiledMap map = new TmxMapLoader().load("level1.tmx");
     }
 
     @Override
@@ -47,8 +48,12 @@ public class LevelScreen implements Screen {
         for (DrawableEntity entity : levelData.getAllDrawEntities()) {
             entity.update(delta, worldPhysics);
         }
-        if (secondInit > 0.5f) {
-            worldRenderer.getCameraPosition().lerp(levelData.getControlEntity().getCameraPositionVector(), 2f * delta);
+        for (DrawableEntity entity : levelData.getAllDrawEntities()) {
+            entity.afterUpdate();
+        }
+
+        if (secondInit > 0.5f) { 
+            worldRenderer.getCameraPosition().lerp(levelData.getControlEntity().getCameraPositionVector(), 10f * delta);
         } else {
             secondInit += delta;
         }
@@ -78,6 +83,7 @@ public class LevelScreen implements Screen {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             levelData.getControlEntity().jump();
+
         }
         if (Gdx.input.isKeyPressed(Input.Keys.R)) {
             this.game.setScreen(new MainMenuScreen(game));
@@ -85,16 +91,20 @@ public class LevelScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT)) {
             switchControlEntity();
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.F)) {
             printEntities();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+            renderDebug.set(!renderDebug.get());
         }
     }
 
     private void printEntities() {
-        for (MoveAbleEntity entity : levelData.getMoveAbleEntities()) {
-            Gdx.app.log("", entity.toString());
-        }
-        Gdx.app.log("", levelData.getControlEntity().toString());
+//        for (MoveAbleEntity entity : levelData.getC()) {
+//            Gdx.app.log("", entity.toString());
+//        }
+        Gdx.app.log("", "Cat " + levelData.getCat().getPosition().y);
+        Gdx.app.log("", "Bear " + (levelData.getBear().getPosition().y + levelData.getBear().getPosition().height));
     }
 
     public void switchControlEntity() {

@@ -57,7 +57,7 @@ public class Bear extends ControlAbleEntity {
 
     @Override
     public float getJumpVelocity() {
-        return 6;
+        return 1.6f;
     }
 
     @Override

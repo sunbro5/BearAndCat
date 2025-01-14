@@ -21,7 +21,7 @@ import lombok.Value;
 
 public class WorldPhysics {
 
-    public static final int GRAVITY = 25;
+    public static final int GRAVITY = 1; //25;
     private static final int COLLISION_DEPTH_CHECK = 1;
     private static final float POSITION_OFFSET = 0.1f;
     private final Rectangle[][] walls;
@@ -36,8 +36,8 @@ public class WorldPhysics {
     public WorldPhysics(LevelData levelData) {
         this.levelData = levelData;
         TiledMapTileLayer wallLayer = (TiledMapTileLayer) levelData.getTerrain().getLayers().get(WALL_LAYER);
-        terrainPositionWidth = wallLayer.getWidth() * wallLayer.getTileWidth();
-        terrainPositionHeight = wallLayer.getHeight() * wallLayer.getTileHeight();
+        terrainPositionWidth = wallLayer.getWidth();
+        terrainPositionHeight = wallLayer.getHeight();
         walls = levelData.getWalls();
     }
 
@@ -180,9 +180,9 @@ public class WorldPhysics {
         int toYOffset = direction == Direction.DOWN ? 0 : TILE_SIZE * COLLISION_DEPTH_CHECK;
 
         int fromTilesX = Math.max((leftX - fromXOffset) / TILE_SIZE, 0);
-        int toTilesX = Math.min((rightX + toXOffset) / TILE_SIZE, terrainPositionWidth);
+        int toTilesX = Math.min((rightX + toXOffset) / TILE_SIZE, terrainPositionWidth - 1);
         int fromTilesY = Math.max((bottomY - fromYOffset) / TILE_SIZE, 0);
-        int toTilesY = Math.min((topY + toYOffset) / TILE_SIZE, terrainPositionHeight);
+        int toTilesY = Math.min((topY + toYOffset) / TILE_SIZE, terrainPositionHeight - 1);
 
         for (int tilesY = fromTilesY; tilesY <= toTilesY; tilesY++) {
             for (int tilesX = fromTilesX; tilesX <= toTilesX; tilesX++) {
@@ -203,7 +203,7 @@ public class WorldPhysics {
                             break;
                         case DOWN:
                             rectangle.y = checkedRectangle.y + checkedRectangle.height;
-                            resultVelocity.y = - (position.y - (checkedRectangle.y + checkedRectangle.height));
+                            resultVelocity.y = -(position.y - (checkedRectangle.y + checkedRectangle.height));
                             break;
                     }
                     return true;
