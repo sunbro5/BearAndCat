@@ -3,7 +3,6 @@ package com.mygdx.game.behavior;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.physics.WorldPhysics;
 
@@ -12,7 +11,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class IsOnTop implements EntityBehavior {
 
-    private final float OFFSET_CHECK = -1f;
+    private final float CHECK_OFFSET = -4f;
+    private final float POSITION_OFFSET = 1f;
 
     private final MoveAbleEntity entity;
 
@@ -23,12 +23,25 @@ public class IsOnTop implements EntityBehavior {
 
     @Override
     public BehaviorResult update(MoveAbleEntity moveAbleEntity, WorldPhysics worldPhysics) {
-        Rectangle haveOnTopPosition = new Rectangle(entity.getPosition().x, entity.getPosition().y + OFFSET_CHECK, entity.getPosition().width, entity.getPosition().height);
-        Rectangle checkPosition = new Rectangle(moveAbleEntity.getPosition());
-        checkPosition.y += Math.min(entity.getVelocity().y + OFFSET_CHECK, OFFSET_CHECK);
-        WorldPhysics.VerticalDirection direction = WorldPhysics.VerticalDirection.of(moveAbleEntity.getVelocity().y);
-        if (direction == WorldPhysics.VerticalDirection.UP || haveOnTopPosition.overlaps(moveAbleEntity.getPosition()) || !entity.getPosition().overlaps(checkPosition)) {
+        Rectangle position = new Rectangle(
+                moveAbleEntity.getPosition().x,
+                moveAbleEntity.getPosition().y + POSITION_OFFSET,
+                moveAbleEntity.getPosition().width,
+                moveAbleEntity.getPosition().height);
+        Rectangle checkHaveOnTopPosition = new Rectangle(
+                entity.getPosition().x + entity.getVelocity().x,
+                entity.getPosition().y + entity.getVelocity().y,
+                entity.getPosition().width,
+                entity.getPosition().height);
+        Rectangle checkPosition = new Rectangle(
+                moveAbleEntity.getPosition().x + moveAbleEntity.getVelocity().x,
+                moveAbleEntity.getPosition().y + moveAbleEntity.getVelocity().y + CHECK_OFFSET,
+                moveAbleEntity.getPosition().width,
+                moveAbleEntity.getPosition().height);
+
+        if (!checkHaveOnTopPosition.overlaps(checkPosition)|| WorldPhysics.overlapsWith2Precision(entity.getPosition(), position)) {
             Gdx.app.log("", "Not on top");
+            WorldPhysics.overlapsWith2Precision(entity.getPosition(), moveAbleEntity.getPosition());
             return new BehaviorResult(moveAbleEntity.getVelocity(), true);
         }
         Vector2 velocity = new Vector2(moveAbleEntity.getVelocity());

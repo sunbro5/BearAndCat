@@ -23,9 +23,6 @@ public class HaveOnTop implements EntityBehavior {
             return new BehaviorResult(moveAbleEntity.getVelocity(), true);
         }
         WorldPhysics.VerticalDirection verticalDirection = WorldPhysics.VerticalDirection.of(moveAbleEntity.getVelocity().y);
-//        if (verticalDirection == WorldPhysics.VerticalDirection.DOWN) {
-//            return new BehaviorResult(moveAbleEntity.getVelocity(), false);
-//        }
         Vector2 forceVelocity = new Vector2(moveAbleEntity.getVelocity());
         Vector2 forceMoveVelocity = entity.forceMove(forceVelocity, worldPhysics);
         Vector2 resultVelocity = new Vector2(moveAbleEntity.getVelocity());

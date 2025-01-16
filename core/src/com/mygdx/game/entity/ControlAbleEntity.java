@@ -93,6 +93,17 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         super.update(delta, worldPhysics);
     }
 
+    @Override
+    public Vector2 forceMove(Vector2 velocity, WorldPhysics worldPhysics) {
+        WorldPhysics.HorizontalDirection direction = WorldPhysics.HorizontalDirection.of(velocity.x);
+        if(direction == WorldPhysics.HorizontalDirection.LEFT){
+            this.direction = Direction.LEFT;
+        } else if (direction == WorldPhysics.HorizontalDirection.RIGHT){
+            this.direction = Direction.RIGHT;
+        }
+        return super.forceMove(velocity, worldPhysics);
+    }
+
     public void render(SpriteBatch spriteBatch) {
         float x = position.x + drawRectangle.x;
         float y = position.y + drawRectangle.y;

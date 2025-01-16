@@ -38,7 +38,6 @@ public class LevelScreen implements Screen {
     public void show() {
 
     }
-
     @Override
     public void render(float delta) {
         //update

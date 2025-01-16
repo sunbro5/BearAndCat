@@ -18,7 +18,7 @@ import java.util.Set;
 public class Bear extends ControlAbleEntity {
 
     public Bear(float x, float y, Texture texture) {
-        super(new Rectangle(x, y, 50, 20), new Rectangle(0, 0, 0, 0));
+        super(new Rectangle(x, y, 40, 14), new Rectangle(-6, 0, 7, 11));
 
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 10, texture.getHeight() / 8);
         TextureUtils.cropTextures(tmp, 3, 5,15 ,1);
@@ -57,7 +57,7 @@ public class Bear extends ControlAbleEntity {
 
     @Override
     public float getJumpVelocity() {
-        return 1.6f;
+        return 6f;
     }
 
     @Override

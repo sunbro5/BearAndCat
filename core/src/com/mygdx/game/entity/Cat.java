@@ -18,7 +18,7 @@ import java.util.Set;
 public class Cat extends ControlAbleEntity {
 
     public Cat(float x, float y, Texture texture) {
-        super(new Rectangle(x, y, 20, 10), new Rectangle(0, 0, 0, 0));
+        super(new Rectangle(x, y, 24, 10), new Rectangle(-2, 0, 2, 0));
 
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 10, texture.getHeight() / 3);
         TextureUtils.cropTextures(tmp, 14, 13,17 ,18);
@@ -59,7 +59,7 @@ public class Cat extends ControlAbleEntity {
 
     @Override
     public float getJumpVelocity() {
-        return 1.7f;
+        return 7f;
     }
 
     @Override

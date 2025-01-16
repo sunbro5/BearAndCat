@@ -10,8 +10,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.entity.PickAbleEntity;
 import com.mygdx.game.level.LevelData;
-import com.mygdx.game.level.LevelLoader;
-import com.mygdx.game.map.TilesetType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +19,7 @@ import lombok.Value;
 
 public class WorldPhysics {
 
-    public static final int GRAVITY = 1; //25;
+    public static final int GRAVITY = 25;
     private static final int COLLISION_DEPTH_CHECK = 1;
     private static final float POSITION_OFFSET = 0.1f;
     private final Rectangle[][] walls;
@@ -92,7 +90,6 @@ public class WorldPhysics {
         for (MoveAbleEntity entity : collisionEntities) {
             if (!entity.equals(entityToMove)) { //NOT itself
                 if (moveTo.overlaps(entity.getPosition()) && !entityToMove.getPosition().overlaps(entity.getPosition())) {
-                    //System.out.println("HIT");
                     VerticalDirection verticalDirection = getHorizontalCollision(entityToMove.getPosition(), entity.getPosition(), VerticalDirection.of(entityToMove.getVelocity().y));
                     HorizontalDirection horizontalDirection = getVerticalCollision(entityToMove.getPosition(), entity.getPosition(), HorizontalDirection.of(entityToMove.getVelocity().x));
 
@@ -211,6 +208,21 @@ public class WorldPhysics {
             }
         }
         return false;
+    }
+
+    public static boolean overlapsWith2Precision(Rectangle rectangle1, Rectangle rectangle2){
+        Rectangle rectangle1Precision = rectangleTo2Precision(rectangle1);
+        Rectangle rectangle2Precision = rectangleTo2Precision(rectangle2);
+        return rectangle1Precision.overlaps(rectangle2Precision);
+    }
+
+    public static Rectangle rectangleTo2Precision(Rectangle rectangle){
+        return new Rectangle(
+                Math.round(rectangle.x * 100f) / 100f,
+                Math.round(rectangle.y * 100f) / 100f,
+                rectangle.width,
+                rectangle.height
+                );
     }
 
     @Value

@@ -79,11 +79,10 @@ public abstract class MoveAbleEntity implements DrawableEntity {
 
     public Vector2 forceMove(Vector2 velocity, WorldPhysics worldPhysics) {
         this.wasForceMoved = true;
-        Vector2 velocityBefore = new Vector2(this.velocity);
-        Vector2 resultVelocity = move(velocity, worldPhysics);
+        Vector2 resultVelocity = new Vector2(move(velocity, worldPhysics));
         setFinalPosition();
-        velocityBefore.y = 0;
-        this.velocity = velocityBefore;
+        this.velocity.y = 0;
+        this.velocity.x = 0;
         return resultVelocity;
     }
 
@@ -104,7 +103,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         if (this.velocity.y == 0 && this.velocity.x == 0) {
             return;
         }
-        Gdx.app.debug("","Velocity " +this.getClass().getName() + " = " + velocity);
+        Gdx.app.log("","Velocity " +this.getClass().getName() + " = " + velocity + " position:" + position);
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
     }
@@ -113,7 +112,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         if (velocity.y > maxFallSpeed) {
             return;
         }
-        float deltaGravity = (WorldPhysics.GRAVITY * delta);
+        float deltaGravity = Math.round(WorldPhysics.GRAVITY * delta * 100f) / 100f;
         velocity.y -= deltaGravity;
     }
 
