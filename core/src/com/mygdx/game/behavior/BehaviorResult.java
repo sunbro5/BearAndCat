@@ -7,5 +7,4 @@ import lombok.Value;
 @Value
 public class BehaviorResult {
     Vector2 velocity;
-    boolean remove;
 }

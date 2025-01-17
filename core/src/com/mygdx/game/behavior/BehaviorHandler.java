@@ -13,16 +13,9 @@ public class BehaviorHandler {
 
     public static Vector2 handleBehavior(Map<BehaviorType, EntityBehavior> states, MoveAbleEntity moveAbleEntity, WorldPhysics worldPhysics) {
         Vector2 resultVelocity = new Vector2(moveAbleEntity.getVelocity());
-        Set<BehaviorType> behaviorTypesToRemove = new HashSet<>();
-        for (Map.Entry<BehaviorType, EntityBehavior> state : states.entrySet()) {
+        for (Map.Entry<BehaviorType, EntityBehavior> state : new HashSet<>(states.entrySet())) {
             BehaviorResult result = state.getValue().update(moveAbleEntity, worldPhysics);
-            if (result.isRemove()) {
-                behaviorTypesToRemove.add(state.getKey());
-            }
             CollisionHandler.setSmallerValueToVelocity(resultVelocity, result.getVelocity());
-        }
-        for (BehaviorType type : behaviorTypesToRemove) {
-            states.remove(type);
         }
         return resultVelocity;
     }

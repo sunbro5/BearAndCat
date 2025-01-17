@@ -47,10 +47,11 @@ public class WorldRenderer implements Disposable {
         camera.position.x = levelData.getEndRectangle().x;
         camera.position.y = levelData.getEndRectangle().y;
         backGroundCamera = new OrthographicCamera();
-        backGroundCamera.setToOrtho(false, 1000, 500);
+        backGroundCamera.setToOrtho(false, 2000, 1000);
         fpsLogger = new FPSLogger();
         font = new BitmapFont();
-        font.getData().setScale(2);
+
+        font.getData().setScale(4);
         renderer = new OrthogonalTiledMapRenderer(levelData.getTerrain(), 1);
         this.renderDebug = renderDebug;
         debugRenderer = new ShapeRenderer();
@@ -90,6 +91,9 @@ public class WorldRenderer implements Disposable {
         Rectangle cat = levelData.getCat().getPosition();
         debugRenderer.setColor(Color.BLUE);
         debugRenderer.rect(cat.x, cat.y, cat.width, cat.height);
+        Rectangle end = levelData.getEndRectangle();
+        debugRenderer.setColor(Color.YELLOW);
+        debugRenderer.rect(end.x, end.y, end.width, end.height);
 
         debugRenderer.end();
     }
@@ -97,7 +101,7 @@ public class WorldRenderer implements Disposable {
     public void renderScore(LevelData levelData) {
         hudSpriteBatch.setProjectionMatrix(backGroundCamera.combined);
         hudSpriteBatch.begin();
-        font.draw(hudSpriteBatch, "Stars: " + levelData.getScore() + " / " + levelData.getStarsCount(), 50, 450, 50, Align.left, false);
+        font.draw(hudSpriteBatch, "Stars: " + levelData.getScore() + " / " + levelData.getStarsCount(), 50, 900, 100, Align.left, false);
         hudSpriteBatch.end();
     }
 
@@ -110,8 +114,8 @@ public class WorldRenderer implements Disposable {
         int backGroundOffset = (int) (camera.position.x / 100);
         int frontBackGroundOffset = (int) (camera.position.x / 25);
         backgroundSpriteBatch.begin();
-        backgroundSpriteBatch.draw(levelData.getBackGround(), 0, 0, 0, 0, 1000, 500, 1, 1, 0, backGroundOffset, 0, 500, 200, false, false);
-        backgroundSpriteBatch.draw(levelData.getFrontBackGround(), 0, 0, 0, 0, 1000, 500, 1, 1, 0, frontBackGroundOffset, 0, 500, 200, false, false);
+        backgroundSpriteBatch.draw(levelData.getBackGround(), 0, 0, 0, 0, 2000, 1000, 1, 1, 0, backGroundOffset, 0, 500, 200, false, false);
+        backgroundSpriteBatch.draw(levelData.getFrontBackGround(), 0, 0, 0, 0, 2000, 1000, 1, 1, 0, frontBackGroundOffset, 0, 500, 200, false, false);
         backgroundSpriteBatch.end();
     }
 

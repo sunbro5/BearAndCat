@@ -102,9 +102,9 @@ public class WorldPhysics {
                     }
 
                     if (horizontalDirection == HorizontalDirection.LEFT) {
-                        velocityToCollision.x = -(entityToMove.getPosition().x - (entity.getPosition().x + entity.getPosition().width)) + 2;
+                        velocityToCollision.x = -(entityToMove.getPosition().x - (entity.getPosition().x + entity.getPosition().width));
                     } else if (horizontalDirection == HorizontalDirection.RIGHT) {
-                        velocityToCollision.x = entity.getPosition().x - (entityToMove.getPosition().x + entityToMove.getPosition().width) - 2;
+                        velocityToCollision.x = entity.getPosition().x - (entityToMove.getPosition().x + entityToMove.getPosition().width);
                     }
                     collisions.add(new EntityCollision(entity, velocityToCollision, verticalDirection, horizontalDirection));
                 }

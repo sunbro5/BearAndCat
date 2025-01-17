@@ -21,6 +21,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
     protected Animation<TextureRegion> idleAnimation;
     protected Animation<TextureRegion> standAnimation;
     protected Animation<TextureRegion> walkAnimation;
+    protected Animation<TextureRegion> stuckAnimation;
     private TextureRegion currentFrame;
     private float stateTime;
 

@@ -62,6 +62,14 @@ public abstract class MoveAbleEntity implements DrawableEntity {
 
     public abstract boolean canBePush();
 
+    public int getStrength(){
+        return 0;
+    }
+
+    public int getWeight(){
+        return 0;
+    }
+
     @Override
     public void update(float delta, WorldPhysics worldPhysics) {
         if (wasForceMoved) {

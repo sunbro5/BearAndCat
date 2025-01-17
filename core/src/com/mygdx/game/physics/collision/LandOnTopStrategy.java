@@ -14,7 +14,7 @@ public class LandOnTopStrategy implements CollisionStrategy {
 
     @Override
     public boolean apply(MoveAbleEntity entity, WorldPhysics.EntityCollision collision) {
-        return (entity instanceof ControlAbleEntity || (entity instanceof Box && collision.getMoveAbleEntity() instanceof Box) ) &&
+        return !(entity instanceof Box && collision.getMoveAbleEntity() instanceof ControlAbleEntity) &&
                 collision.getVerticalDirection() == WorldPhysics.VerticalDirection.DOWN &&
                 collision.getMoveAbleEntity().canBeOnTop() &&
                 entity.getPossibleStates().contains(BehaviorType.IS_ON_TOP) &&

@@ -18,6 +18,7 @@ import com.mygdx.game.entity.Bear;
 import com.mygdx.game.entity.Box;
 import com.mygdx.game.entity.Cat;
 import com.mygdx.game.entity.ControlAbleEntity;
+import com.mygdx.game.entity.IronBox;
 import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.entity.PickAbleEntity;
 import com.mygdx.game.entity.Star;
@@ -72,9 +73,19 @@ public class LevelLoader {
         Rectangle[][] wallTileset = getTileCells(walls);
         TiledMapTileLayer terrainEntities = (TiledMapTileLayer) map.getLayers().get("terrainEntities");
         terrainEntities.setVisible(false);
-        List<Rectangle> boxes = getTileCellsByType(terrainEntities).get("box");
+        Map<String, List<Rectangle>> terrainEntitiesByType = getTileCellsByType(terrainEntities);
+        List<Rectangle> boxes = terrainEntitiesByType.get("box");
         for (Rectangle box: boxes) {
             moveAbleEntities.add(new Box(box, assetsLoader.getTexture(AssetsLoader.TextureType.BOX_2)));
+        }
+        List<Rectangle> ironBoxes = terrainEntitiesByType.get("ironbox");
+        for (Rectangle ironBox: ironBoxes) {
+            moveAbleEntities.add(new IronBox(ironBox, assetsLoader.getTexture(AssetsLoader.TextureType.BOX_3)));
+        }
+
+        List<Rectangle> stars = terrainEntitiesByType.get("star");
+        for (Rectangle star: stars) {
+            pickAbleEntities.add(new Star(star, assetsLoader.getTexture(AssetsLoader.TextureType.STAR)));
         }
 
         MapLayer entities = map.getLayers().get("entities");
@@ -86,64 +97,7 @@ public class LevelLoader {
         ControlAbleEntity cat = new Cat(catRectangle.x, catRectangle.y, assetsLoader.getTexture(AssetsLoader.TextureType.CAT));
         ControlAbleEntity bear = new Bear(bearRectangle.x, bearRectangle.y, assetsLoader.getTexture(AssetsLoader.TextureType.BEAR_1));
         bear.setHaveControl(true);
-
-
-        //walls.getCell()
-//        SpriteCache cache = new SpriteCache(mapTiles.length * mapTiles[0].length, false);
-//        int[][] cacheBlocks = new int[(int) Math.ceil(mapTiles.length / ((float) (CACHE_SIZE)))][(int) Math.ceil(mapTiles[0].length / ((float) (CACHE_SIZE)))];
-//        ControlAbleEntity bear = null;
-//        ControlAbleEntity cat = null;
-//        List<MoveAbleEntity> moveAbleEntities = new ArrayList<>();
-//        List<PickAbleEntity> pickAbleEntities = new ArrayList<>();
-//        Rectangle endRectangle = null;
-
-//
-//        for (int blockY = 0; blockY < cacheBlocks[0].length; blockY++) {
-//            for (int blockX = 0; blockX < cacheBlocks.length; blockX++) {
-//                cache.beginCache();
-//                for (int y = blockY * CACHE_SIZE; y < blockY * CACHE_SIZE + CACHE_SIZE; y++) {
-//                    for (int x = blockX * CACHE_SIZE; x < blockX * CACHE_SIZE + CACHE_SIZE; x++) {
-//                        int screenPosX = x * TILE_SIZE;
-//                        int screenPosY = y * TILE_SIZE;
-//                        TilesetType type = TilesetType.typeByColor(mapTiles[x][y]);
-//                        if (type == null) {
-//                            continue;
-//                        }
-//                        TextureRegion textureRegion = mapTextures.get(type);
-//                        switch (type) {
-//                            case BOX: {
-//                                //moveAbleEntities.add(new Box(screenPosX, screenPosY, textureRegion));
-//                                moveAbleEntities.add(new Box(screenPosX, screenPosY, assetsLoader.getTexture(AssetsLoader.TextureType.BOX_3)));
-//                                break;
-//                            }
-//                            case STAR: {
-//                                pickAbleEntities.add(new Star(screenPosX, screenPosY, assetsLoader.getTexture(AssetsLoader.TextureType.STAR)));
-//                                break;
-//                            }
-//                            case BEAR_AND_CAT: {
-//                                cat = new Cat(screenPosX + TILE_SIZE, screenPosY + 40, assetsLoader.getTexture(AssetsLoader.TextureType.CAT));
-//                                bear = new Bear(screenPosX + TILE_SIZE, screenPosY, assetsLoader.getTexture(AssetsLoader.TextureType.BEAR_1));
-////                                bear.setHaveOnTop(cat); TODO
-////                                cat.setIsOnTopOf(EntityType.BEAR);
-//                                break;
-//                            }
-//                            case END_3: { // bottom left
-//                                endRectangle = new Rectangle(screenPosX, screenPosY, TILE_SIZE * 2, TILE_SIZE * 2);
-//                                cache.add(textureRegion, screenPosX, screenPosY, TILE_SIZE, TILE_SIZE);
-//                            }
-//                            default: {
-//                                Rectangle tile = calculateTile(type, screenPosX, screenPosY);
-//                                //textureRegion = TextureUtils.cropTileSet(textureRegion, (int) tile.width, (int) tile.height);
-//                                cache.add(textureRegion, tile.x, tile.y, tile.width, tile.height);
-//                            }
-//                        }
-//                    }
-//                }
-//                cacheBlocks[blockX][blockY] = cache.endCache();
-//            }
-//        }
         return new LevelData(bear, cat, bear, moveAbleEntities, pickAbleEntities, endRectangle, wallTileset, map, backGround, frontBackGround,0, pickAbleEntities.size());
-        //return null;
     }
 
     private Map<String, List<Rectangle>> getTileCellsByType(MapLayer layer) {

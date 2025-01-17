@@ -66,4 +66,9 @@ public class Cat extends ControlAbleEntity {
     public float getMoveVelocity() {
         return 1.5f;
     }
+
+    @Override
+    public int getStrength() {
+        return 60;
+    }
 }

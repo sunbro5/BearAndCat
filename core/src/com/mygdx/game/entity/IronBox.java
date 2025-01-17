@@ -14,10 +14,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Box extends MoveAbleEntity {
+public class IronBox extends MoveAbleEntity {
     private final Texture texture;
 
-    public Box(Rectangle rectangle, Texture texture) {
+    public IronBox(Rectangle rectangle, Texture texture) {
         super(rectangle, rectangle);
         this.texture = texture;
     }
@@ -63,6 +63,6 @@ public class Box extends MoveAbleEntity {
 
     @Override
     public int getWeight() {
-        return 50;
+        return 100;
     }
 }

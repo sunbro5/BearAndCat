@@ -30,7 +30,7 @@ public class WallPush implements EntityBehavior {
         } else {
             forcePushCount = 0;
         }
-        return new BehaviorResult(moveAbleEntity.getVelocity(), false);
+        return new BehaviorResult(moveAbleEntity.getVelocity());
     }
 
     @Override
@@ -39,6 +39,7 @@ public class WallPush implements EntityBehavior {
         forcePushCount++; // TODO DELTA ?
 
         if (forcePushCount > 20) {
+            moveAbleEntity.getStates().remove(getType());
             WorldPhysics.swapEntities(entity, moveAbleEntity);
         }
     }

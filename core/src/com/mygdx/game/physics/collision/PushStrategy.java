@@ -15,6 +15,9 @@ public class PushStrategy implements CollisionStrategy {
 
     @Override
     public CollisionHandlerResult handle(MoveAbleEntity entity, WorldPhysics.EntityCollision collision, WorldPhysics worldPhysics) {
+        if (entity.getStrength() < collision.getMoveAbleEntity().getWeight()) {
+            return new CollisionHandlerResult(new Vector2(collision.getVelocityToCollision().x, entity.getVelocity().y));
+        }
         Vector2 velocity = new Vector2(entity.getVelocity().x, 0);
         float velocityOffset = collision.getVelocityToCollision().x;
         velocity.x -= velocityOffset;

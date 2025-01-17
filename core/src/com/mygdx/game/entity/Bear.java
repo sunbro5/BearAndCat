@@ -18,7 +18,7 @@ import java.util.Set;
 public class Bear extends ControlAbleEntity {
 
     public Bear(float x, float y, Texture texture) {
-        super(new Rectangle(x, y, 40, 14), new Rectangle(-6, 0, 7, 11));
+        super(new Rectangle(x, y, 45, 17), new Rectangle(-4, 0, 6, 12));
 
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 10, texture.getHeight() / 8);
         TextureUtils.cropTextures(tmp, 3, 5,15 ,1);
@@ -27,6 +27,7 @@ public class Bear extends ControlAbleEntity {
         walkAnimation = new Animation<>(1f / ((float) walkFrames.length), walkFrames);
         TextureRegion[] standFrames = new TextureRegion[]{tmp[0][0], tmp[0][0], tmp[0][1], tmp[0][1], tmp[0][2], tmp[0][2], tmp[0][3], tmp[0][3]};
         standAnimation = new Animation<>(1f / ((float) standFrames.length), standFrames);
+
     }
 
     @Override
@@ -63,5 +64,10 @@ public class Bear extends ControlAbleEntity {
     @Override
     public float getMoveVelocity() {
         return 2.5f;
+    }
+
+    @Override
+    public int getStrength() {
+        return 200;
     }
 }

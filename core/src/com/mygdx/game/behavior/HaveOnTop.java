@@ -20,7 +20,8 @@ public class HaveOnTop implements EntityBehavior {
     @Override
     public BehaviorResult update(MoveAbleEntity moveAbleEntity, WorldPhysics worldPhysics) {
         if (!entity.getStates().containsKey(BehaviorType.IS_ON_TOP)) {
-            return new BehaviorResult(moveAbleEntity.getVelocity(), true);
+            moveAbleEntity.getStates().remove(getType());
+            return new BehaviorResult(moveAbleEntity.getVelocity());
         }
         WorldPhysics.VerticalDirection verticalDirection = WorldPhysics.VerticalDirection.of(moveAbleEntity.getVelocity().y);
         Vector2 forceVelocity = new Vector2(moveAbleEntity.getVelocity());
@@ -29,7 +30,7 @@ public class HaveOnTop implements EntityBehavior {
         if(verticalDirection == WorldPhysics.VerticalDirection.UP) {
             resultVelocity.y = forceMoveVelocity.y;
         }
-        return new BehaviorResult(resultVelocity, false);
+        return new BehaviorResult(resultVelocity);
     }
 
     @Override

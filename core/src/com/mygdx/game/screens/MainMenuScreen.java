@@ -25,7 +25,7 @@ public class MainMenuScreen implements Screen {
         font = new BitmapFont();
         camera = new OrthographicCamera();
         spriteBatch = new SpriteBatch();
-        camera.setToOrtho(false, 1000, 500);
+        camera.setToOrtho(false, 2000, 1000);
         backGround = game.getAssetsLoader().getTexture(AssetsLoader.TextureType.BACKGROUND);
     }
 
@@ -42,13 +42,13 @@ public class MainMenuScreen implements Screen {
         spriteBatch.setProjectionMatrix(camera.combined);
 
         spriteBatch.begin();
-        spriteBatch.draw(backGround, 0, 0, 1000, 500);
+        spriteBatch.draw(backGround, 0, 0, 2000, 1000);
+        font.getData().setScale(8);
+        font.draw(spriteBatch, "Bearo and Kitto", 800, 900, 400, Align.center, false);
+        font.getData().setScale(6);
+        font.draw(spriteBatch, "Pres anything to play!", 800, 400, 400, Align.center, false);
         font.getData().setScale(4);
-        font.draw(spriteBatch, "Bearo and Kitto", 400, 450, 200, Align.center, false);
-        font.getData().setScale(3);
-        font.draw(spriteBatch, "Pres anything to play!", 400, 200, 200, Align.center, false);
-        font.getData().setScale(2);
-        font.draw(spriteBatch, "Move: Arrows, Jump: Space, Change character: Alt, Restart: R", 100, 50, 800, Align.center, false);
+        font.draw(spriteBatch, "Move: Arrows, Jump: Space, Change character: Alt, Restart: R", 200, 100, 1600, Align.center, false);
         spriteBatch.end();
 
         if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
