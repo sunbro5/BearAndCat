@@ -18,10 +18,10 @@ public class PushStrategy implements CollisionStrategy {
         if (entity.getStrength() < collision.getMoveAbleEntity().getWeight()) {
             return new CollisionHandlerResult(new Vector2(collision.getVelocityToCollision().x, entity.getVelocity().y));
         }
-        Vector2 velocity = new Vector2(entity.getVelocity().x, 0);
+        Vector2 velocity = new Vector2(entity.getVelocity().x, collision.getMoveAbleEntity().getVelocity().y);
         float velocityOffset = collision.getVelocityToCollision().x;
         velocity.x -= velocityOffset;
-        Vector2 resultVelocity = collision.getMoveAbleEntity().forceMove(velocity, worldPhysics);
+        Vector2 resultVelocity = collision.getMoveAbleEntity().forceMove(velocity, worldPhysics, false);
         resultVelocity.x += velocityOffset;
         resultVelocity.y = entity.getVelocity().y;
 

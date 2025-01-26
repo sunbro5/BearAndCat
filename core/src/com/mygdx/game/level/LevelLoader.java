@@ -20,6 +20,7 @@ import com.mygdx.game.entity.Cat;
 import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.entity.IronBox;
 import com.mygdx.game.entity.MoveAbleEntity;
+import com.mygdx.game.entity.Mushroom;
 import com.mygdx.game.entity.PickAbleEntity;
 import com.mygdx.game.entity.Star;
 import com.mygdx.game.map.TilesetType;
@@ -86,6 +87,11 @@ public class LevelLoader {
         List<Rectangle> stars = terrainEntitiesByType.get("star");
         for (Rectangle star: stars) {
             pickAbleEntities.add(new Star(star, assetsLoader.getTexture(AssetsLoader.TextureType.STAR)));
+        }
+
+        List<Rectangle> mushrooms = terrainEntitiesByType.get("mushroom");
+        for (Rectangle mushroom: mushrooms) {
+            pickAbleEntities.add(new Mushroom(mushroom, assetsLoader.getTexture(AssetsLoader.TextureType.MUSHROOM)));
         }
 
         MapLayer entities = map.getLayers().get("entities");

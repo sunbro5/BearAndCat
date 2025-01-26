@@ -26,4 +26,9 @@ public class TreeStuck implements EntityBehavior {
     public void onCollision(MoveAbleEntity moveAbleEntity) {
 
     }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }

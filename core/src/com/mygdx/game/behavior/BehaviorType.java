@@ -4,5 +4,6 @@ public enum BehaviorType {
     HAVE_ON_TOP,
     IS_ON_TOP,
     WALL_PUSH,
-    TREE_STUCK
+    TREE_STUCK,
+    SLEEP,
 }

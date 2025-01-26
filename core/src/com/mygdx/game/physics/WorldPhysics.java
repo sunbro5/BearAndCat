@@ -7,6 +7,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.entity.ControlAbleEntity;
+import com.mygdx.game.entity.DrawableEntity;
 import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.entity.PickAbleEntity;
 import com.mygdx.game.level.LevelData;
@@ -40,8 +42,17 @@ public class WorldPhysics {
     }
 
     public void update(float delta) {
+        if (delta * WorldPhysics.GRAVITY > 5 ) { // accidental gap when resize
+            return;
+        }
         this.lastDelta = delta;
         collisionEntities = getSortedCollisionEntities(levelData);
+        for (DrawableEntity entity : levelData.getAllDrawEntities()) {
+            entity.update(delta, this);
+        }
+        for (DrawableEntity entity : levelData.getAllDrawEntities()) {
+            entity.afterUpdate();
+        }
     }
 
     private List<MoveAbleEntity> getSortedCollisionEntities(LevelData levelData) { //TODO add priority to entities
@@ -133,17 +144,14 @@ public class WorldPhysics {
         return horizontalDirection;
     }
 
-    public void pickAbleEntitiesCheck(Rectangle entityMoved) {
+    public void pickAbleEntitiesCheck(ControlAbleEntity controlAbleEntity) {
         List<PickAbleEntity> pickAbleEntities = levelData.getPickAbleEntities();
-        List<PickAbleEntity> pickAbleToRemove = new ArrayList<>();
-        for (PickAbleEntity pickAbleEntity : pickAbleEntities) {
-            if (entityMoved.overlaps(pickAbleEntity.getPosition())) {
-                levelData.setScore(levelData.getScore() + 1);
-                pickAbleToRemove.add(pickAbleEntity);
+        for (PickAbleEntity pickAbleEntity : new ArrayList<>(pickAbleEntities)) {
+            if (controlAbleEntity.getPosition().overlaps(pickAbleEntity.getPosition())) {
+                pickAbleEntity.onPick(levelData, controlAbleEntity);
                 Gdx.app.log("", "Pick");
             }
         }
-        pickAbleEntities.removeAll(pickAbleToRemove);
     }
 
 
@@ -210,19 +218,19 @@ public class WorldPhysics {
         return false;
     }
 
-    public static boolean overlapsWith2Precision(Rectangle rectangle1, Rectangle rectangle2){
+    public static boolean overlapsWith2Precision(Rectangle rectangle1, Rectangle rectangle2) {
         Rectangle rectangle1Precision = rectangleTo2Precision(rectangle1);
         Rectangle rectangle2Precision = rectangleTo2Precision(rectangle2);
         return rectangle1Precision.overlaps(rectangle2Precision);
     }
 
-    public static Rectangle rectangleTo2Precision(Rectangle rectangle){
+    public static Rectangle rectangleTo2Precision(Rectangle rectangle) {
         return new Rectangle(
                 Math.round(rectangle.x * 100f) / 100f,
                 Math.round(rectangle.y * 100f) / 100f,
                 rectangle.width,
                 rectangle.height
-                );
+        );
     }
 
     @Value

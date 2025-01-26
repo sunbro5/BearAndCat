@@ -2,9 +2,13 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import lombok.Getter;
 
 
 public class AssetsLoader {
@@ -21,8 +25,9 @@ public class AssetsLoader {
         BEAR_2("bear2.png"),
         BACKGROUND("Background.png"),
         FRONT_BACKGROUND("Middleground.png"),
-        STAR("Star.png");
-
+        STAR("Star.png"),
+        MUSHROOM("mushroom.png"),
+        BEE_HIVE("beehive.png");
 
         TextureType(String name) {
             this.name = name;
@@ -30,9 +35,15 @@ public class AssetsLoader {
         private final String name;
     }
 
+    @Getter
+    private final Skin skin;
+    private final TextureAtlas atlas;
+
     private final Map<TextureType, Texture> textures = new HashMap<>();
 
     public AssetsLoader() {
+        atlas = new TextureAtlas(Gdx.files.internal("clean-crispy-ui.atlas"));
+        skin = new Skin(Gdx.files.internal("clean-crispy-ui.json"), atlas);
         loadTextures();
     }
 
@@ -51,6 +62,8 @@ public class AssetsLoader {
         for (Texture texture : textures.values()) {
             texture.dispose();
         }
+        atlas.dispose();
+        skin.dispose();
     }
 
 }

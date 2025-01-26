@@ -43,4 +43,9 @@ public class WallPush implements EntityBehavior {
             WorldPhysics.swapEntities(entity, moveAbleEntity);
         }
     }
+
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
 }

@@ -8,9 +8,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.behavior.BehaviorType;
 import com.mygdx.game.physics.WorldPhysics;
-import com.mygdx.game.physics.collision.CollisionStrategy;
+import com.mygdx.game.renderer.AnimationType;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,14 +22,21 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
     protected Animation<TextureRegion> idleAnimation;
     protected Animation<TextureRegion> standAnimation;
     protected Animation<TextureRegion> walkAnimation;
-    protected Animation<TextureRegion> stuckAnimation;
-    private TextureRegion currentFrame;
+
+    protected Animation<TextureRegion> customAnimation;
+    protected Map<AnimationType, Animation<TextureRegion>> animations = new HashMap<>();
+
+    protected TextureRegion currentFrame;
+
+    @Setter
     private float stateTime;
 
+    @Setter
     private Move move = Move.STAND;
     private float idleTimeout = 4;
 
     @Getter
+    @Setter
     private Direction direction = Direction.RIGHT;
 
     private boolean jumping = false;
@@ -51,58 +59,54 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
     }
 
-    public void move(Move move) {
-        this.move = move;
-    }
-
     @Override
     public void update(float delta, WorldPhysics worldPhysics) {
         stateTime += delta;
 
-        switch (this.move) {
-            case LEFT:
-                velocity.x = -getMoveVelocity();
-                currentFrame = walkAnimation.getKeyFrame(stateTime, true);
-                direction = Direction.LEFT;
-                idleTimeout = 4;
-                break;
-            case RIGHT:
-                velocity.x = getMoveVelocity();
-                currentFrame = walkAnimation.getKeyFrame(stateTime, true);
-                direction = Direction.RIGHT;
-                idleTimeout = 4;
-                break;
-            case STAND:
+        if(!haveControl || move == Move.STAND){
+            if(customAnimation != null){
+                currentFrame = customAnimation.getKeyFrame(stateTime);
+            } else {
                 idleTimeout -= delta;
-
                 if (idleTimeout < 0 && idleAnimation != null) {
                     currentFrame = idleAnimation.getKeyFrame(stateTime, false);
-                    break;
+                } else {
+                    currentFrame = standAnimation.getKeyFrame(stateTime, true);
                 }
-                currentFrame = standAnimation.getKeyFrame(stateTime, true);
-                break;
+            }
+        } else if ( move == Move.LEFT){
+            velocity.x = -getMoveVelocity();
+            currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+            direction = Direction.LEFT;
+            idleTimeout = 4;
+        } else if( move == Move.RIGHT){
+            velocity.x = getMoveVelocity();
+            currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+            direction = Direction.RIGHT;
+            idleTimeout = 4;
         }
+
         this.move = Move.STAND;
 
-        if (jumping) {
+        if (jumping && haveControl) {
             velocity.y = getJumpVelocity();
             onGround = false;
             jumping = false;
         }
 
-        worldPhysics.pickAbleEntitiesCheck(position);
         super.update(delta, worldPhysics);
+        worldPhysics.pickAbleEntitiesCheck(this);
     }
 
     @Override
-    public Vector2 forceMove(Vector2 velocity, WorldPhysics worldPhysics) {
+    public Vector2 forceMove(Vector2 velocity, WorldPhysics worldPhysics, boolean yVelocity) {
         WorldPhysics.HorizontalDirection direction = WorldPhysics.HorizontalDirection.of(velocity.x);
-        if(direction == WorldPhysics.HorizontalDirection.LEFT){
+        if (direction == WorldPhysics.HorizontalDirection.LEFT) {
             this.direction = Direction.LEFT;
-        } else if (direction == WorldPhysics.HorizontalDirection.RIGHT){
+        } else if (direction == WorldPhysics.HorizontalDirection.RIGHT) {
             this.direction = Direction.RIGHT;
         }
-        return super.forceMove(velocity, worldPhysics);
+        return super.forceMove(velocity, worldPhysics, yVelocity);
     }
 
     public void render(SpriteBatch spriteBatch) {
@@ -145,5 +149,22 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         return !onGround && !states.containsKey(BehaviorType.IS_ON_TOP);
     }
 
+    public boolean isCustomAnimationFinished(){
+        return customAnimation != null && customAnimation.isAnimationFinished(stateTime);
+    }
+
+    public void setAnimation(AnimationType type, boolean looping){
+        stateTime = 0;
+        if(type == null){
+            customAnimation = null;
+            return;
+        }
+        customAnimation = animations.get(type);
+        if(looping){
+            customAnimation.setPlayMode(Animation.PlayMode.LOOP);
+        } else {
+            customAnimation.setPlayMode(Animation.PlayMode.NORMAL);
+        }
+    }
 
 }

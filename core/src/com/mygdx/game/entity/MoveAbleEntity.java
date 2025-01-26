@@ -75,7 +75,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         if (wasForceMoved) {
             return;
         }
-        effectOfGravity(delta);
+        this.velocity = effectOfGravity(delta, this.velocity);
         this.velocity = move(this.velocity, worldPhysics);
         setFinalPosition();
         this.velocity.x = 0;
@@ -85,12 +85,17 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         wasForceMoved = false;
     }
 
-    public Vector2 forceMove(Vector2 velocity, WorldPhysics worldPhysics) {
+    public Vector2 forceMove(Vector2 velocity, WorldPhysics worldPhysics, boolean yVelocity) {
         this.wasForceMoved = true;
-        Vector2 resultVelocity = new Vector2(move(velocity, worldPhysics));
+        Vector2 forceVelocity;
+        if(yVelocity){
+            forceVelocity = new Vector2(velocity.x, velocity.y);
+        } else {
+            forceVelocity = new Vector2(velocity.x, effectOfGravity(worldPhysics.getLastDelta(), this.velocity).y);
+        }
+        Vector2 resultVelocity = new Vector2(move(forceVelocity, worldPhysics));
         setFinalPosition();
-        this.velocity.y = 0;
-        this.velocity.x = 0;
+        //this.velocity.y = 0;
         return resultVelocity;
     }
 
@@ -111,17 +116,18 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         if (this.velocity.y == 0 && this.velocity.x == 0) {
             return;
         }
-        Gdx.app.log("","Velocity " +this.getClass().getName() + " = " + velocity + " position:" + position);
+        Gdx.app.debug("","Velocity " +this.getClass().getName() + " = " + velocity + " position:" + position);
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
     }
 
-    protected void effectOfGravity(float delta) {
+    protected Vector2 effectOfGravity(float delta, Vector2 velocity) {
         if (velocity.y > maxFallSpeed) {
-            return;
+            return velocity;
         }
         float deltaGravity = Math.round(WorldPhysics.GRAVITY * delta * 100f) / 100f;
         velocity.y -= deltaGravity;
+        return velocity;
     }
 
     @Override

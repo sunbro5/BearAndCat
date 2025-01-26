@@ -8,6 +8,7 @@ import com.mygdx.game.behavior.BehaviorType;
 import com.mygdx.game.physics.collision.CollisionStrategy;
 import com.mygdx.game.physics.collision.LandOnTopStrategy;
 import com.mygdx.game.physics.collision.PushStrategy;
+import com.mygdx.game.renderer.AnimationType;
 import com.mygdx.game.utils.TextureUtils;
 
 import java.util.ArrayList;
@@ -18,16 +19,21 @@ import java.util.Set;
 public class Bear extends ControlAbleEntity {
 
     public Bear(float x, float y, Texture texture) {
-        super(new Rectangle(x, y, 45, 17), new Rectangle(-4, 0, 6, 12));
+        super(new Rectangle(x, y, 45, 17), new Rectangle(-8, 0, 16, 12));
+        //super(new Rectangle(x, y, 45, 17), new Rectangle(-4, 0, 6, 12));
 
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 10, texture.getHeight() / 8);
-        TextureUtils.cropTextures(tmp, 3, 5,15 ,1);
+        TextureUtils.cropTextures(tmp, 0, 0,15 ,1);
 
         TextureRegion[] walkFrames = new TextureRegion[]{tmp[0][0], tmp[1][0], tmp[1][3], tmp[1][4], tmp[1][5]};
         walkAnimation = new Animation<>(1f / ((float) walkFrames.length), walkFrames);
         TextureRegion[] standFrames = new TextureRegion[]{tmp[0][0], tmp[0][0], tmp[0][1], tmp[0][1], tmp[0][2], tmp[0][2], tmp[0][3], tmp[0][3]};
         standAnimation = new Animation<>(1f / ((float) standFrames.length), standFrames);
 
+        TextureRegion[] eatFrames = new TextureRegion[]{tmp[4][0], tmp[4][0], tmp[3][4],  tmp[3][0], tmp[4][0], tmp[4][0], tmp[7][0], tmp[7][1]};
+        animations.put(AnimationType.EAT, new Animation<>(2f / ((float) eatFrames.length), eatFrames));
+        TextureRegion[] sleepFrames = new TextureRegion[]{tmp[7][2], tmp[7][3], tmp[7][2], tmp[7][3], tmp[7][2], tmp[7][3], tmp[7][2], tmp[7][3]};
+        animations.put(AnimationType.SLEEP, new Animation<>(5f / ((float) sleepFrames.length), sleepFrames));
     }
 
     @Override
@@ -35,6 +41,7 @@ public class Bear extends ControlAbleEntity {
         Set<BehaviorType> behaviors = new HashSet<>();
         behaviors.add(BehaviorType.HAVE_ON_TOP);
         behaviors.add(BehaviorType.IS_ON_TOP);
+        behaviors.add(BehaviorType.SLEEP);
         return behaviors;
     }
 

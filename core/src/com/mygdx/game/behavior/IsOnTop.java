@@ -23,6 +23,10 @@ public class IsOnTop implements EntityBehavior {
 
     @Override
     public BehaviorResult update(MoveAbleEntity moveAbleEntity, WorldPhysics worldPhysics) {
+        if (!entity.getStates().containsKey(BehaviorType.HAVE_ON_TOP)) {
+            moveAbleEntity.getStates().remove(getType());
+            return new BehaviorResult(moveAbleEntity.getVelocity());
+        }
         Rectangle position = new Rectangle(
                 moveAbleEntity.getPosition().x,
                 moveAbleEntity.getPosition().y + POSITION_OFFSET,
@@ -51,5 +55,10 @@ public class IsOnTop implements EntityBehavior {
     @Override
     public void onCollision(MoveAbleEntity moveAbleEntity) {
 
+    }
+
+    @Override
+    public boolean isFinished() {
+        return true;
     }
 }

@@ -9,8 +9,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.game.AssetsLoader;
 import com.mygdx.game.Disposable;
 import com.mygdx.game.entity.DrawableEntity;
 import com.mygdx.game.level.LevelData;
@@ -24,42 +31,51 @@ import lombok.Setter;
 public class WorldRenderer implements Disposable {
 
     private final SpriteBatch spriteBatch;
-    private final SpriteBatch hudSpriteBatch;
     private final SpriteBatch backgroundSpriteBatch;
     private final OrthographicCamera camera;
     private final OrthographicCamera backGroundCamera;
     private final FPSLogger fpsLogger;
-    private final BitmapFont font;
     private final OrthogonalTiledMapRenderer renderer;
     private final AtomicBoolean renderDebug;
     private final ShapeRenderer debugRenderer;
+    private final Viewport viewport;
+    private final Viewport backgroundViewport;
+    private final Stage stage;
+    private final Label label;
 
     @Getter
     @Setter
     private boolean lerpCamera = false;
 
-    public WorldRenderer(LevelData levelData, AtomicBoolean renderDebug) {
+    public WorldRenderer(LevelData levelData, AtomicBoolean renderDebug, AssetsLoader assetsLoader) {
         spriteBatch = new SpriteBatch();
         backgroundSpriteBatch = new SpriteBatch();
-        hudSpriteBatch = new SpriteBatch();
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 400, 200);
+        //camera.setToOrtho(false, 400, 200);
         camera.position.x = levelData.getEndRectangle().x;
         camera.position.y = levelData.getEndRectangle().y;
         backGroundCamera = new OrthographicCamera();
         backGroundCamera.setToOrtho(false, 2000, 1000);
         fpsLogger = new FPSLogger();
-        font = new BitmapFont();
 
-        font.getData().setScale(4);
         renderer = new OrthogonalTiledMapRenderer(levelData.getTerrain(), 1);
         this.renderDebug = renderDebug;
         debugRenderer = new ShapeRenderer();
+        viewport = new ExtendViewport(400, 200, camera);
+        viewport.apply();
+        backgroundViewport = new FitViewport(2000,1000, backGroundCamera);
+        backgroundViewport.apply();
+
+        stage = new Stage();
+        label = new Label("", assetsLoader.getSkin());
+        label.setPosition(20, 450);
+        stage.addActor(label);
     }
 
     public void render(float delta, LevelData levelData) {
         ScreenUtils.clear(0, 0, 0f, 1);
         camera.update();
+        viewport.apply();
 
         backgroundSpriteBatch.setProjectionMatrix(backGroundCamera.combined);
 
@@ -74,14 +90,19 @@ public class WorldRenderer implements Disposable {
         }
         spriteBatch.end();
 
-        if(renderDebug.get()){
+        if (renderDebug.get()) {
             renderDebug(levelData);
         }
+        renderScore(levelData);
 
         fpsLogger.log();
     }
 
-    private void renderDebug (LevelData levelData) {
+    public void resize(int width, int height) {
+        viewport.update(width, height);
+    }
+
+    private void renderDebug(LevelData levelData) {
         debugRenderer.setProjectionMatrix(camera.combined);
         debugRenderer.begin(ShapeRenderer.ShapeType.Line);
 
@@ -99,10 +120,9 @@ public class WorldRenderer implements Disposable {
     }
 
     public void renderScore(LevelData levelData) {
-        hudSpriteBatch.setProjectionMatrix(backGroundCamera.combined);
-        hudSpriteBatch.begin();
-        font.draw(hudSpriteBatch, "Stars: " + levelData.getScore() + " / " + levelData.getStarsCount(), 50, 900, 100, Align.left, false);
-        hudSpriteBatch.end();
+        label.setText("Stars: " + levelData.getScore() + " / " + levelData.getStarsCount());
+        stage.act();
+        stage.draw();
     }
 
     private void renderGameMap() {
@@ -119,7 +139,7 @@ public class WorldRenderer implements Disposable {
         backgroundSpriteBatch.end();
     }
 
-    public Vector3 getCameraPosition(){
+    public Vector3 getCameraPosition() {
         return camera.position;
     }
 
@@ -127,5 +147,6 @@ public class WorldRenderer implements Disposable {
     public void dispose() {
         spriteBatch.dispose();
         backgroundSpriteBatch.dispose();
+        stage.dispose();
     }
 }
