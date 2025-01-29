@@ -84,7 +84,7 @@ public class WinnerScreen implements Screen {
         if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
             game.resetGameLevel();
             game.setScreen(new MainMenuScreen(game));
-            //dispose();
+            dispose();
         }
     }
 

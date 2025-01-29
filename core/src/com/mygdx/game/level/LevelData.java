@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.Disposable;
+import com.mygdx.game.entity.ActionEntity;
 import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.entity.DrawableEntity;
 import com.mygdx.game.entity.MoveAbleEntity;
@@ -26,6 +27,7 @@ public class LevelData implements Disposable {
     private ControlAbleEntity controlEntity;
     private List<MoveAbleEntity> moveAbleEntities;
     private List<PickAbleEntity> pickAbleEntities;
+    private List<ActionEntity> actionEntities;
     private Rectangle endRectangle;
     private Rectangle[][] walls;
     private TiledMap terrain;

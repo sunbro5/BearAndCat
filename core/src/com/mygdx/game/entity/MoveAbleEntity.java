@@ -20,7 +20,6 @@ import lombok.Setter;
 
 public abstract class MoveAbleEntity implements DrawableEntity {
 
-    @Getter
     protected final Rectangle position;
 
     @Getter
@@ -128,6 +127,11 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         float deltaGravity = Math.round(WorldPhysics.GRAVITY * delta * 100f) / 100f;
         velocity.y -= deltaGravity;
         return velocity;
+    }
+
+    @Override
+    public Rectangle getPosition() {
+        return position;
     }
 
     @Override

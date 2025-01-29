@@ -3,18 +3,22 @@ package com.mygdx.game.physics;
 import static com.mygdx.game.level.LevelLoader.TILE_SIZE;
 import static com.mygdx.game.level.LevelLoader.WALL_LAYER;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.entity.ActionEntity;
 import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.entity.DrawableEntity;
+import com.mygdx.game.entity.GameEntity;
 import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.entity.PickAbleEntity;
 import com.mygdx.game.level.LevelData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import lombok.Getter;
 import lombok.Value;
@@ -28,7 +32,7 @@ public class WorldPhysics {
     private final int terrainPositionWidth;
     private final int terrainPositionHeight;
     private final LevelData levelData;
-    List<MoveAbleEntity> collisionEntities;
+    private List<MoveAbleEntity> collisionEntities;
 
     @Getter
     private float lastDelta;
@@ -47,7 +51,7 @@ public class WorldPhysics {
         }
         this.lastDelta = delta;
         collisionEntities = getSortedCollisionEntities(levelData);
-        for (DrawableEntity entity : levelData.getAllDrawEntities()) {
+        for (DrawableEntity entity : new ArrayList<>(levelData.getAllDrawEntities())) {
             entity.update(delta, this);
         }
         for (DrawableEntity entity : levelData.getAllDrawEntities()) {
@@ -150,6 +154,16 @@ public class WorldPhysics {
             if (controlAbleEntity.getPosition().overlaps(pickAbleEntity.getPosition())) {
                 pickAbleEntity.onPick(levelData, controlAbleEntity);
                 Gdx.app.log("", "Pick");
+            }
+        }
+    }
+
+    public void actionEntitiesCheck(ControlAbleEntity controlAbleEntity) {
+        List<ActionEntity> actionEntities = levelData.getActionEntities();
+        for (ActionEntity actionEntity : new ArrayList<>(actionEntities)) {
+            if (controlAbleEntity.getPosition().overlaps(actionEntity.getPosition())) {
+                actionEntity.action(levelData, controlAbleEntity);
+                Gdx.app.log("", "Action");
             }
         }
     }

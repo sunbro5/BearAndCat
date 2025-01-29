@@ -6,8 +6,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -57,39 +59,44 @@ public class MainMenuScreen implements Screen {
 
         //Create buttons
         TextButton playButton = new TextButton("Play", skin);
-        TextButton optionsButton = new TextButton("Credits", skin);
+        TextButton optionsButton = new TextButton("Options", skin);
         TextButton exitButton = new TextButton("Exit", skin);
 
-        Label header = new Label("Bearo and Kitto", skin);
+        Label header = new Label("Claws and Paws", skin);
         header.setFontScale(1.5f);
-        Label footer = new Label("Move: Arrows, Jump: Space, Change character: Alt, Restart: R", skin);
+        Label footer = new Label("Move: Arrows, Jump: Space", skin);
         footer.setFontScale(0.7f);
+        Label footer2 = new Label("Change character: Alt, Restart: R", skin);
+        footer2.setFontScale(0.7f);
 
         //Add listeners to buttons
         playButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new BeforeLevelScreen(game));
-                //dispose();
+                dispose();
             }
         });
         exitButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.exit();
+                dispose();
             }
         });
 
         //Add buttons to table
         mainTable.add(header).padBottom(10);
         mainTable.row();
-        mainTable.add(playButton);
+        mainTable.add(playButton).minWidth(100);
         mainTable.row();
-        mainTable.add(optionsButton);
+        mainTable.add(optionsButton).minWidth(100);
         mainTable.row();
-        mainTable.add(exitButton);
+        mainTable.add(exitButton).minWidth(100);
         mainTable.row();
         mainTable.add(footer).padTop(10);
+        mainTable.row();
+        mainTable.add(footer2);
 
         //Add table to stage
         stage.addActor(mainTable);

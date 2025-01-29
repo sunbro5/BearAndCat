@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.behavior.BehaviorType;
 import com.mygdx.game.physics.collision.CollisionStrategy;
+import com.mygdx.game.physics.collision.HitBeeHiveStrategy;
 import com.mygdx.game.physics.collision.LandOnTopSleepStrategy;
 import com.mygdx.game.physics.collision.LandOnTopStrategy;
 import com.mygdx.game.physics.collision.PushStrategy;
@@ -46,6 +47,7 @@ public class Cat extends ControlAbleEntity {
         strategies.add(new PushStrategy());
         strategies.add(new LandOnTopStrategy());
         strategies.add(new LandOnTopSleepStrategy());
+        strategies.add(new HitBeeHiveStrategy());
         return strategies;
     }
 

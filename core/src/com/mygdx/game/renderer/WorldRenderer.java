@@ -19,7 +19,10 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.AssetsLoader;
 import com.mygdx.game.Disposable;
+import com.mygdx.game.entity.ActionEntity;
 import com.mygdx.game.entity.DrawableEntity;
+import com.mygdx.game.entity.MoveAbleEntity;
+import com.mygdx.game.entity.PickAbleEntity;
 import com.mygdx.game.level.LevelData;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,12 +37,15 @@ public class WorldRenderer implements Disposable {
     private final SpriteBatch backgroundSpriteBatch;
     private final OrthographicCamera camera;
     private final OrthographicCamera backGroundCamera;
+    private final OrthographicCamera uiCamera;
     private final FPSLogger fpsLogger;
     private final OrthogonalTiledMapRenderer renderer;
     private final AtomicBoolean renderDebug;
     private final ShapeRenderer debugRenderer;
     private final Viewport viewport;
     private final Viewport backgroundViewport;
+
+    private final Viewport uiViewport;
     private final Stage stage;
     private final Label label;
 
@@ -63,12 +69,17 @@ public class WorldRenderer implements Disposable {
         debugRenderer = new ShapeRenderer();
         viewport = new ExtendViewport(400, 200, camera);
         viewport.apply();
-        backgroundViewport = new FitViewport(2000,1000, backGroundCamera);
+        backgroundViewport = new FitViewport(2000, 1000, backGroundCamera);
         backgroundViewport.apply();
 
-        stage = new Stage();
+        uiCamera = new OrthographicCamera();
+        uiViewport = new FitViewport(2000, 1000, uiCamera);
+        uiViewport.apply();
+
+        stage = new Stage(uiViewport);
         label = new Label("", assetsLoader.getSkin());
-        label.setPosition(20, 450);
+        label.setFontScale(3f);
+        label.setPosition(50, 900);
         stage.addActor(label);
     }
 
@@ -115,6 +126,18 @@ public class WorldRenderer implements Disposable {
         Rectangle end = levelData.getEndRectangle();
         debugRenderer.setColor(Color.YELLOW);
         debugRenderer.rect(end.x, end.y, end.width, end.height);
+        for (PickAbleEntity entity : levelData.getPickAbleEntities()) {
+            debugRenderer.setColor(Color.GOLD);
+            debugRenderer.rect(entity.getPosition().x, entity.getPosition().y, entity.getPosition().width, entity.getPosition().height);
+        }
+        for (MoveAbleEntity entity : levelData.getMoveAbleEntities()) {
+            debugRenderer.setColor(Color.GRAY);
+            debugRenderer.rect(entity.getPosition().x, entity.getPosition().y, entity.getPosition().width, entity.getPosition().height);
+        }
+        for (ActionEntity entity : levelData.getActionEntities()) {
+            debugRenderer.setColor(Color.CYAN);
+            debugRenderer.rect(entity.getPosition().x, entity.getPosition().y, entity.getPosition().width, entity.getPosition().height);
+        }
 
         debugRenderer.end();
     }

@@ -1,12 +1,12 @@
 package com.mygdx.game.screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.entity.Bear;
 import com.mygdx.game.entity.ControlAbleEntity;
-import com.mygdx.game.entity.DrawableEntity;
 import com.mygdx.game.level.LevelData;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.renderer.WorldRenderer;
@@ -33,13 +33,14 @@ public class LevelScreen implements Screen {
     public void show() {
 
     }
+
     @Override
     public void render(float delta) {
         //update
         handleControls();
         worldPhysics.update(delta);
 
-        if (secondInit > 0.5f) { 
+        if (secondInit > 0.5f) {
             worldRenderer.getCameraPosition().lerp(levelData.getControlEntity().getCameraPositionVector(), 10f * delta);
         } else {
             secondInit += delta;
@@ -57,17 +58,17 @@ public class LevelScreen implements Screen {
             } else {
                 game.setScreen(new WinnerScreen(game));
             }
-            //dispose();
+            dispose();
 
         }
     }
 
     private void handleControls() {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            levelData.getControlEntity().setMove(ControlAbleEntity.Move.LEFT);
+            levelData.getControlEntity().move(ControlAbleEntity.Move.LEFT);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            levelData.getControlEntity().setMove(ControlAbleEntity.Move.RIGHT);
+            levelData.getControlEntity().move(ControlAbleEntity.Move.RIGHT);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             levelData.getControlEntity().jump();
@@ -83,6 +84,11 @@ public class LevelScreen implements Screen {
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
             renderDebug.set(!renderDebug.get());
+            if (renderDebug.get()) {
+                Gdx.app.setLogLevel(Application.LOG_DEBUG);
+            } else {
+                Gdx.app.setLogLevel(Application.LOG_INFO);
+            }
         }
     }
 

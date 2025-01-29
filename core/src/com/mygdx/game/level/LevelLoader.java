@@ -2,10 +2,7 @@ package com.mygdx.game.level;
 
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteCache;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -14,7 +11,9 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.AssetsLoader;
+import com.mygdx.game.entity.ActionEntity;
 import com.mygdx.game.entity.Bear;
+import com.mygdx.game.entity.BeeHive;
 import com.mygdx.game.entity.Box;
 import com.mygdx.game.entity.Cat;
 import com.mygdx.game.entity.ControlAbleEntity;
@@ -23,11 +22,9 @@ import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.entity.Mushroom;
 import com.mygdx.game.entity.PickAbleEntity;
 import com.mygdx.game.entity.Star;
-import com.mygdx.game.map.TilesetType;
+import com.mygdx.game.entity.TreeBeeHiveAction;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +61,7 @@ public class LevelLoader {
     private LevelData buildLevel(TiledMap map) {
         List<MoveAbleEntity> moveAbleEntities = new ArrayList<>();
         List<PickAbleEntity> pickAbleEntities = new ArrayList<>();
+        List<ActionEntity> actionEntities = new ArrayList<>();
 
         Texture backGround = assetsLoader.getTexture(AssetsLoader.TextureType.BACKGROUND);
         backGround.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
@@ -76,22 +74,30 @@ public class LevelLoader {
         terrainEntities.setVisible(false);
         Map<String, List<Rectangle>> terrainEntitiesByType = getTileCellsByType(terrainEntities);
         List<Rectangle> boxes = terrainEntitiesByType.get("box");
-        for (Rectangle box: boxes) {
+        for (Rectangle box : boxes) {
             moveAbleEntities.add(new Box(box, assetsLoader.getTexture(AssetsLoader.TextureType.BOX_2)));
         }
         List<Rectangle> ironBoxes = terrainEntitiesByType.get("ironbox");
-        for (Rectangle ironBox: ironBoxes) {
+        for (Rectangle ironBox : ironBoxes) {
             moveAbleEntities.add(new IronBox(ironBox, assetsLoader.getTexture(AssetsLoader.TextureType.BOX_3)));
         }
 
         List<Rectangle> stars = terrainEntitiesByType.get("star");
-        for (Rectangle star: stars) {
+        for (Rectangle star : stars) {
             pickAbleEntities.add(new Star(star, assetsLoader.getTexture(AssetsLoader.TextureType.STAR)));
         }
 
         List<Rectangle> mushrooms = terrainEntitiesByType.get("mushroom");
-        for (Rectangle mushroom: mushrooms) {
+        for (Rectangle mushroom : mushrooms) {
             pickAbleEntities.add(new Mushroom(mushroom, assetsLoader.getTexture(AssetsLoader.TextureType.MUSHROOM)));
+        }
+
+        List<Rectangle> beehives = terrainEntitiesByType.get("beehive");
+        List<BeeHive> beeHiveEntities = new ArrayList<>();
+        for (Rectangle beehive : beehives) {
+            BeeHive hive = new BeeHive(beehive, assetsLoader.getTexture(AssetsLoader.TextureType.BEE_HIVE));
+            beeHiveEntities.add(hive);
+            moveAbleEntities.add(hive);
         }
 
         MapLayer entities = map.getLayers().get("entities");
@@ -100,10 +106,26 @@ public class LevelLoader {
         Rectangle bearRectangle = entitiesByType.get("bear").get(0);
         Rectangle endRectangle = entitiesByType.get("end").get(0);
 
+        List<Rectangle> actionBeeHives = entitiesByType.get("actionhive");
+        for (Rectangle actionBeeHive : actionBeeHives) {
+            BeeHive found = null;
+            for (BeeHive beeHive : beeHiveEntities) {
+                if (beeHive.getPosition().overlaps(actionBeeHive)) {
+                    found = beeHive;
+                }
+            }
+            if (found == null) {
+                Gdx.app.error("", "BeeHiveAction without BeeHive !!!!");
+            } else {
+                actionEntities.add(new TreeBeeHiveAction(actionBeeHive, found));
+            }
+
+        }
+
         ControlAbleEntity cat = new Cat(catRectangle.x, catRectangle.y, assetsLoader.getTexture(AssetsLoader.TextureType.CAT));
         ControlAbleEntity bear = new Bear(bearRectangle.x, bearRectangle.y, assetsLoader.getTexture(AssetsLoader.TextureType.BEAR_1));
         bear.setHaveControl(true);
-        return new LevelData(bear, cat, bear, moveAbleEntities, pickAbleEntities, endRectangle, wallTileset, map, backGround, frontBackGround,0, pickAbleEntities.size());
+        return new LevelData(bear, cat, bear, moveAbleEntities, pickAbleEntities, actionEntities, endRectangle, wallTileset, map, backGround, frontBackGround, 0, stars.size());
     }
 
     private Map<String, List<Rectangle>> getTileCellsByType(MapLayer layer) {

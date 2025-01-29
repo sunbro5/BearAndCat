@@ -5,22 +5,16 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.AssetsLoader;
 import com.mygdx.game.MyGdxGame;
-import com.mygdx.game.level.LevelData;
 
 public class BeforeLevelScreen implements Screen {
     private MyGdxGame game;
@@ -56,13 +50,17 @@ public class BeforeLevelScreen implements Screen {
         mainTable.center();
         
 
-        Label text1 = new Label("Level " + (game.getGameLevel() + 1) +", Find next cave!", skin);
+        Label text1 = new Label("Level " + (game.getGameLevel() + 1) , skin);
         text1.setFontScale(1.5f);
+        Label text3 = new Label("Find way to get cat home!", skin);
+        text3.setFontScale(1.5f);
         Label text2 = new Label("Press anything to continue", skin);
         text2.setFontScale(1.5f);
 
         //Add buttons to table
         mainTable.add(text1);
+        mainTable.row();
+        mainTable.add(text3).padTop(10);
         mainTable.row();
         mainTable.add(text2).padTop(10);
 
@@ -72,10 +70,6 @@ public class BeforeLevelScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-            game.setScreen(new LevelScreen(game, game.getGameLevelData()));
-            //dispose();
-        }
         ScreenUtils.clear(0, 0, 0.2f, 1);
 
         spriteBatch.begin();
@@ -83,6 +77,10 @@ public class BeforeLevelScreen implements Screen {
         spriteBatch.end();
         stage.act();
         stage.draw();
+        if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
+            game.setScreen(new LevelScreen(game, game.getGameLevelData()));
+            dispose();
+        }
     }
 
     @Override

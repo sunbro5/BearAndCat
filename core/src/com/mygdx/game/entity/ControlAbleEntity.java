@@ -44,6 +44,9 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
     @Setter
     private boolean haveControl = false;
 
+    @Setter
+    private Speed speed;
+
     public ControlAbleEntity(Rectangle position, Rectangle drawRectangle) {
         super(position, drawRectangle);
     }
@@ -63,8 +66,8 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
     public void update(float delta, WorldPhysics worldPhysics) {
         stateTime += delta;
 
-        if(!haveControl || move == Move.STAND){
-            if(customAnimation != null){
+        if (move == Move.STAND) {
+            if (customAnimation != null) {
                 currentFrame = customAnimation.getKeyFrame(stateTime);
             } else {
                 idleTimeout -= delta;
@@ -74,12 +77,12 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
                     currentFrame = standAnimation.getKeyFrame(stateTime, true);
                 }
             }
-        } else if ( move == Move.LEFT){
+        } else if (move == Move.LEFT) {
             velocity.x = -getMoveVelocity();
             currentFrame = walkAnimation.getKeyFrame(stateTime, true);
             direction = Direction.LEFT;
             idleTimeout = 4;
-        } else if( move == Move.RIGHT){
+        } else if (move == Move.RIGHT) {
             velocity.x = getMoveVelocity();
             currentFrame = walkAnimation.getKeyFrame(stateTime, true);
             direction = Direction.RIGHT;
@@ -88,7 +91,10 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
         this.move = Move.STAND;
 
-        if (jumping && haveControl) {
+        if (!haveControl) {
+            jumping = false;
+        }
+        if (jumping) {
             velocity.y = getJumpVelocity();
             onGround = false;
             jumping = false;
@@ -96,6 +102,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
         super.update(delta, worldPhysics);
         worldPhysics.pickAbleEntitiesCheck(this);
+        worldPhysics.actionEntitiesCheck(this);
     }
 
     @Override
@@ -137,6 +144,11 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         LEFT
     }
 
+    public enum Speed {
+        SLOW,
+        FAST
+    }
+
     public Rectangle getPosition() {
         return position;
     }
@@ -149,22 +161,29 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         return !onGround && !states.containsKey(BehaviorType.IS_ON_TOP);
     }
 
-    public boolean isCustomAnimationFinished(){
+    public boolean isCustomAnimationFinished() {
         return customAnimation != null && customAnimation.isAnimationFinished(stateTime);
     }
 
-    public void setAnimation(AnimationType type, boolean looping){
+    public void setAnimation(AnimationType type, boolean looping) {
         stateTime = 0;
-        if(type == null){
+        if (type == null) {
             customAnimation = null;
             return;
         }
         customAnimation = animations.get(type);
-        if(looping){
+        if (looping) {
             customAnimation.setPlayMode(Animation.PlayMode.LOOP);
         } else {
             customAnimation.setPlayMode(Animation.PlayMode.NORMAL);
         }
+    }
+
+    public void move(Move move) {
+        if (!haveControl) {
+            return;
+        }
+        this.move = move;
     }
 
 }
