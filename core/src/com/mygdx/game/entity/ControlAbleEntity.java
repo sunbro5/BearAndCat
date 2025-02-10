@@ -42,7 +42,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
     private boolean jumping = false;
 
     @Setter
-    private boolean haveControl = false;
+    private boolean haveControl = true;
 
     @Setter
     private Speed speed;

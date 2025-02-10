@@ -7,6 +7,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Level {
-    LEVEL_1("level.1");
+    LEVEL1("level1.tmx", true, "", true),
+    LEVEL2("level2.tmx", false, "", false)
+    ;
     private String name;
+    private boolean beforeLevelScreen;
+    private String text;
+    private boolean bearSleep;
 }

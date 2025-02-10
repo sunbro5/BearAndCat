@@ -35,6 +35,7 @@ public class LevelData implements Disposable {
     private Texture frontBackGround;
     private int score;
     private int starsCount;
+    private Level metadata;
 
     public List<DrawableEntity> getAllDrawEntities(){
         List<DrawableEntity> collEntities = new ArrayList<>();

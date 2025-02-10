@@ -19,7 +19,6 @@ public class LevelScreen implements Screen {
     private final WorldPhysics worldPhysics;
     private final WorldRenderer worldRenderer;
     private final LevelData levelData;
-    private float secondInit = 0;
     private final AtomicBoolean renderDebug = new AtomicBoolean(false);
 
     public LevelScreen(MyGdxGame game, LevelData levelData) {
@@ -39,12 +38,7 @@ public class LevelScreen implements Screen {
         //update
         handleControls();
         worldPhysics.update(delta);
-
-        if (secondInit > 0.5f) {
-            worldRenderer.getCameraPosition().lerp(levelData.getControlEntity().getCameraPositionVector(), 10f * delta);
-        } else {
-            secondInit += delta;
-        }
+        worldRenderer.getCameraPosition().lerp(levelData.getControlEntity().getCameraPositionVector(), 10 * delta);
 
         //render
         worldRenderer.render(delta, levelData);
