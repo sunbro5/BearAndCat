@@ -10,6 +10,7 @@ import com.mygdx.game.physics.collision.HitBeeHiveStrategy;
 import com.mygdx.game.physics.collision.LandOnTopSleepStrategy;
 import com.mygdx.game.physics.collision.LandOnTopStrategy;
 import com.mygdx.game.physics.collision.PushStrategy;
+import com.mygdx.game.renderer.AnimationType;
 import com.mygdx.game.utils.TextureUtils;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.Set;
 public class Cat extends ControlAbleEntity {
 
     public Cat(float x, float y, Texture texture) {
-        super(new Rectangle(x, y, 24, 10), new Rectangle(-2, 0, 2, 0));
+        super(new Rectangle(x, y, 24, 10), new Rectangle(-3, 0, 5, 0));
 
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 10, texture.getHeight() / 3);
         TextureUtils.cropTextures(tmp, 14, 13,17 ,18);
@@ -30,14 +31,17 @@ public class Cat extends ControlAbleEntity {
         walkAnimation = new Animation<>(1f / ((float) walkFrames.length), walkFrames);
         TextureRegion[] standFrames = new TextureRegion[]{tmp[0][0], tmp[0][1], tmp[0][2], tmp[0][3], tmp[0][4], tmp[0][5], tmp[0][6], tmp[0][7], tmp[0][8], tmp[0][9]};
         standAnimation = new Animation<>(1f / ((float) standFrames.length), standFrames);
+
         TextureRegion[] idleFrames = new TextureRegion[]{tmp[2][0], tmp[2][1], tmp[2][2], tmp[2][3], tmp[2][4], tmp[2][5], tmp[2][6], tmp[2][7]};
-        idleAnimation = new Animation<>(7f / ((float) idleFrames.length), idleFrames);
+        animations.put(AnimationType.IDLE, new Animation<>(1f / ((float) idleFrames.length), idleFrames));
     }
 
     @Override
     protected Set<BehaviorType> initBehaviour() {
         Set<BehaviorType> behaviors = new HashSet<>();
         behaviors.add(BehaviorType.IS_ON_TOP);
+        behaviors.add(BehaviorType.SLOW);
+        behaviors.add(BehaviorType.IDLE);
         return behaviors;
     }
 
@@ -69,6 +73,11 @@ public class Cat extends ControlAbleEntity {
     @Override
     public float getMoveVelocity() {
         return 1.5f;
+    }
+
+    @Override
+    public float getIdleTimeout() {
+        return 4;
     }
 
     @Override

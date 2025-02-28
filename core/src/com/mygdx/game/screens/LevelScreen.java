@@ -43,6 +43,18 @@ public class LevelScreen implements Screen {
         //render
         worldRenderer.render(delta, levelData);
         handleFinish();
+        handleRestartKeys();
+    }
+
+    private void handleRestartKeys() {
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+            this.game.setScreen(new MainMenuScreen(game));
+            dispose();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.R)) {
+            game.setScreen(new LevelScreen(game, game.getGameLevelData()));
+            dispose();
+        }
     }
 
     private void handleFinish() {
@@ -66,9 +78,6 @@ public class LevelScreen implements Screen {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             levelData.getControlEntity().jump();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.R)) {
-            this.game.setScreen(new MainMenuScreen(game));
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT)) {
             switchControlEntity();
@@ -102,12 +111,8 @@ public class LevelScreen implements Screen {
         Gdx.app.log("", "Cat " + levelData.getCat());
         if (levelData.getControlEntity() instanceof Bear) {
             levelData.setControlEntity(levelData.getCat());
-            levelData.getCat().setHaveControl(true);
-            levelData.getBear().setHaveControl(false);
-        } else {
+        } else if (levelData.getBear().isHaveControl()) {
             levelData.setControlEntity(levelData.getBear());
-            levelData.getCat().setHaveControl(false);
-            levelData.getBear().setHaveControl(true);
         }
     }
 

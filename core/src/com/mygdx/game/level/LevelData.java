@@ -27,6 +27,7 @@ public class LevelData implements Disposable {
     private ControlAbleEntity controlEntity;
     private List<MoveAbleEntity> moveAbleEntities;
     private List<PickAbleEntity> pickAbleEntities;
+    private List<DrawableEntity> otherDrawableEntities;
     private List<ActionEntity> actionEntities;
     private Rectangle endRectangle;
     private Rectangle[][] walls;
@@ -48,6 +49,7 @@ public class LevelData implements Disposable {
         }
         collEntities.addAll(getMoveAbleEntities());
         collEntities.addAll(getPickAbleEntities());
+        collEntities.addAll(getOtherDrawableEntities());
         return collEntities;
     }
 

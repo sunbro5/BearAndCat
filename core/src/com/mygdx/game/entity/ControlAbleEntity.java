@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.behavior.BehaviorType;
+import com.mygdx.game.behavior.EntityBehavior;
+import com.mygdx.game.behavior.Idle;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.renderer.AnimationType;
 
@@ -18,8 +20,8 @@ import lombok.Setter;
 
 public abstract class ControlAbleEntity extends MoveAbleEntity {
 
+
     private static final int CAMERA_OFFSET = 30;
-    protected Animation<TextureRegion> idleAnimation;
     protected Animation<TextureRegion> standAnimation;
     protected Animation<TextureRegion> walkAnimation;
 
@@ -33,7 +35,6 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
     @Setter
     private Move move = Move.STAND;
-    private float idleTimeout = 4;
 
     @Getter
     @Setter
@@ -41,6 +42,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
     private boolean jumping = false;
 
+    @Getter
     @Setter
     private boolean haveControl = true;
 
@@ -55,8 +57,14 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
     public abstract float getMoveVelocity();
 
+    public abstract float getIdleTimeout();
+
+    @Getter
+    private float idleValue = getIdleTimeout();
+
     public void jump() {
         if (onGround || states.containsKey(BehaviorType.IS_ON_TOP)) {
+            resetIdle();
             jumping = true;
         }
 
@@ -70,23 +78,17 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
             if (customAnimation != null) {
                 currentFrame = customAnimation.getKeyFrame(stateTime);
             } else {
-                idleTimeout -= delta;
-                if (idleTimeout < 0 && idleAnimation != null) {
-                    currentFrame = idleAnimation.getKeyFrame(stateTime, false);
-                } else {
-                    currentFrame = standAnimation.getKeyFrame(stateTime, true);
-                }
+                currentFrame = standAnimation.getKeyFrame(stateTime, true);
+                calculateIdle(delta);
             }
         } else if (move == Move.LEFT) {
             velocity.x = -getMoveVelocity();
             currentFrame = walkAnimation.getKeyFrame(stateTime, true);
             direction = Direction.LEFT;
-            idleTimeout = 4;
         } else if (move == Move.RIGHT) {
             velocity.x = getMoveVelocity();
             currentFrame = walkAnimation.getKeyFrame(stateTime, true);
             direction = Direction.RIGHT;
-            idleTimeout = 4;
         }
 
         this.move = Move.STAND;
@@ -103,6 +105,16 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         super.update(delta, worldPhysics);
         worldPhysics.pickAbleEntitiesCheck(this);
         worldPhysics.actionEntitiesCheck(this);
+    }
+
+    private void calculateIdle(float delta) {
+        if (!getPossibleStates().contains(BehaviorType.IDLE)) {
+            return;
+        }
+        idleValue -= delta;
+        if (idleValue < 0 && (!getStates().containsKey(BehaviorType.SLEEP) || !getStates().containsKey(BehaviorType.IDLE))) {
+            setState(new Idle());
+        }
     }
 
     @Override
@@ -179,7 +191,12 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         }
     }
 
+    public void resetIdle() {
+        this.idleValue = getIdleTimeout();
+    }
+
     public void move(Move move) {
+        resetIdle();
         if (!haveControl) {
             return;
         }

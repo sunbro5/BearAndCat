@@ -14,11 +14,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.Getter;
 import lombok.Setter;
 
 public abstract class MoveAbleEntity implements DrawableEntity {
+
+    private static final AtomicInteger idSequence = new AtomicInteger(1);
 
     protected final Rectangle position;
 
@@ -39,6 +42,9 @@ public abstract class MoveAbleEntity implements DrawableEntity {
     @Getter
     @Setter
     protected boolean wasForceMoved = false;
+
+    @Getter
+    protected boolean moved = false;
     protected int maxFallSpeed = 50;
     @Getter
     protected final Map<BehaviorType, EntityBehavior> states = new HashMap<>();
@@ -46,7 +52,10 @@ public abstract class MoveAbleEntity implements DrawableEntity {
     protected final Set<BehaviorType> possibleStates;
     protected final List<CollisionStrategy> possibleCollisionStrategies;
 
+    private final int id;
+
     public MoveAbleEntity(Rectangle position, Rectangle drawRectangle) {
+        this.id = idSequence.getAndIncrement();
         this.position = position;
         this.drawRectangle = drawRectangle;
         this.possibleStates = initBehaviour();
@@ -61,11 +70,11 @@ public abstract class MoveAbleEntity implements DrawableEntity {
 
     public abstract boolean canBePush();
 
-    public int getStrength(){
+    public int getStrength() {
         return 0;
     }
 
-    public int getWeight(){
+    public int getWeight() {
         return 0;
     }
 
@@ -80,25 +89,37 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         this.velocity.x = 0;
     }
 
-    public void afterUpdate(){
+    public void afterUpdate() {
         wasForceMoved = false;
+        moved = false;
     }
 
     public Vector2 forceMove(Vector2 velocity, WorldPhysics worldPhysics, boolean yVelocity) {
         this.wasForceMoved = true;
+        boolean wasAlreadyMoved = moved;
+        float yVelocityBefore = this.velocity.y;
         Vector2 forceVelocity;
-        if(yVelocity){
+        if (yVelocity) {
             forceVelocity = new Vector2(velocity.x, velocity.y);
         } else {
-            forceVelocity = new Vector2(velocity.x, effectOfGravity(worldPhysics.getLastDelta(), this.velocity).y);
+            if (wasAlreadyMoved) {
+                forceVelocity = new Vector2(velocity.x, 0);
+            } else {
+                forceVelocity = new Vector2(velocity.x, effectOfGravity(worldPhysics.getLastDelta(), this.velocity).y);
+            }
         }
         Vector2 resultVelocity = new Vector2(move(forceVelocity, worldPhysics));
         setFinalPosition();
+        if (wasAlreadyMoved) {
+            this.velocity.y = yVelocityBefore;
+        }
         //this.velocity.y = 0;
+        this.velocity.x = 0;
         return resultVelocity;
     }
 
     private Vector2 move(Vector2 velocity, WorldPhysics worldPhysics) {
+        moved = true;
         this.velocity = velocity;
         WorldPhysics.TerrainCollision response = worldPhysics.entityMoveWithTerrain(this.position, this.velocity);
         setOnGround(response.isOnGround());
@@ -108,6 +129,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         List<WorldPhysics.EntityCollision> entityCollisions = worldPhysics.entitiesCollisionCheck(this);
         this.velocity = CollisionHandler.handleCollision(this, entityCollisions, possibleCollisionStrategies, worldPhysics);
         this.velocity = BehaviorHandler.handleBehavior(states, this, worldPhysics);
+
         return this.velocity;
     }
 
@@ -115,7 +137,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         if (this.velocity.y == 0 && this.velocity.x == 0) {
             return;
         }
-        Gdx.app.debug("","Velocity " +this.getClass().getName() + " = " + velocity + " position:" + position);
+        Gdx.app.debug("", "Velocity " + this.getClass().getName() + " id: " + id + " = " + velocity + " position:" + position + " velocity: " + velocity + ", forced: " + isWasForceMoved() + ", states " + getStates().keySet());
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
     }
@@ -129,6 +151,10 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         return velocity;
     }
 
+    public void setState(EntityBehavior state) {
+        getStates().put(state.getType(), state);
+    }
+
     @Override
     public Rectangle getPosition() {
         return position;
@@ -137,8 +163,9 @@ public abstract class MoveAbleEntity implements DrawableEntity {
     @Override
     public String toString() {
         return "MoveAbleEntity{" + this.getClass().getName() +
+                " id :" + id +
                 //", states=" + states +
-                ", position=" + position +
+                " , position=" + position +
                 '}';
     }
 }

@@ -6,22 +6,17 @@ import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.renderer.AnimationType;
 
-import java.util.function.Function;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class MushroomSleep implements EntityBehavior {
-
-    private final ControlAbleEntity.Direction direction;
+public class MushroomEat implements EntityBehavior {
 
     private final Runnable eatCallback;
     private boolean mushroomEat = false;
-    private boolean sleepAnimationSet = false;
 
     @Override
     public BehaviorType getType() {
-        return BehaviorType.SLEEP;
+        return BehaviorType.MUSHROOM_EAT;
     }
 
     @Override
@@ -32,17 +27,15 @@ public class MushroomSleep implements EntityBehavior {
 
             if (!mushroomEat) {
                 controlAbleEntity.setAnimation(AnimationType.EAT, false);
-                controlAbleEntity.getVelocity().y =0; //to prevent jump
+                controlAbleEntity.getVelocity().y = 0; //to prevent jump
                 mushroomEat = true;
                 moveAbleEntity.getStates().remove(BehaviorType.HAVE_ON_TOP);
                 moveAbleEntity.getPossibleStates().remove(BehaviorType.HAVE_ON_TOP);
-            } else {
-                if (!sleepAnimationSet && controlAbleEntity.isCustomAnimationFinished()) {
-                    eatCallback.run();
-                    controlAbleEntity.setAnimation(AnimationType.SLEEP, true);
-                    sleepAnimationSet = true;
-                    moveAbleEntity.getPossibleStates().add(BehaviorType.HAVE_ON_TOP);
-                }
+            } else if (controlAbleEntity.isCustomAnimationFinished()) {
+                eatCallback.run();
+                controlAbleEntity.getStates().remove(BehaviorType.MUSHROOM_EAT);
+                controlAbleEntity.setState(new Sleep());
+
             }
         }
         return new BehaviorResult(new Vector2(0, moveAbleEntity.getVelocity().y > 0 ? 0 : moveAbleEntity.getVelocity().y));
@@ -55,6 +48,6 @@ public class MushroomSleep implements EntityBehavior {
 
     @Override
     public boolean isFinished() {
-        return sleepAnimationSet;
+        return mushroomEat;
     }
 }

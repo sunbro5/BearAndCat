@@ -19,7 +19,7 @@ public class TreeBeeHiveAction extends ActionEntity {
         if (controlAbleEntity.getPossibleStates().contains(BehaviorType.BEE_HIVE_TREE_STUCK) && !controlAbleEntity.getStates().containsKey(BehaviorType.BEE_HIVE_TREE_STUCK)) {
             Gdx.app.debug("", "Beehive activated");
             ControlAbleEntity.Move direction = calculateDirection(controlAbleEntity.getPosition(), beeHive.getPosition());
-            controlAbleEntity.getStates().put(BehaviorType.BEE_HIVE_TREE_STUCK, new TreeBeeHiveStuck(beeHive.getPosition(), direction, () -> levelData.getMoveAbleEntities().remove(beeHive)));
+            controlAbleEntity.setState(new TreeBeeHiveStuck(beeHive.getPosition(), direction, () -> levelData.getMoveAbleEntities().remove(beeHive)));
             beeHive.setActive(true);
             levelData.getActionEntities().remove(this);
         }

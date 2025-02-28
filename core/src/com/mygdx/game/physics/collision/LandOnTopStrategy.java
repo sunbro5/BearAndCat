@@ -23,7 +23,7 @@ public class LandOnTopStrategy implements CollisionStrategy {
 
     @Override
     public CollisionHandlerResult handle(MoveAbleEntity entity, WorldPhysics.EntityCollision collision, WorldPhysics worldPhysics) {
-        Gdx.app.debug("","Lands on top of " + collision.getMoveAbleEntity().toString());
+        //Gdx.app.debug("","Lands on top of " + collision.getMoveAbleEntity().toString());
         Vector2 resultVelocity = new Vector2(entity.getVelocity());
         resultVelocity.y = collision.getVelocityToCollision().y;
         if (entity.getStates().containsKey(BehaviorType.IS_ON_TOP)) {
@@ -31,8 +31,8 @@ public class LandOnTopStrategy implements CollisionStrategy {
             resultVelocity.y = collision.getMoveAbleEntity().getVelocity().y;
             return new CollisionHandlerResult(resultVelocity);
         }
-        entity.getStates().put(BehaviorType.IS_ON_TOP, new IsOnTop(collision.getMoveAbleEntity()));
-        collision.getMoveAbleEntity().getStates().put(BehaviorType.HAVE_ON_TOP, new HaveOnTop(entity));
+        entity.setState(new IsOnTop(collision.getMoveAbleEntity()));
+        collision.getMoveAbleEntity().setState(new HaveOnTop(entity));
         return new CollisionHandlerResult(resultVelocity);
     }
 }

@@ -1,6 +1,7 @@
 package com.mygdx.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -112,6 +113,10 @@ public class MainMenuScreen implements Screen {
 
         stage.act();
         stage.draw();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
+            game.setScreen(new BeforeLevelScreen(game));
+            dispose();
+        }
     }
 
     @Override

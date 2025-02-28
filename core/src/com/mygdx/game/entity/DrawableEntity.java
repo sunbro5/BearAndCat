@@ -3,7 +3,7 @@ package com.mygdx.game.entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.physics.WorldPhysics;
 
-public interface DrawableEntity extends GameEntity{
+public interface DrawableEntity extends GameEntity {
 
     void render(SpriteBatch spriteBatch);
 

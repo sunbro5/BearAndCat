@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.behavior.BehaviorType;
-import com.mygdx.game.behavior.MushroomSleep;
 import com.mygdx.game.physics.collision.CollisionStrategy;
 import com.mygdx.game.physics.collision.LandOnTopStrategy;
 import com.mygdx.game.physics.collision.PushStrategy;
@@ -20,7 +19,7 @@ import java.util.Set;
 public class Bear extends ControlAbleEntity {
 
     public Bear(float x, float y, Texture texture) {
-        super(new Rectangle(x, y, 45, 17), new Rectangle(-8, 0, 16, 12));
+        super(new Rectangle(x, y, 45, 17), new Rectangle(-13, 0, 26, 12));
         //super(new Rectangle(x, y, 45, 17), new Rectangle(-4, 0, 6, 12));
 
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 10, texture.getHeight() / 8);
@@ -45,7 +44,7 @@ public class Bear extends ControlAbleEntity {
         Set<BehaviorType> behaviors = new HashSet<>();
         behaviors.add(BehaviorType.HAVE_ON_TOP);
         behaviors.add(BehaviorType.IS_ON_TOP);
-        behaviors.add(BehaviorType.SLEEP);
+        behaviors.add(BehaviorType.MUSHROOM_EAT);
         behaviors.add(BehaviorType.BEE_HIVE_TREE_STUCK);
         return behaviors;
     }
@@ -76,6 +75,11 @@ public class Bear extends ControlAbleEntity {
     @Override
     public float getMoveVelocity() {
         return 2.5f;
+    }
+
+    @Override
+    public float getIdleTimeout() {
+        return 20;
     }
 
     @Override

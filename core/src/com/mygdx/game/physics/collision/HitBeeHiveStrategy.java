@@ -16,9 +16,9 @@ public class HitBeeHiveStrategy implements CollisionStrategy {
 
     @Override
     public CollisionHandlerResult handle(MoveAbleEntity entity, WorldPhysics.EntityCollision collision, WorldPhysics worldPhysics) {
-        Gdx.app.debug("","Hit beehive " + collision.getMoveAbleEntity().toString());
+        Gdx.app.debug("", "Hit beehive " + collision.getMoveAbleEntity().toString());
         BeeHive beeHive = (BeeHive) collision.getMoveAbleEntity();
-        if(beeHive.isActive()){
+        if (beeHive.isActive()) {
             beeHive.setHit(true);
         }
         return new CollisionHandlerResult(entity.getVelocity());

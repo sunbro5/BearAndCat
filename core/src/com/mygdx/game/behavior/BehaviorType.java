@@ -5,5 +5,8 @@ public enum BehaviorType {
     IS_ON_TOP,
     WALL_PUSH,
     BEE_HIVE_TREE_STUCK,
+    MUSHROOM_EAT,
     SLEEP,
+    IDLE,
+    SLOW
 }

@@ -1,5 +1,6 @@
 package com.mygdx.game.physics.collision;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.behavior.BehaviorType;
 import com.mygdx.game.behavior.WallPush;
@@ -15,6 +16,7 @@ public class PushStrategy implements CollisionStrategy {
 
     @Override
     public CollisionHandlerResult handle(MoveAbleEntity entity, WorldPhysics.EntityCollision collision, WorldPhysics worldPhysics) {
+        Gdx.app.debug("", "Push: " + entity.getClass().getName() + ", " + collision.getMoveAbleEntity().getClass().getName() + ", " + entity.getVelocity().x);
         if (entity.getStrength() < collision.getMoveAbleEntity().getWeight()) {
             return new CollisionHandlerResult(new Vector2(collision.getVelocityToCollision().x, entity.getVelocity().y));
         }
@@ -25,12 +27,12 @@ public class PushStrategy implements CollisionStrategy {
         resultVelocity.x += velocityOffset;
         resultVelocity.y = entity.getVelocity().y;
 
-        if (resultVelocity.x == 0) {
+        if (resultVelocity.x == 0 && entity.getVelocity().x != 0) {
             if (collision.getMoveAbleEntity().getPossibleStates().contains(BehaviorType.WALL_PUSH)) {
                 if (collision.getMoveAbleEntity().getStates().containsKey(BehaviorType.WALL_PUSH)) {
                     collision.getMoveAbleEntity().getStates().get(BehaviorType.WALL_PUSH).onCollision(entity);
                 } else {
-                    collision.getMoveAbleEntity().getStates().put(BehaviorType.WALL_PUSH, new WallPush(collision.getMoveAbleEntity()));
+                    collision.getMoveAbleEntity().setState(new WallPush(collision.getMoveAbleEntity()));
                 }
             }
         }

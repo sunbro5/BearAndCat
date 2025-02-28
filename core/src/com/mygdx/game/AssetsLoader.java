@@ -27,7 +27,9 @@ public class AssetsLoader {
         FRONT_BACKGROUND("Middleground.png"),
         STAR("Star.png"),
         MUSHROOM("mushroom.png"),
-        BEE_HIVE("beehive.png");
+        BEE_HIVE("beehive.png"),
+
+        WEB("web.png");
 
         TextureType(String name) {
             this.name = name;

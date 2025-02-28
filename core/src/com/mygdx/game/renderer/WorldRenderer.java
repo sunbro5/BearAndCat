@@ -57,9 +57,8 @@ public class WorldRenderer implements Disposable {
         spriteBatch = new SpriteBatch();
         backgroundSpriteBatch = new SpriteBatch();
         camera = new OrthographicCamera();
-        //camera.setToOrtho(false, 400, 200);
-        camera.position.x = levelData.getEndRectangle().x;
-        camera.position.y = levelData.getEndRectangle().y;
+        camera.position.x = levelData.getCat().getPosition().x;
+        camera.position.y = levelData.getCat().getPosition().y;
         backGroundCamera = new OrthographicCamera();
         backGroundCamera.setToOrtho(false, 2000, 1000);
         fpsLogger = new FPSLogger();

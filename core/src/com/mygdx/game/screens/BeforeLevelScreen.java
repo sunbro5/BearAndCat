@@ -52,7 +52,7 @@ public class BeforeLevelScreen implements Screen {
 
         Label text1 = new Label("Level " + (game.getGameLevel() + 1) , skin);
         text1.setFontScale(1.5f);
-        Label text3 = new Label("Find way to get cat home!", skin);
+        Label text3 = new Label(game.getGameLevelData().getMetadata().getText(), skin);
         text3.setFontScale(1.5f);
         Label text2 = new Label("Press anything to continue", skin);
         text2.setFontScale(1.5f);

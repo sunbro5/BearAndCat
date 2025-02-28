@@ -17,9 +17,13 @@ import com.mygdx.game.entity.PickAbleEntity;
 import com.mygdx.game.level.LevelData;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Value;
 
@@ -46,9 +50,10 @@ public class WorldPhysics {
     }
 
     public void update(float delta) {
-        if (delta * WorldPhysics.GRAVITY > 5 ) { // accidental gap when resize
+        if (delta * WorldPhysics.GRAVITY > 5) { // accidental gap when resize
             return;
         }
+        Gdx.app.debug("","TICK");
         this.lastDelta = delta;
         collisionEntities = getSortedCollisionEntities(levelData);
         for (DrawableEntity entity : new ArrayList<>(levelData.getAllDrawEntities())) {
@@ -108,24 +113,30 @@ public class WorldPhysics {
                     VerticalDirection verticalDirection = getHorizontalCollision(entityToMove.getPosition(), entity.getPosition(), VerticalDirection.of(entityToMove.getVelocity().y));
                     HorizontalDirection horizontalDirection = getVerticalCollision(entityToMove.getPosition(), entity.getPosition(), HorizontalDirection.of(entityToMove.getVelocity().x));
 
-                    Vector2 velocityToCollision = new Vector2(entityToMove.getVelocity());
+                    Vector2 velocityToCollision = calculateVelocityToCollision(entityToMove, entity, verticalDirection, horizontalDirection);
 
-                    if (verticalDirection == VerticalDirection.UP) {
-                        velocityToCollision.y = entity.getPosition().y - (entityToMove.getPosition().y + entityToMove.getPosition().height);
-                    } else if (verticalDirection == VerticalDirection.DOWN) {
-                        velocityToCollision.y = -(entityToMove.getPosition().y - (entity.getPosition().y + entity.getPosition().height));
-                    }
-
-                    if (horizontalDirection == HorizontalDirection.LEFT) {
-                        velocityToCollision.x = -(entityToMove.getPosition().x - (entity.getPosition().x + entity.getPosition().width));
-                    } else if (horizontalDirection == HorizontalDirection.RIGHT) {
-                        velocityToCollision.x = entity.getPosition().x - (entityToMove.getPosition().x + entityToMove.getPosition().width);
-                    }
                     collisions.add(new EntityCollision(entity, velocityToCollision, verticalDirection, horizontalDirection));
                 }
             }
         }
         return collisions;
+    }
+
+    public static Vector2 calculateVelocityToCollision(MoveAbleEntity entityToMove, MoveAbleEntity entity, VerticalDirection verticalDirection, HorizontalDirection horizontalDirection) {
+        Vector2 velocityToCollision = new Vector2(entityToMove.getVelocity());
+
+        if (verticalDirection == VerticalDirection.UP) {
+            velocityToCollision.y = entity.getPosition().y - (entityToMove.getPosition().y + entityToMove.getPosition().height);
+        } else if (verticalDirection == VerticalDirection.DOWN) {
+            velocityToCollision.y = -(entityToMove.getPosition().y - (entity.getPosition().y + entity.getPosition().height));
+        }
+
+        if (horizontalDirection == HorizontalDirection.LEFT) {
+            velocityToCollision.x = -(entityToMove.getPosition().x - (entity.getPosition().x + entity.getPosition().width));
+        } else if (horizontalDirection == HorizontalDirection.RIGHT) {
+            velocityToCollision.x = entity.getPosition().x - (entityToMove.getPosition().x + entityToMove.getPosition().width);
+        }
+        return velocityToCollision;
     }
 
     private VerticalDirection getHorizontalCollision(Rectangle entityToMovePosition, Rectangle checkedEntityPosition, VerticalDirection verticalDirection) {
@@ -247,12 +258,13 @@ public class WorldPhysics {
         );
     }
 
-    @Value
+    @Data
+    @AllArgsConstructor
     public static class EntityCollision {
-        MoveAbleEntity moveAbleEntity;
-        Vector2 velocityToCollision;
-        VerticalDirection verticalDirection;
-        HorizontalDirection horizontalDirection;
+        private MoveAbleEntity moveAbleEntity;
+        private Vector2 velocityToCollision;
+        private VerticalDirection verticalDirection;
+        private HorizontalDirection horizontalDirection;
     }
 
     @Value
