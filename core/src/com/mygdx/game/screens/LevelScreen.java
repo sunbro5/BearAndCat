@@ -85,6 +85,9 @@ public class LevelScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.F)) {
             printEntities();
         }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+            game.getMusicPlayer().toggle();
+        }
         if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
             renderDebug.set(!renderDebug.get());
             if (renderDebug.get()) {

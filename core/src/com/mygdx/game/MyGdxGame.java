@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.mygdx.game.level.LevelData;
 import com.mygdx.game.level.LevelLoader;
 import com.mygdx.game.screens.MainMenuScreen;
+import com.mygdx.game.sound.MusicPlayer;
 import com.sun.tools.javac.util.Pair;
 
 import java.util.List;
@@ -26,10 +27,15 @@ public class MyGdxGame extends Game {
     @Getter
     private AssetsLoader assetsLoader;
 
+    @Getter
+    private MusicPlayer musicPlayer;
+
     public void create() {
         this.assetsLoader = new AssetsLoader();
         this.levelLoader = new LevelLoader(assetsLoader);
         this.setScreen(new MainMenuScreen(this));
+        this.musicPlayer = new MusicPlayer();
+        //musicPlayer.play();
     }
 
     public LevelData getGameLevelData() {

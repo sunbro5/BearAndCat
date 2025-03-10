@@ -11,6 +11,10 @@ import com.mygdx.game.behavior.EntityBehavior;
 import com.mygdx.game.behavior.Idle;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.renderer.AnimationType;
+import com.mygdx.game.sound.EntitySound;
+import com.mygdx.game.sound.EntitySoundType;
+import com.mygdx.game.sound.MusicPlayer;
+import com.mygdx.game.sound.SoundPlayer;
 
 import java.util.HashMap;
 import java.util.Map;

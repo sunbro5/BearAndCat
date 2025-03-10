@@ -53,7 +53,7 @@ public class WorldPhysics {
         if (delta * WorldPhysics.GRAVITY > 5) { // accidental gap when resize
             return;
         }
-        Gdx.app.debug("","TICK");
+        //Gdx.app.debug("","TICK");
         this.lastDelta = delta;
         collisionEntities = getSortedCollisionEntities(levelData);
         for (DrawableEntity entity : new ArrayList<>(levelData.getAllDrawEntities())) {

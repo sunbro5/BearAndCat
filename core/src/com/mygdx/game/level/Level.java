@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Level {
-    //LEVEL1("level1.tmx", true, "", true, true),
-    //LEVEL2("level2.tmx", false, "", false, true),
+    LEVEL1("level1.tmx", true, "", true, true),
+    LEVEL2("level2.tmx", false, "", false, true),
     LEVEL3("level3.tmx", false, "", false, false);
     ;
     private final String name;

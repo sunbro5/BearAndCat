@@ -60,7 +60,7 @@ public class MainMenuScreen implements Screen {
 
         //Create buttons
         TextButton playButton = new TextButton("Play", skin);
-        TextButton optionsButton = new TextButton("Options", skin);
+        TextButton tipsButton = new TextButton("Tips", skin);
         TextButton exitButton = new TextButton("Exit", skin);
 
         Label header = new Label("Claws and Paws", skin);
@@ -78,6 +78,13 @@ public class MainMenuScreen implements Screen {
                 dispose();
             }
         });
+        tipsButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new TipsScreen(game));
+                dispose();
+            }
+        });
         exitButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -91,7 +98,7 @@ public class MainMenuScreen implements Screen {
         mainTable.row();
         mainTable.add(playButton).minWidth(100);
         mainTable.row();
-        mainTable.add(optionsButton).minWidth(100);
+        mainTable.add(tipsButton).minWidth(100);
         mainTable.row();
         mainTable.add(exitButton).minWidth(100);
         mainTable.row();

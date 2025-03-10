@@ -9,6 +9,7 @@ import com.mygdx.game.physics.collision.CollisionStrategy;
 import com.mygdx.game.physics.collision.LandOnTopStrategy;
 import com.mygdx.game.physics.collision.PushStrategy;
 import com.mygdx.game.renderer.AnimationType;
+import com.mygdx.game.sound.EntitySound;
 import com.mygdx.game.utils.TextureUtils;
 
 import java.util.ArrayList;

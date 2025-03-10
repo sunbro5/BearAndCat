@@ -130,6 +130,11 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         this.velocity = CollisionHandler.handleCollision(this, entityCollisions, possibleCollisionStrategies, worldPhysics);
         this.velocity = BehaviorHandler.handleBehavior(states, this, worldPhysics);
 
+        if (response.getVelocity().y == this.velocity.y) {
+            response = worldPhysics.entityMoveWithTerrain(this.position, this.velocity);
+            this.velocity = response.getVelocity();
+        }
+
         return this.velocity;
     }
 
