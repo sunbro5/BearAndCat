@@ -38,8 +38,9 @@ public class TipsScreen implements Screen {
         viewport.apply();
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
+        spriteBatch.setProjectionMatrix(camera.combined);
 
-        stage = new Stage(viewport, spriteBatch);
+        stage = new Stage(viewport);
     }
 
     @Override
@@ -55,7 +56,7 @@ public class TipsScreen implements Screen {
         Label text1 = new Label("Cat can jump on bear and move with him.", skin);
         Label text2 = new Label("Boxes can be moved, iron box only with bear.", skin);
         Label text3 = new Label("Bear is very sleepy, be careful what he eat.", skin);
-        Label text4 = new Label("Move to next cage with both cat and bear.", skin);
+        Label text4 = new Label("Move to next cave with both cat and bear.", skin);
         Label textDown = new Label("Press anything to go Back!", skin);
 
         //Add buttons to table
@@ -68,6 +69,9 @@ public class TipsScreen implements Screen {
         mainTable.add(text4);
         mainTable.row();
         mainTable.add(textDown).padTop(10);
+
+
+        stage.addActor(mainTable);
     }
 
     @Override
@@ -79,6 +83,7 @@ public class TipsScreen implements Screen {
         spriteBatch.end();
         stage.act();
         stage.draw();
+
         if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
             game.setScreen(new MainMenuScreen(game));
             dispose();

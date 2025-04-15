@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.behavior.BehaviorType;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.physics.collision.CollisionStrategy;
+import com.mygdx.game.physics.collision.LandOnTopSleepStrategy;
 import com.mygdx.game.physics.collision.LandOnTopStrategy;
 import com.mygdx.game.physics.collision.PushStrategy;
 
@@ -47,6 +48,7 @@ public class Box extends MoveAbleEntity {
     protected List<CollisionStrategy> initCollisionStrategies() {
         List<CollisionStrategy> strategies = new ArrayList<>();
         strategies.add(new PushStrategy());
+        strategies.add(new LandOnTopSleepStrategy());
         strategies.add(new LandOnTopStrategy());
         return strategies;
     }

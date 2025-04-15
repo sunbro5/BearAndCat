@@ -3,11 +3,14 @@ package com.mygdx.game.level;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.AssetsLoader;
@@ -31,6 +34,7 @@ import com.mygdx.game.entity.Web;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +54,6 @@ public class LevelLoader {
         if (index >= levels.size()) {
             return null;
         }
-        Gdx.app.log("", "Get level: " + index);
         return loadLevel(levels.get(index));
     }
 
@@ -95,7 +98,8 @@ public class LevelLoader {
 
         List<Rectangle> mushrooms = getOrEmpty(terrainEntitiesByType, "mushroom");
         for (Rectangle mushroom : mushrooms) {
-            pickAbleEntities.add(new Mushroom(mushroom, assetsLoader.getTexture(AssetsLoader.TextureType.MUSHROOM)));
+            Rectangle mushroomCollide = new Rectangle(mushroom.x + 4, mushroom.y, mushroom.width -8, mushroom.height - 8);
+            pickAbleEntities.add(new Mushroom(mushroomCollide, mushroom, assetsLoader.getTexture(AssetsLoader.TextureType.MUSHROOM)));
         }
 
         List<Rectangle> beehives = getOrEmpty(terrainEntitiesByType, "beehive");

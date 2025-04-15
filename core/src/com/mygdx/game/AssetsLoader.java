@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -46,6 +47,8 @@ public class AssetsLoader {
     public AssetsLoader() {
         atlas = new TextureAtlas(Gdx.files.internal("clean-crispy-ui.atlas"));
         skin = new Skin(Gdx.files.internal("clean-crispy-ui.json"), atlas);
+        BitmapFont font = skin.getFont("font");
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         loadTextures();
     }
 

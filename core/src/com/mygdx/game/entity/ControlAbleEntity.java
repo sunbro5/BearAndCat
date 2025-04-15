@@ -63,6 +63,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
 
     public abstract float getIdleTimeout();
 
+    @Setter
     @Getter
     private float idleValue = getIdleTimeout();
 

@@ -36,8 +36,9 @@ public class BeforeLevelScreen implements Screen {
         viewport.apply();
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
+        spriteBatch.setProjectionMatrix(camera.combined);
 
-        stage = new Stage(viewport, spriteBatch);
+        stage = new Stage(viewport);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class BeforeLevelScreen implements Screen {
         mainTable.center();
         
 
-        Label text1 = new Label("Level " + (game.getGameLevel() + 1) , skin);
+        Label text1 = new Label(game.getGameLevelData().getMetadata().getDisplayName() , skin);
         text1.setFontScale(1.5f);
         Label text3 = new Label(game.getGameLevelData().getMetadata().getText(), skin);
         text3.setFontScale(1.5f);

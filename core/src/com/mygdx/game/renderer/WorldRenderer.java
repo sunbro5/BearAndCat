@@ -3,7 +3,6 @@ package com.mygdx.game.renderer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -11,10 +10,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.AssetsLoader;
@@ -64,8 +61,10 @@ public class WorldRenderer implements Disposable {
         fpsLogger = new FPSLogger();
 
         renderer = new OrthogonalTiledMapRenderer(levelData.getTerrain(), 1);
+
         this.renderDebug = renderDebug;
         debugRenderer = new ShapeRenderer();
+        // TODO terrain flickering is probably because of scaling of map
         viewport = new ExtendViewport(400, 200, camera);
         viewport.apply();
         backgroundViewport = new FitViewport(2000, 1000, backGroundCamera);
@@ -83,7 +82,7 @@ public class WorldRenderer implements Disposable {
     }
 
     public void render(float delta, LevelData levelData) {
-        ScreenUtils.clear(0, 0, 0f, 1);
+        ScreenUtils.clear(255, 255, 255, 1);
         camera.update();
         viewport.apply();
 
@@ -105,7 +104,30 @@ public class WorldRenderer implements Disposable {
         }
         renderScore(levelData);
 
-        fpsLogger.log();
+    }
+
+    public void renderIntro(float delta, LevelData levelData) {
+        ScreenUtils.clear(0, 0, 0f, 1);
+        camera.update();
+        viewport.apply();
+
+        backgroundSpriteBatch.setProjectionMatrix(backGroundCamera.combined);
+
+        renderBackGround(levelData);
+        renderGameMap();
+
+        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.begin();
+
+        for (DrawableEntity entity : levelData.getAllDrawEntities()) {
+            entity.render(spriteBatch);
+        }
+        spriteBatch.end();
+
+        if (renderDebug.get()) {
+            renderDebug(levelData);
+        }
+
     }
 
     public void resize(int width, int height) {
@@ -137,7 +159,7 @@ public class WorldRenderer implements Disposable {
             debugRenderer.setColor(Color.CYAN);
             debugRenderer.rect(entity.getPosition().x, entity.getPosition().y, entity.getPosition().width, entity.getPosition().height);
         }
-
+        fpsLogger.log();
         debugRenderer.end();
     }
 
@@ -154,7 +176,7 @@ public class WorldRenderer implements Disposable {
 
     private void renderBackGround(LevelData levelData) {
         int backGroundOffset = (int) (camera.position.x / 100);
-        int frontBackGroundOffset = (int) (camera.position.x / 25);
+        int frontBackGroundOffset = (int) (camera.position.x / 15);
         backgroundSpriteBatch.begin();
         backgroundSpriteBatch.draw(levelData.getBackGround(), 0, 0, 0, 0, 2000, 1000, 1, 1, 0, backGroundOffset, 0, 500, 200, false, false);
         backgroundSpriteBatch.draw(levelData.getFrontBackGround(), 0, 0, 0, 0, 2000, 1000, 1, 1, 0, frontBackGroundOffset, 0, 500, 200, false, false);

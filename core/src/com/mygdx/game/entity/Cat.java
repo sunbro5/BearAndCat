@@ -73,7 +73,7 @@ public class Cat extends ControlAbleEntity {
 
     @Override
     public float getJumpVelocity() {
-        return 7f;
+        return 5.9f;
     }
 
     @Override

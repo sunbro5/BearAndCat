@@ -3,6 +3,8 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.mygdx.game.level.LevelData;
 import com.mygdx.game.level.LevelLoader;
+import com.mygdx.game.screens.BeforeLevelScreen;
+import com.mygdx.game.screens.LevelScreen;
 import com.mygdx.game.screens.MainMenuScreen;
 import com.mygdx.game.sound.MusicPlayer;
 import com.sun.tools.javac.util.Pair;
@@ -45,7 +47,7 @@ public class MyGdxGame extends Game {
     public boolean levelFinished(int score, int starsCount) {
         finalScore += score;
         maxFinalScore += starsCount;
-        if (gameLevel + 1 > levelLoader.getLevelSize() -1) {
+        if (gameLevel + 1 > levelLoader.getLevelSize() - 1) {
             return false;
         }
         gameLevel++;
@@ -53,7 +55,11 @@ public class MyGdxGame extends Game {
     }
 
     public void resetGameLevel() {
-        gameLevel = 0;
+        if(gameLevel != 0){
+            gameLevel = 1; // no intro
+            finalScore = 0;
+            maxFinalScore = 0;
+        }
     }
 
     public void render() {

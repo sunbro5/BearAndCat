@@ -9,7 +9,7 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
-		config.setTitle("Claws and Paws");
+		config.setTitle("Silly Paws");
 		config.setWindowIcon("icon.png");
 		new Lwjgl3Application(new MyGdxGame(), config);
 	}

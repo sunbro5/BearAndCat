@@ -44,7 +44,7 @@ public class IsOnTop implements EntityBehavior {
                 moveAbleEntity.getPosition().height);
 
         if (!checkHaveOnTopPosition.overlaps(checkPosition) || WorldPhysics.overlapsWith2Precision(entity.getPosition(), position)) {
-            Gdx.app.log("", "Not on top");
+            Gdx.app.debug("", "Not on top");
             moveAbleEntity.getStates().remove(getType());
             return new BehaviorResult(moveAbleEntity.getVelocity());
         }

@@ -29,7 +29,7 @@ import lombok.Value;
 
 public class WorldPhysics {
 
-    public static final int GRAVITY = 25;
+    public static final int GRAVITY = 20;
     private static final int COLLISION_DEPTH_CHECK = 1;
     private static final float POSITION_OFFSET = 0.1f;
     private final Rectangle[][] walls;
@@ -164,7 +164,7 @@ public class WorldPhysics {
         for (PickAbleEntity pickAbleEntity : new ArrayList<>(pickAbleEntities)) {
             if (controlAbleEntity.getPosition().overlaps(pickAbleEntity.getPosition())) {
                 pickAbleEntity.onPick(levelData, controlAbleEntity);
-                Gdx.app.log("", "Pick");
+                Gdx.app.debug("", "Pick");
             }
         }
     }
@@ -174,7 +174,7 @@ public class WorldPhysics {
         for (ActionEntity actionEntity : new ArrayList<>(actionEntities)) {
             if (controlAbleEntity.getPosition().overlaps(actionEntity.getPosition())) {
                 actionEntity.action(levelData, controlAbleEntity);
-                Gdx.app.log("", "Action");
+                Gdx.app.debug("", "Action");
             }
         }
     }

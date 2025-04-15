@@ -8,5 +8,6 @@ public enum BehaviorType {
     MUSHROOM_EAT,
     SLEEP,
     IDLE,
-    SLOW
+    SLOW,
+    END_WALK
 }
