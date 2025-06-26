@@ -168,11 +168,6 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         SLOW,
         FAST
     }
-
-    public Rectangle getPosition() {
-        return position;
-    }
-
     public boolean isOnGround() {
         return onGround;
     }
