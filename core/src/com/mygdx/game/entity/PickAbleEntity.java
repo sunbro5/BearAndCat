@@ -1,20 +1,16 @@
 package com.mygdx.game.entity;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.level.LevelData;
 import com.mygdx.game.physics.WorldPhysics;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public abstract class PickAbleEntity implements DrawableEntity {
 
-    @Getter
     protected final Rectangle position;
     protected final Texture texture;
 
@@ -33,5 +29,9 @@ public abstract class PickAbleEntity implements DrawableEntity {
     @Override
     public void afterUpdate() {
 
+    }
+
+    public Rectangle getPosition() {
+        return this.position;
     }
 }
