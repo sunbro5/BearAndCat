@@ -12,6 +12,7 @@ import com.mygdx.game.level.LevelData;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.renderer.AnimationType;
 import com.mygdx.game.renderer.WorldRenderer;
+import com.mygdx.game.sound.SoundPlayer;
 import com.mygdx.game.utils.LevelUtils;
 
 import java.util.ArrayDeque;
@@ -160,6 +161,8 @@ public class IntroScreen implements Screen {
 
     @Override
     public void dispose() {
+        SoundPlayer.stopAll(levelData.getBear().getEntitySound());
+        SoundPlayer.stopAll(levelData.getCat().getEntitySound());
         worldRenderer.dispose();
     }
 

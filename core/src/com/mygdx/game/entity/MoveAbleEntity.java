@@ -9,6 +9,7 @@ import com.mygdx.game.behavior.EntityBehavior;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.physics.collision.CollisionHandler;
 import com.mygdx.game.physics.collision.CollisionStrategy;
+import com.mygdx.game.sound.EntitySound;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,11 +47,15 @@ public abstract class MoveAbleEntity implements DrawableEntity {
     @Getter
     protected boolean moved = false;
     protected int maxFallSpeed = 50;
+
     @Getter
     protected final Map<BehaviorType, EntityBehavior> states = new HashMap<>();
     @Getter
     protected final Set<BehaviorType> possibleStates;
     protected final List<CollisionStrategy> possibleCollisionStrategies;
+
+    @Getter
+    protected EntitySound entitySound;
 
     private final int id;
 
@@ -76,6 +81,10 @@ public abstract class MoveAbleEntity implements DrawableEntity {
 
     public int getWeight() {
         return 0;
+    }
+
+    public boolean inAir() {
+        return !onGround && !states.containsKey(BehaviorType.IS_ON_TOP);
     }
 
     @Override

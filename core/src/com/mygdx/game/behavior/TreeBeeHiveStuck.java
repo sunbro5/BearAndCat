@@ -4,9 +4,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.entity.MoveAbleEntity;
-import com.mygdx.game.entity.PickAbleEntity;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.renderer.AnimationType;
+import com.mygdx.game.sound.EntitySoundType;
+import com.mygdx.game.sound.SoundPlayer;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +22,8 @@ public class TreeBeeHiveStuck implements EntityBehavior {
     private boolean beeHiveFall = false;
     private boolean howl = false;
     private boolean eating = false;
+    private int currentEatFrame = 0;
+    private int currentGrowlFrame = 0;
 
     @Override
     public BehaviorType getType() {
@@ -46,6 +49,14 @@ public class TreeBeeHiveStuck implements EntityBehavior {
                         eating = true;
 
                     } else {
+                        Integer eatFrame = controlAbleEntity.getCustomAnimationIndex();
+                        if(eatFrame != null){
+                            if(eatFrame == 5 && currentEatFrame != 5){
+                                SoundPlayer.play(controlAbleEntity.getEntitySound(), EntitySoundType.EAT);
+                                eatCallback.run();
+                            }
+                            currentEatFrame = eatFrame;
+                        }
                         if (controlAbleEntity.isCustomAnimationFinished()) {
                             eatCallback.run();
                             controlAbleEntity.setAnimation(null, false);
@@ -60,6 +71,15 @@ public class TreeBeeHiveStuck implements EntityBehavior {
                         moveAbleEntity.getStates().remove(BehaviorType.HAVE_ON_TOP);
                         moveAbleEntity.getPossibleStates().remove(BehaviorType.HAVE_ON_TOP);
                         howl = true;
+
+                    } else {
+                        Integer growlFrame = controlAbleEntity.getCustomAnimationIndex();
+                        if(growlFrame != null){
+                            if(growlFrame == 3 && currentGrowlFrame != 3){
+                                SoundPlayer.play(controlAbleEntity.getEntitySound(), EntitySoundType.GROWL);
+                            }
+                            currentGrowlFrame = growlFrame;
+                        }
                     }
                 }
             }
@@ -80,4 +100,5 @@ public class TreeBeeHiveStuck implements EntityBehavior {
     public boolean isFinished() {
         return isClose && beeHiveFall && eating;
     }
+
 }

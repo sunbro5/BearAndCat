@@ -61,4 +61,5 @@ public class IsOnTop implements EntityBehavior {
     public boolean isFinished() {
         return true;
     }
+
 }

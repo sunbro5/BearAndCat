@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.behavior.BehaviorType;
+import com.mygdx.game.behavior.MoveSound;
 import com.mygdx.game.physics.collision.CollisionStrategy;
 import com.mygdx.game.physics.collision.LandOnTopStrategy;
 import com.mygdx.game.physics.collision.PushStrategy;
@@ -19,7 +20,7 @@ import java.util.Set;
 
 public class Bear extends ControlAbleEntity {
 
-    public Bear(float x, float y, Texture texture) {
+    public Bear(float x, float y, Texture texture, EntitySound entitySound) {
         super(new Rectangle(x, y, 45, 17), new Rectangle(-13, 0, 26, 12));
         //super(new Rectangle(x, y, 45, 17), new Rectangle(-4, 0, 6, 12));
 
@@ -38,6 +39,9 @@ public class Bear extends ControlAbleEntity {
 
         TextureRegion[] howlFrames = new TextureRegion[]{tmp[0][0], tmp[4][1], tmp[4][2], tmp[4][3], tmp[4][4], tmp[0][0], tmp[3][0], tmp[3][1], tmp[3][2], tmp[3][3], tmp[3][4], tmp[0][0]};
         animations.put(AnimationType.HOWL, new Animation<>(3f / ((float) howlFrames.length), howlFrames));
+
+        this.entitySound = entitySound;
+        setState(new MoveSound());
     }
 
     @Override

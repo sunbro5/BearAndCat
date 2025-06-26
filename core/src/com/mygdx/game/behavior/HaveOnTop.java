@@ -1,7 +1,6 @@
 package com.mygdx.game.behavior;
 
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.physics.WorldPhysics;
 
@@ -42,4 +41,5 @@ public class HaveOnTop implements EntityBehavior {
     public boolean isFinished() {
         return true;
     }
+
 }

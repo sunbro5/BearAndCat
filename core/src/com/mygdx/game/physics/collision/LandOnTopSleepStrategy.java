@@ -2,6 +2,7 @@ package com.mygdx.game.physics.collision;
 
 import com.badlogic.gdx.Gdx;
 import com.mygdx.game.behavior.BehaviorType;
+import com.mygdx.game.behavior.Sleep;
 import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.physics.WorldPhysics;
@@ -25,6 +26,7 @@ public class LandOnTopSleepStrategy implements CollisionStrategy {
             controlAbleEntity.setAnimation(null, false);
             controlAbleEntity.resetIdle();
         }
+        collision.getMoveAbleEntity().getStates().get(BehaviorType.SLEEP).onCollision(entity);
         collision.getMoveAbleEntity().getStates().remove(BehaviorType.SLEEP);
         return new CollisionHandlerResult(entity.getVelocity());
     }

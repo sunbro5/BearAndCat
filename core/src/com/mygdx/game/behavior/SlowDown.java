@@ -42,4 +42,5 @@ public class SlowDown implements EntityBehavior {
     public boolean isFinished() {
         return !reset;
     }
+
 }

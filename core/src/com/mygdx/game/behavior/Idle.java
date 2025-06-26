@@ -18,6 +18,9 @@ public class Idle implements EntityBehavior {
     @Override
     public BehaviorResult update(MoveAbleEntity moveAbleEntity, WorldPhysics worldPhysics) {
         if (moveAbleEntity instanceof Bear) {
+            if(moveAbleEntity.getStates().containsKey(BehaviorType.SLEEP)){
+                return new BehaviorResult(moveAbleEntity.getVelocity());
+            }
             Bear bear = (Bear) moveAbleEntity;
             bear.setState(new Sleep());
             bear.getPossibleStates().remove(BehaviorType.HAVE_ON_TOP);
@@ -49,4 +52,5 @@ public class Idle implements EntityBehavior {
     public boolean isFinished() {
         return true;
     }
+
 }

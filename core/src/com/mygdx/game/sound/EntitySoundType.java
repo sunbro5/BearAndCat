@@ -4,5 +4,8 @@ public enum EntitySoundType {
     WALK,
     JUMP,
     LAND,
-    HIT_STAR
+    SLEEP,
+    HIT_STAR,
+    EAT,
+    GROWL
 }

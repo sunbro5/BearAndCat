@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.level.LevelData;
 import com.mygdx.game.physics.WorldPhysics;
+import com.mygdx.game.sound.EntitySoundType;
+import com.mygdx.game.sound.SoundPlayer;
 
 public class Star extends PickAbleEntity {
 
@@ -39,5 +41,6 @@ public class Star extends PickAbleEntity {
     public void onPick(LevelData levelData, ControlAbleEntity controlAbleEntity) {
         levelData.setScore(levelData.getScore() + 1);
         levelData.getPickAbleEntities().remove(this);
+        SoundPlayer.play(controlAbleEntity.getEntitySound(), EntitySoundType.HIT_STAR);
     }
 }

@@ -24,7 +24,6 @@ import lombok.Setter;
 
 public abstract class ControlAbleEntity extends MoveAbleEntity {
 
-
     private static final int CAMERA_OFFSET = 30;
     protected Animation<TextureRegion> standAnimation;
     protected Animation<TextureRegion> walkAnimation;
@@ -37,8 +36,11 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
     @Setter
     private float stateTime;
 
-    @Setter
+    @Getter
     private Move move = Move.STAND;
+
+    @Getter
+    private Move lastMove = Move.STAND;
 
     @Getter
     @Setter
@@ -68,11 +70,11 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
     private float idleValue = getIdleTimeout();
 
     public void jump() {
-        if (onGround || states.containsKey(BehaviorType.IS_ON_TOP)) {
+        if ((onGround || states.containsKey(BehaviorType.IS_ON_TOP)) && haveControl) {
             resetIdle();
             jumping = true;
+            SoundPlayer.play(entitySound, EntitySoundType.JUMP);
         }
-
     }
 
     @Override
@@ -110,6 +112,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         super.update(delta, worldPhysics);
         worldPhysics.pickAbleEntitiesCheck(this);
         worldPhysics.actionEntitiesCheck(this);
+        this.lastMove = Move.STAND;
     }
 
     private void calculateIdle(float delta) {
@@ -174,12 +177,12 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         return onGround;
     }
 
-    public boolean inAir() {
-        return !onGround && !states.containsKey(BehaviorType.IS_ON_TOP);
-    }
-
     public boolean isCustomAnimationFinished() {
         return customAnimation != null && customAnimation.isAnimationFinished(stateTime);
+    }
+
+    public Integer getCustomAnimationIndex(){
+        return customAnimation != null ? customAnimation.getKeyFrameIndex(stateTime) : null;
     }
 
     public void setAnimation(AnimationType type, boolean looping) {
@@ -206,6 +209,12 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
             return;
         }
         this.move = move;
+        this.lastMove = move;
+    }
+
+    public void setMove(Move move){
+        this.move = move;
+        this.lastMove = move;
     }
 
 }

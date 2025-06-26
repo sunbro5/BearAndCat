@@ -32,4 +32,5 @@ public class EndWalk implements EntityBehavior {
     public boolean isFinished() {
         return seconds > 1;
     }
+
 }

@@ -101,14 +101,15 @@ public class MusicPlayer implements Disposable {
     @Getter
     @RequiredArgsConstructor
     enum MusicType {
-        PIANO_1("Piano1.mp3"),
-        PIANO_2("Piano2.mp3"),
-        PIANO_3("Piano3.mp3"),
-        PIANO_4("Piano4.mp3"),
-        PIANO_5("Piano5.mp3"),
-        PIANO_6("Piano6.mp3"),
-        PIANO_7("Piano7.mp3"),
-        PIANO_8("Piano8.mp3"),
+        PIANO_X("Pinecone_Ambiance_MP3.mp3"),
+//        PIANO_1("Piano1.mp3"),
+//        PIANO_2("Piano2.mp3"),
+//        PIANO_3("Piano3.mp3"),
+//        PIANO_4("Piano4.mp3"),
+//        PIANO_5("Piano5.mp3"),
+//        PIANO_6("Piano6.mp3"),
+//        PIANO_7("Piano7.mp3"),
+//        PIANO_8("Piano8.mp3"),
         ;
         private final String name;
     }

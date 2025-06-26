@@ -4,11 +4,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.behavior.BehaviorType;
+import com.mygdx.game.behavior.MoveSound;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.physics.collision.CollisionStrategy;
 import com.mygdx.game.physics.collision.LandOnTopSleepStrategy;
 import com.mygdx.game.physics.collision.LandOnTopStrategy;
 import com.mygdx.game.physics.collision.PushStrategy;
+import com.mygdx.game.sound.EntitySound;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,9 +20,11 @@ import java.util.Set;
 public class Box extends MoveAbleEntity {
     private final Texture texture;
 
-    public Box(Rectangle rectangle, Texture texture) {
+    public Box(Rectangle rectangle, Texture texture, EntitySound entitySound) {
         super(rectangle, rectangle);
         this.texture = texture;
+        this.entitySound = entitySound;
+        setState(new MoveSound());
     }
 
     @Override

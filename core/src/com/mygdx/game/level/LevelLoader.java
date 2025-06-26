@@ -31,6 +31,7 @@ import com.mygdx.game.entity.PickAbleEntity;
 import com.mygdx.game.entity.Star;
 import com.mygdx.game.entity.TreeBeeHiveAction;
 import com.mygdx.game.entity.Web;
+import com.mygdx.game.sound.EntitySound;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,11 +85,11 @@ public class LevelLoader {
         Map<String, List<Rectangle>> terrainEntitiesByType = getTileCellsByType(terrainEntities);
         List<Rectangle> boxes = getOrEmpty(terrainEntitiesByType, "box");
         for (Rectangle box : boxes) {
-            moveAbleEntities.add(new Box(box, assetsLoader.getTexture(AssetsLoader.TextureType.BOX_2)));
+            moveAbleEntities.add(new Box(box, assetsLoader.getTexture(AssetsLoader.TextureType.BOX_2), assetsLoader.getBoxSound()));
         }
         List<Rectangle> ironBoxes = getOrEmpty(terrainEntitiesByType, "ironbox");
         for (Rectangle ironBox : ironBoxes) {
-            moveAbleEntities.add(new IronBox(ironBox, assetsLoader.getTexture(AssetsLoader.TextureType.BOX_3)));
+            moveAbleEntities.add(new IronBox(ironBox, assetsLoader.getTexture(AssetsLoader.TextureType.BOX_3), assetsLoader.getBoxSound()));
         }
 
         List<Rectangle> stars = getOrEmpty(terrainEntitiesByType, "star");
@@ -139,8 +140,8 @@ public class LevelLoader {
 
         }
 
-        ControlAbleEntity cat = new Cat(catRectangle.x, catRectangle.y, assetsLoader.getTexture(AssetsLoader.TextureType.CAT));
-        ControlAbleEntity bear = new Bear(bearRectangle.x, bearRectangle.y, assetsLoader.getTexture(AssetsLoader.TextureType.BEAR_1));
+        ControlAbleEntity cat = new Cat(catRectangle.x, catRectangle.y, assetsLoader.getTexture(AssetsLoader.TextureType.CAT), assetsLoader.getCatSound());
+        ControlAbleEntity bear = new Bear(bearRectangle.x, bearRectangle.y, assetsLoader.getTexture(AssetsLoader.TextureType.BEAR_1), assetsLoader.getBearSound());
         if (level.isBearSleep()) {
             bear.setHaveControl(false);
             bear.setState(new Sleep());

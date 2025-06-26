@@ -37,7 +37,7 @@ public class MyGdxGame extends Game {
         this.levelLoader = new LevelLoader(assetsLoader);
         this.setScreen(new MainMenuScreen(this));
         this.musicPlayer = new MusicPlayer();
-        //musicPlayer.play();
+        musicPlayer.play();
     }
 
     public LevelData getGameLevelData() {

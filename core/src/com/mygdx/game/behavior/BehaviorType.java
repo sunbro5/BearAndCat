@@ -9,5 +9,7 @@ public enum BehaviorType {
     SLEEP,
     IDLE,
     SLOW,
-    END_WALK
+    END_WALK,
+
+    MOVE_SOUND
 }
