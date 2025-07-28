@@ -55,7 +55,7 @@ public class WinnerScreen implements Screen {
 
         Label text1 = new Label("You finished the game! Congratulations !", skin);
         text1.setFontScale(1.5f);
-        Label text2 = new Label("Score: " + game.getFinalScore() + "/" + game.getMaxFinalScore(), skin);
+        Label text2 = new Label("Score: " + game.getGameData().getFinalScore() + "/" + game.getGameData().getMaxFinalScore(), skin);
         text2.setFontScale(1.5f);
         Label text3 = new Label("Press anything!", skin);
         text3.setFontScale(1.5f);

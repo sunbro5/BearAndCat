@@ -6,12 +6,16 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FillViewport;
@@ -20,7 +24,7 @@ import com.mygdx.game.AssetsLoader;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.utils.LevelUtils;
 
-public class MainMenuScreen implements Screen {
+public class SettingsScreen implements Screen {
     private MyGdxGame game;
     private OrthographicCamera camera;
     private SpriteBatch spriteBatch;
@@ -29,7 +33,7 @@ public class MainMenuScreen implements Screen {
     private Skin skin;
     private Viewport viewport;
 
-    public MainMenuScreen(final MyGdxGame game) {
+    public SettingsScreen(final MyGdxGame game) {
 
         this.game = game;
         camera = new OrthographicCamera();
@@ -60,65 +64,51 @@ public class MainMenuScreen implements Screen {
         mainTable.center();
 
         //Create buttons
-        TextButton continueButton = new TextButton("Continue", skin);
-        TextButton playButton = new TextButton("New Game", skin);
-        TextButton settingsButton = new TextButton("Settings", skin);
-        TextButton exitButton = new TextButton("Exit", skin);
+        TextButton backButton = new TextButton("Back", skin);
+        CheckBox soundsCheckBox = new CheckBox("Sounds", skin);
+        soundsCheckBox.setChecked(!game.getGameData().isSoundMute());
+        CheckBox musicCheckBox = new CheckBox("Music", skin);
+        musicCheckBox.setChecked(!game.getGameData().isMusicMute());
 
-        Label header = new Label("Silly Paws", skin);
+        Table checkBoxTable = new Table();
+        checkBoxTable.left();
+        checkBoxTable.add(soundsCheckBox).left().padBottom(5).row();
+        checkBoxTable.add(musicCheckBox).left().row();
+
+        Label header = new Label("Settings", skin);
         header.setFontScale(1.5f);
-        Label footer = new Label("Move: Arrows, Jump: Space", skin);
-        footer.setFontScale(0.7f);
-        Label footer2 = new Label("Change character: Alt, Restart: R", skin);
-        footer2.setFontScale(0.7f);
 
-        //Add listeners to buttons
-        continueButton.addListener(new ClickListener() {
+        backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                LevelUtils.setLevelScreen(game);
+                game.setScreen(new MainMenuScreen(game));
                 dispose();
             }
         });
-        playButton.addListener(new ClickListener() {
+
+        musicCheckBox.addListener(new ChangeListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.resetGameLevel();
-                LevelUtils.setLevelScreen(game);
-                dispose();
+            public void changed(ChangeEvent event, Actor actor) {
+                game.getGameData().setMusicMute(!musicCheckBox.isChecked());
             }
         });
-        settingsButton.addListener(new ClickListener() {
+
+        soundsCheckBox.addListener(new ChangeListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new SettingsScreen(game));
-                dispose();
+            public void changed(ChangeEvent event, Actor actor) {
+                game.getGameData().setSoundMute(!soundsCheckBox.isChecked());
             }
         });
-        exitButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
-                dispose();
-            }
-        });
+
 
         //Add buttons to table
         mainTable.add(header).padBottom(10);
         mainTable.row();
-        if (game.getGameData().getGameLevel() != 0) {
-            mainTable.add(continueButton).minWidth(100);
-            mainTable.row();
-        }
-        mainTable.add(playButton).minWidth(100);
+        mainTable.add(backButton).minWidth(100);
         mainTable.row();
-        mainTable.add(settingsButton).minWidth(100);
+        mainTable.add(checkBoxTable).minWidth(100);
         mainTable.row();
-        mainTable.add(exitButton).minWidth(100);
-        mainTable.row();
-        mainTable.add(footer).padTop(10);
-        mainTable.row();
-        mainTable.add(footer2);
+
 
         //Add table to stage
         stage.addActor(mainTable);
@@ -134,10 +124,6 @@ public class MainMenuScreen implements Screen {
 
         stage.act();
         stage.draw();
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-            LevelUtils.setLevelScreen(game);
-            dispose();
-        }
     }
 
     @Override

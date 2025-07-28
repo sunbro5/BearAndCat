@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygdx.game.sound.EntitySound;
 import com.mygdx.game.sound.EntitySoundType;
+import com.mygdx.game.sound.SoundPlayer;
 import com.mygdx.game.utils.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -60,13 +62,16 @@ public class AssetsLoader {
     @Getter
     private EntitySound boxSound;
 
-    public AssetsLoader() {
+    @Getter
+    private List<EntitySound> entitiesSounds = new ArrayList<>();
+
+    public AssetsLoader(GameData gameData) {
         atlas = new TextureAtlas(Gdx.files.internal("clean-crispy-ui.atlas"));
         skin = new Skin(Gdx.files.internal("clean-crispy-ui.json"), atlas);
         BitmapFont font = skin.getFont("font");
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         loadTextures();
-        loadSounds();
+        loadSounds(gameData);
     }
 
     private void loadTextures() {
@@ -76,7 +81,7 @@ public class AssetsLoader {
         }
     }
 
-    private void loadSounds(){
+    private void loadSounds(GameData gameData){
         Map<EntitySoundType, List<Sound>> bears = new HashMap<>();
         bears.put(EntitySoundType.WALK, CollectionUtils.listOf(
                 loadSound("BEAR_WALK_01_LOOP.wav"),
@@ -113,7 +118,7 @@ public class AssetsLoader {
                 loadSound("BEAR_GROWL_01.wav"),
                 loadSound("BEAR_GROWL_02.wav")
         ));
-        bearSound = new EntitySound(bears, 1f);
+        bearSound = new EntitySound(bears, 1f, gameData);
 
 
         Map<EntitySoundType, List<Sound>> cats = new HashMap<>();
@@ -137,7 +142,7 @@ public class AssetsLoader {
                 loadSound("CAT_LAND_02.wav"),
                 loadSound("CAT_LAND_03.wav")
         ));
-        catSound = new EntitySound(cats, 1f);
+        catSound = new EntitySound(cats, 1f, gameData);
 
         Map<EntitySoundType, List<Sound>> boxes = new HashMap<>();
 
@@ -149,7 +154,11 @@ public class AssetsLoader {
         boxes.put(EntitySoundType.WALK, CollectionUtils.listOf(
                 loadSound("PUSH_BOX_01_LOOP_V2.wav")
         ));
-        boxSound = new EntitySound(boxes, 1f);
+        boxSound = new EntitySound(boxes, 1f, gameData);
+
+        entitiesSounds.add(bearSound);
+        entitiesSounds.add(catSound);
+        entitiesSounds.add(boxSound);
     }
 
 
@@ -167,8 +176,9 @@ public class AssetsLoader {
         }
         atlas.dispose();
         skin.dispose();
-        bearSound.dispose();
-        catSound.dispose();
+        for (EntitySound entitySound : entitiesSounds){
+            entitySound.dispose();
+        }
     }
 
 }

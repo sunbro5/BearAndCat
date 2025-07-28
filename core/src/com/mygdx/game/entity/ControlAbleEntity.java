@@ -73,7 +73,6 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         if ((onGround || states.containsKey(BehaviorType.IS_ON_TOP)) && haveControl) {
             resetIdle();
             jumping = true;
-            SoundPlayer.play(entitySound, EntitySoundType.JUMP);
         }
     }
 
@@ -104,6 +103,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
             jumping = false;
         }
         if (jumping) {
+            SoundPlayer.play(entitySound, EntitySoundType.JUMP);
             velocity.y = getJumpVelocity();
             onGround = false;
             jumping = false;

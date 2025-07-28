@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.GameData;
 import com.mygdx.game.entity.ActionEntity;
 import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.entity.DrawableEntity;
@@ -15,6 +16,7 @@ import com.mygdx.game.entity.GameEntity;
 import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.entity.PickAbleEntity;
 import com.mygdx.game.level.LevelData;
+import com.mygdx.game.sound.SoundPlayer;
 
 import java.util.ArrayList;
 import java.util.Collections;

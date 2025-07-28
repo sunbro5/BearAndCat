@@ -34,7 +34,7 @@ public class LevelScreen implements Screen {
 
     @Override
     public void show() {
-
+        game.getMusicPlayer().next();
     }
 
     @Override
@@ -83,7 +83,7 @@ public class LevelScreen implements Screen {
                 levelData.getCat().getStates().get(BehaviorType.END_WALK).isFinished()
         ) {
             if (game.levelFinished(levelData.getScore(), levelData.getStarsCount())) {
-                Gdx.app.log("", "Score : " + game.getFinalScore() + " / " + game.getMaxFinalScore());
+                Gdx.app.log("", "Score : " + game.getGameData().getFinalScore() + " / " + game.getGameData().getMaxFinalScore());
                 LevelUtils.setLevelScreen(game);
             } else {
                 game.setScreen(new WinnerScreen(game));
@@ -109,7 +109,10 @@ public class LevelScreen implements Screen {
             printEntities();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
-            game.getMusicPlayer().toggle();
+            game.toggleMuteMusic();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+            game.toggleMuteSound();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
             renderDebug.set(!renderDebug.get());

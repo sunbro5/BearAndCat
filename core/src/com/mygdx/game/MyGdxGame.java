@@ -6,7 +6,9 @@ import com.mygdx.game.level.LevelLoader;
 import com.mygdx.game.screens.BeforeLevelScreen;
 import com.mygdx.game.screens.LevelScreen;
 import com.mygdx.game.screens.MainMenuScreen;
+import com.mygdx.game.sound.EntitySound;
 import com.mygdx.game.sound.MusicPlayer;
+import com.mygdx.game.sound.SoundPlayer;
 import com.sun.tools.javac.util.Pair;
 
 import java.util.List;
@@ -16,13 +18,7 @@ import lombok.Getter;
 public class MyGdxGame extends Game {
 
     @Getter
-    private int gameLevel = 0;
-
-    @Getter
-    private int finalScore;
-
-    @Getter
-    private int maxFinalScore;
+    private GameData gameData;
 
     private LevelLoader levelLoader;
 
@@ -33,33 +29,63 @@ public class MyGdxGame extends Game {
     private MusicPlayer musicPlayer;
 
     public void create() {
-        this.assetsLoader = new AssetsLoader();
+        this.gameData = new GameData();
+        this.assetsLoader = new AssetsLoader(gameData);
         this.levelLoader = new LevelLoader(assetsLoader);
+        this.musicPlayer = new MusicPlayer(gameData);
         this.setScreen(new MainMenuScreen(this));
-        this.musicPlayer = new MusicPlayer();
-        musicPlayer.play();
     }
 
     public LevelData getGameLevelData() {
-        return levelLoader.getLevel(gameLevel);
+        return levelLoader.getLevel(gameData.getGameLevel());
     }
 
     public boolean levelFinished(int score, int starsCount) {
-        finalScore += score;
-        maxFinalScore += starsCount;
-        if (gameLevel + 1 > levelLoader.getLevelSize() - 1) {
+        gameData.setFinalScore(gameData.getFinalScore() + score);
+        gameData.setMaxFinalScore(gameData.getMaxFinalScore() + starsCount);
+        if (gameData.getGameLevel() + 1 > levelLoader.getLevelSize() - 1) {
             return false;
         }
-        gameLevel++;
+        gameData.setGameLevel(gameData.getGameLevel() + 1);
         return true;
     }
 
-    public void resetGameLevel() {
-        if(gameLevel != 0){
-            gameLevel = 1; // no intro
-            finalScore = 0;
-            maxFinalScore = 0;
+    public void toggleMuteMusic(){
+        if(gameData.isMusicMute()){
+            unMuteMusic();
+        } else {
+            muteMusic();
         }
+    }
+
+    public void muteMusic(){
+        gameData.setMusicMute(true);
+        musicPlayer.mute();
+    }
+
+    public void unMuteMusic(){
+        gameData.setMusicMute(false);
+        musicPlayer.unMute();
+    }
+
+    public void toggleMuteSound(){
+        if(gameData.isSoundMute()){
+            unMuteSound();
+        } else {
+            muteSound();
+        }
+    }
+
+    public void muteSound(){
+        gameData.setSoundMute(true);
+    } 
+
+    public void unMuteSound(){
+        gameData.setSoundMute(false);
+    }
+
+    public void resetGameLevel() {
+        gameData.resetGameLevel();
     }
 
     public void render() {

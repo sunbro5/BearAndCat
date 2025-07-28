@@ -3,11 +3,10 @@ package com.mygdx.game.sound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.mygdx.game.Disposable;
+import com.mygdx.game.GameData;
 
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,16 +15,17 @@ public class MusicPlayer implements Disposable {
 
     private final LinkedList<MusicType> musicTypes;
     private Music music;
-    private final AtomicBoolean mute = new AtomicBoolean(false);
 
-    public MusicPlayer() {
+    private GameData gameData;
+
+    public MusicPlayer(GameData gameData) {
         musicTypes = new LinkedList<>();
         Collections.addAll(musicTypes, MusicType.values());
-        loadMusic(getNextMusic());
+        this.gameData = gameData;
     }
 
     public void play() {
-        if (mute.get()) {
+        if (gameData.isMusicMute()) {
             return;
         }
         Gdx.app.debug("", "Playing - " + musicTypes.getFirst());
@@ -38,32 +38,24 @@ public class MusicPlayer implements Disposable {
     }
 
     public void mute() {
-        mute.set(false);
+        stop();
     }
 
     public void unMute() {
-        mute.set(true);
         play();
     }
 
-    public void toggle() {
-        if (mute.get()) {
-            return;
-        }
-        if (music == null || !music.isPlaying()) {
-            play();
-        } else {
-            stop();
+    public void stop() {
+        if(music != null){
+            music.stop();
+            music.dispose();
+            music = null;
         }
     }
 
-    public void stop() {
-        if (mute.get()) {
-            return;
-        }
-        music.stop();
-        music.dispose();
-        music = null;
+    public void next(){
+        stop();
+        play();
     }
 
     private Music.OnCompletionListener onCompletionListener() {
@@ -101,15 +93,15 @@ public class MusicPlayer implements Disposable {
     @Getter
     @RequiredArgsConstructor
     enum MusicType {
-        PIANO_X("Pinecone_Ambiance_MP3.mp3"),
-//        PIANO_1("Piano1.mp3"),
-//        PIANO_2("Piano2.mp3"),
-//        PIANO_3("Piano3.mp3"),
-//        PIANO_4("Piano4.mp3"),
-//        PIANO_5("Piano5.mp3"),
-//        PIANO_6("Piano6.mp3"),
-//        PIANO_7("Piano7.mp3"),
-//        PIANO_8("Piano8.mp3"),
+        PIANO_INTRO("Pinecone_Ambiance_MP3.mp3"),
+        PIANO_1("Piano1.mp3"),
+        PIANO_2("Piano2.mp3"),
+        PIANO_3("Piano3.mp3"),
+        PIANO_4("Piano4.mp3"),
+        PIANO_5("Piano5.mp3"),
+        PIANO_6("Piano6.mp3"),
+        PIANO_7("Piano7.mp3"),
+        PIANO_8("Piano8.mp3"),
         ;
         private final String name;
     }

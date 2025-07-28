@@ -9,7 +9,7 @@ import java.util.Set;
 public class SoundPlayer {
 
     public static void play(EntitySound entitySound, EntitySoundType entitySoundType) {
-        if (entitySound == null) {
+        if (entitySound == null || entitySound.getGameData().isSoundMute()) {
             return;
         }
         Sound sound = CollectionUtils.randomObject(entitySound.getSounds().get(entitySoundType));
@@ -19,14 +19,14 @@ public class SoundPlayer {
     }
 
     public static Sound getSound(EntitySound entitySound, EntitySoundType entitySoundType) {
-        if (entitySound == null) {
+        if (entitySound == null || entitySound.getGameData().isSoundMute()) {
             return null;
         }
         return CollectionUtils.randomObject(entitySound.getSounds().get(entitySoundType));
     }
 
     public static Long playLoop(EntitySound entitySound, EntitySoundType entitySoundType) {
-        if (entitySound == null) {
+        if (entitySound == null || entitySound.getGameData().isSoundMute()) {
             return null;
         }
         Sound sound = CollectionUtils.randomObject(entitySound.getSounds().get(entitySoundType));
@@ -37,7 +37,7 @@ public class SoundPlayer {
     }
 
     public static void stopPlayLoop(EntitySound entitySound, EntitySoundType entitySoundType, Long id) {
-        if (entitySound == null || id == null) {
+        if (entitySound == null || id == null || entitySound.getGameData().isSoundMute()) {
             return;
         }
         Sound sound = CollectionUtils.randomObject(entitySound.getSounds().get(entitySoundType));
@@ -47,7 +47,7 @@ public class SoundPlayer {
     }
 
     public static void stopPlayLoop(Sound sound, Long id) {
-        if (sound == null || id == null) {
+        if (sound == null || id == null ) {
             return;
         }
         sound.stop(id);

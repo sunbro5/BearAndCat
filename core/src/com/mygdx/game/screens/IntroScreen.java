@@ -103,7 +103,7 @@ public class IntroScreen implements Screen {
 
     @Override
     public void show() {
-
+        game.getMusicPlayer().next();
     }
 
 
