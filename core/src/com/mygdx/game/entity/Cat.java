@@ -1,6 +1,5 @@
 package com.mygdx.game.entity;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,15 +13,11 @@ import com.mygdx.game.physics.collision.LandOnTopStrategy;
 import com.mygdx.game.physics.collision.PushStrategy;
 import com.mygdx.game.renderer.AnimationType;
 import com.mygdx.game.sound.EntitySound;
-import com.mygdx.game.sound.EntitySoundType;
-import com.mygdx.game.sound.SoundPlayer;
 import com.mygdx.game.utils.TextureUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class Cat extends ControlAbleEntity {

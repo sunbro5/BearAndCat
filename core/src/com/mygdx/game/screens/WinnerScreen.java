@@ -53,7 +53,7 @@ public class WinnerScreen implements Screen {
         mainTable.center();
 
 
-        Label text1 = new Label("You finished the game! Congratulations !", skin);
+        Label text1 = new Label("You have finished the game!", skin);
         text1.setFontScale(1.5f);
         Label text2 = new Label("Score: " + game.getGameData().getFinalScore() + "/" + game.getGameData().getMaxFinalScore(), skin);
         text2.setFontScale(1.5f);

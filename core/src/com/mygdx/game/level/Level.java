@@ -8,8 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Level {
     INTRO("intro.tmx", "Intro", false, "", false, false),
-    LEVELX("levelx1.tmx", "Level 1", true, "Find bear and get back home.", true, true),
-    LEVEL1("level1.tmx", "Level 1", false, "", true, true),
+    //LEVELX("levelx1.tmx", "Level 1", true, "Find bear and get back home.", true, true),
+    //LEVEL1("level1.tmx", "Level 1", false, "", true, true),
     LEVEL2("level2.tmx", "Level 2", false, "", false, true),
     LEVEL3("level3.tmx", "Level 3", false, "", false, false),
     LEVEL4("level4.tmx", "Level 4", false, "", true, true),
