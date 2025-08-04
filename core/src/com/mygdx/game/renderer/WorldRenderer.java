@@ -1,7 +1,9 @@
 package com.mygdx.game.renderer;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -39,6 +41,8 @@ public class WorldRenderer implements Disposable {
     private final OrthogonalTiledMapRenderer renderer;
     private final AtomicBoolean renderDebug;
     private final ShapeRenderer debugRenderer;
+
+    private final ShapeRenderer fadeRenderer;
     private final Viewport viewport;
     private final Viewport backgroundViewport;
 
@@ -64,6 +68,7 @@ public class WorldRenderer implements Disposable {
 
         this.renderDebug = renderDebug;
         debugRenderer = new ShapeRenderer();
+        fadeRenderer = new ShapeRenderer();
         // TODO terrain flickering is probably because of scaling of map
         viewport = new ExtendViewport(400, 200, camera);
         viewport.apply();
@@ -103,6 +108,7 @@ public class WorldRenderer implements Disposable {
             renderDebug(levelData);
         }
         renderScore(levelData);
+        renderFade(levelData);
 
     }
 
@@ -161,6 +167,16 @@ public class WorldRenderer implements Disposable {
         }
         fpsLogger.log();
         debugRenderer.end();
+    }
+
+    public void renderFade(LevelData levelData){
+        float fadeOverlay = levelData.getFadeOverlay();
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        fadeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        fadeRenderer.setColor(0, 0, 0, fadeOverlay);
+        fadeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        fadeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
     public void renderScore(LevelData levelData) {

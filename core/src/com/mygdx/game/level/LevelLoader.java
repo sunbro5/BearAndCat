@@ -149,7 +149,7 @@ public class LevelLoader {
         if (level.isBearIdle()) {
             bear.getPossibleStates().add(BehaviorType.IDLE);
         }
-        return new LevelData(bear, cat, cat, moveAbleEntities, pickAbleEntities, drawableEntities, actionEntities, endRectangle, wallTileset, map, backGround, frontBackGround, 0, stars.size(), level);
+        return new LevelData(bear, cat, cat, moveAbleEntities, pickAbleEntities, drawableEntities, actionEntities, endRectangle, wallTileset, map, backGround, frontBackGround, 0, stars.size(), level, 0);
     }
 
     private <T> List<T> getOrEmpty(Map<String, List<T>> map, String key) {

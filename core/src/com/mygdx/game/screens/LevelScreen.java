@@ -65,11 +65,11 @@ public class LevelScreen implements Screen {
         if (levelData.getBear().getPosition().overlaps(levelData.getEndRectangle()) && levelData.getCat().getPosition().overlaps(levelData.getEndRectangle())) {
             if(!levelData.getCat().getStates().containsKey(BehaviorType.END_WALK)){
                 levelData.getCat().setHaveControl(false);
-                levelData.getCat().setState(new EndWalk());
+                levelData.getCat().setState(new EndWalk(true, levelData));
             }
             if(!levelData.getBear().getStates().containsKey(BehaviorType.END_WALK)){
                 levelData.getBear().setHaveControl(false);
-                levelData.getBear().setState(new EndWalk());
+                levelData.getBear().setState(new EndWalk(false, levelData));
             }
 
         }
