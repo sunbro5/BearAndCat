@@ -3,6 +3,8 @@ package com.mygdx.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.behavior.BehaviorType;
 import com.mygdx.game.behavior.Idle;
@@ -30,6 +32,10 @@ public class IntroScreen implements Screen {
     private float sleepTime;
 
     private final Queue<Function<LevelData, Boolean>> states = new ArrayDeque<>();
+
+    private float barHeight = 0f;
+    private float targetHeight = 180f;
+    private float speed = 100f;
 
     public IntroScreen(MyGdxGame game, LevelData levelData) {
         this.game = game;
@@ -117,11 +123,17 @@ public class IntroScreen implements Screen {
                 states.poll();
             }
 
+            if (barHeight < targetHeight) {
+                barHeight += speed * delta;
+                if (barHeight > targetHeight) barHeight = targetHeight;
+            }
+
             worldPhysics.update(delta);
 
             levelData.getBear().getStates().get(BehaviorType.SLOW).onCollision(levelData.getCat());
             //render
-            worldRenderer.renderIntro(delta, levelData);
+            worldRenderer.renderIntro(delta, levelData, barHeight);
+
             handleControls();
         } else {
 

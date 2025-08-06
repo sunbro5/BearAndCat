@@ -17,6 +17,7 @@ import com.mygdx.game.AssetsLoader;
 import com.mygdx.game.behavior.BehaviorType;
 import com.mygdx.game.behavior.MushroomEat;
 import com.mygdx.game.behavior.Sleep;
+import com.mygdx.game.behavior.StartFade;
 import com.mygdx.game.entity.ActionEntity;
 import com.mygdx.game.entity.Bear;
 import com.mygdx.game.entity.BeeHive;
@@ -149,7 +150,11 @@ public class LevelLoader {
         if (level.isBearIdle()) {
             bear.getPossibleStates().add(BehaviorType.IDLE);
         }
-        return new LevelData(bear, cat, cat, moveAbleEntities, pickAbleEntities, drawableEntities, actionEntities, endRectangle, wallTileset, map, backGround, frontBackGround, 0, stars.size(), level, 0);
+
+        LevelData levelData = new LevelData(bear, cat, cat, moveAbleEntities, pickAbleEntities, drawableEntities, actionEntities, endRectangle, wallTileset, map, backGround, frontBackGround, 0, stars.size(), level, 0);
+        cat.setState(new StartFade(levelData));
+
+        return levelData;
     }
 
     private <T> List<T> getOrEmpty(Map<String, List<T>> map, String key) {

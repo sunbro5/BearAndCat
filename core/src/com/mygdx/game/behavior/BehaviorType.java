@@ -10,6 +10,7 @@ public enum BehaviorType {
     IDLE,
     SLOW,
     END_WALK,
+    START_FADE,
 
     MOVE_SOUND
 }

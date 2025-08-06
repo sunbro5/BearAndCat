@@ -104,9 +104,9 @@ public class SettingsScreen implements Screen {
         //Add buttons to table
         mainTable.add(header).padBottom(10);
         mainTable.row();
-        mainTable.add(backButton).minWidth(100);
-        mainTable.row();
         mainTable.add(checkBoxTable).minWidth(100);
+        mainTable.row();
+        mainTable.add(backButton).minWidth(100);
         mainTable.row();
 
 

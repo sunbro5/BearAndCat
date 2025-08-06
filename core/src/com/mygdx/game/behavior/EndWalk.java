@@ -28,8 +28,10 @@ public class EndWalk implements EntityBehavior {
     public BehaviorResult update(MoveAbleEntity moveAbleEntity, WorldPhysics worldPhysics) {
         if (moveAbleEntity instanceof ControlAbleEntity) {
             ((ControlAbleEntity) moveAbleEntity).setMove(ControlAbleEntity.Move.RIGHT);
-            seconds += Gdx.graphics.getDeltaTime();
-            levelData.setFadeOverlay(Math.min(seconds / DURATION, 1f));
+            if (main) {
+                seconds += Gdx.graphics.getDeltaTime();
+                levelData.setFadeOverlay(Math.min(seconds / DURATION, 1f));
+            }
         }
         return new BehaviorResult(moveAbleEntity.getVelocity());
     }
@@ -41,7 +43,7 @@ public class EndWalk implements EntityBehavior {
 
     @Override
     public boolean isFinished() {
-        return seconds > DURATION;
+        return !main || seconds > DURATION;
     }
 
 }

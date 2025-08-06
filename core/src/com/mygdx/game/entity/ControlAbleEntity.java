@@ -137,6 +137,9 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
     }
 
     public void render(SpriteBatch spriteBatch) {
+        if (currentFrame == null) {
+            return;
+        }
         float x = position.x + drawRectangle.x;
         float y = position.y + drawRectangle.y;
         float width = position.width + drawRectangle.width;
@@ -168,6 +171,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         SLOW,
         FAST
     }
+
     public boolean isOnGround() {
         return onGround;
     }
@@ -176,7 +180,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         return customAnimation != null && customAnimation.isAnimationFinished(stateTime);
     }
 
-    public Integer getCustomAnimationIndex(){
+    public Integer getCustomAnimationIndex() {
         return customAnimation != null ? customAnimation.getKeyFrameIndex(stateTime) : null;
     }
 
@@ -207,7 +211,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         this.lastMove = move;
     }
 
-    public void setMove(Move move){
+    public void setMove(Move move) {
         this.move = move;
         this.lastMove = move;
     }

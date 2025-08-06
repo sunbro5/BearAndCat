@@ -42,7 +42,7 @@ public class WorldRenderer implements Disposable {
     private final AtomicBoolean renderDebug;
     private final ShapeRenderer debugRenderer;
 
-    private final ShapeRenderer fadeRenderer;
+    private final ShapeRenderer shapeRenderer;
     private final Viewport viewport;
     private final Viewport backgroundViewport;
 
@@ -68,7 +68,7 @@ public class WorldRenderer implements Disposable {
 
         this.renderDebug = renderDebug;
         debugRenderer = new ShapeRenderer();
-        fadeRenderer = new ShapeRenderer();
+        shapeRenderer = new ShapeRenderer();
         // TODO terrain flickering is probably because of scaling of map
         viewport = new ExtendViewport(400, 200, camera);
         viewport.apply();
@@ -112,7 +112,7 @@ public class WorldRenderer implements Disposable {
 
     }
 
-    public void renderIntro(float delta, LevelData levelData) {
+    public void renderIntro(float delta, LevelData levelData, float barHeight) {
         ScreenUtils.clear(0, 0, 0f, 1);
         camera.update();
         viewport.apply();
@@ -133,6 +133,18 @@ public class WorldRenderer implements Disposable {
         if (renderDebug.get()) {
             renderDebug(levelData);
         }
+
+        shapeRenderer.setProjectionMatrix(uiViewport.getCamera().combined);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.BLACK);
+
+        shapeRenderer.rect(0, 1000 - barHeight, 2000, barHeight);
+
+        shapeRenderer.rect(0, 0, 2000, barHeight);
+
+        shapeRenderer.end();
+
 
     }
 
@@ -169,13 +181,14 @@ public class WorldRenderer implements Disposable {
         debugRenderer.end();
     }
 
-    public void renderFade(LevelData levelData){
+    public void renderFade(LevelData levelData) {
         float fadeOverlay = levelData.getFadeOverlay();
         Gdx.gl.glEnable(GL20.GL_BLEND);
-        fadeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        fadeRenderer.setColor(0, 0, 0, fadeOverlay);
-        fadeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        fadeRenderer.end();
+        shapeRenderer.setProjectionMatrix(uiViewport.getCamera().combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 0, 0, fadeOverlay);
+        shapeRenderer.rect(0, 0, 2000, 1000);
+        shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 

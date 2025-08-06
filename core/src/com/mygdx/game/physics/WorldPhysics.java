@@ -53,6 +53,7 @@ public class WorldPhysics {
 
     public void update(float delta) {
         if (delta * WorldPhysics.GRAVITY > 5) { // accidental gap when resize
+            Gdx.app.log("NO UPDATE", "NO UPDATE");
             return;
         }
         //Gdx.app.debug("","TICK");
