@@ -143,6 +143,7 @@ public class LevelLoader {
 
         ControlAbleEntity cat = new Cat(catRectangle.x, catRectangle.y, assetsLoader.getTexture(AssetsLoader.TextureType.CAT), assetsLoader.getCatSound());
         ControlAbleEntity bear = new Bear(bearRectangle.x, bearRectangle.y, assetsLoader.getTexture(AssetsLoader.TextureType.BEAR_1), assetsLoader.getBearSound());
+        ControlAbleEntity controlEntity = cat;
         if (level.isBearSleep()) {
             bear.setHaveControl(false);
             bear.setState(new Sleep());
@@ -150,8 +151,12 @@ public class LevelLoader {
         if (level.isBearIdle()) {
             bear.getPossibleStates().add(BehaviorType.IDLE);
         }
+        if (level.isCatSleep()) {
+            cat.setHaveControl(false);
+            controlEntity = bear;
+        }
 
-        LevelData levelData = new LevelData(bear, cat, cat, moveAbleEntities, pickAbleEntities, drawableEntities, actionEntities, endRectangle, wallTileset, map, backGround, frontBackGround, 0, stars.size(), level, 0);
+        LevelData levelData = new LevelData(bear, cat, controlEntity, moveAbleEntities, pickAbleEntities, drawableEntities, actionEntities, endRectangle, wallTileset, map, backGround, frontBackGround, 0, stars.size(), level, 0);
         cat.setState(new StartFade(levelData));
 
         return levelData;

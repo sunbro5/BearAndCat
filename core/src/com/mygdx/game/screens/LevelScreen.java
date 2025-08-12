@@ -8,6 +8,7 @@ import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.behavior.BehaviorType;
 import com.mygdx.game.behavior.EndWalk;
 import com.mygdx.game.entity.Bear;
+import com.mygdx.game.entity.Cat;
 import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.level.LevelData;
 import com.mygdx.game.physics.WorldPhysics;
@@ -63,11 +64,11 @@ public class LevelScreen implements Screen {
 
     private void handleFinish() {
         if (levelData.getBear().getPosition().overlaps(levelData.getEndRectangle()) && levelData.getCat().getPosition().overlaps(levelData.getEndRectangle())) {
-            if(!levelData.getCat().getStates().containsKey(BehaviorType.END_WALK)){
+            if (!levelData.getCat().getStates().containsKey(BehaviorType.END_WALK)) {
                 levelData.getCat().setHaveControl(false);
                 levelData.getCat().setState(new EndWalk(true, levelData));
             }
-            if(!levelData.getBear().getStates().containsKey(BehaviorType.END_WALK)){
+            if (!levelData.getBear().getStates().containsKey(BehaviorType.END_WALK)) {
                 levelData.getBear().setHaveControl(false);
                 levelData.getBear().setState(new EndWalk(false, levelData));
             }
@@ -135,9 +136,9 @@ public class LevelScreen implements Screen {
         }
         Gdx.app.debug("", "Bear " + levelData.getBear());
         Gdx.app.debug("", "Cat " + levelData.getCat());
-        if (levelData.getControlEntity() instanceof Bear) {
+        if (levelData.getControlEntity() instanceof Bear && levelData.getCat().isHaveControl()) {
             levelData.setControlEntity(levelData.getCat());
-        } else if (levelData.getBear().isHaveControl()) {
+        } else if (levelData.getControlEntity() instanceof Cat && levelData.getBear().isHaveControl()) {
             levelData.setControlEntity(levelData.getBear());
         }
     }
