@@ -3,8 +3,6 @@ package com.mygdx.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.behavior.BehaviorType;
 import com.mygdx.game.behavior.Idle;
@@ -173,8 +171,8 @@ public class IntroScreen implements Screen {
 
     @Override
     public void dispose() {
-        SoundPlayer.stopAll(levelData.getBear().getEntitySound());
-        SoundPlayer.stopAll(levelData.getCat().getEntitySound());
+        SoundPlayer.stopAll(levelData.getBear().getEntitySoundS());
+        SoundPlayer.stopAll(levelData.getCat().getEntitySoundS());
         worldRenderer.dispose();
     }
 

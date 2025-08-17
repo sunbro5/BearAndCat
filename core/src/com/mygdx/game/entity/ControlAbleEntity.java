@@ -7,13 +7,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.behavior.BehaviorType;
-import com.mygdx.game.behavior.EntityBehavior;
 import com.mygdx.game.behavior.Idle;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.renderer.AnimationType;
-import com.mygdx.game.sound.EntitySound;
 import com.mygdx.game.sound.EntitySoundType;
-import com.mygdx.game.sound.MusicPlayer;
 import com.mygdx.game.sound.SoundPlayer;
 
 import java.util.HashMap;
@@ -103,7 +100,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
             jumping = false;
         }
         if (jumping) {
-            SoundPlayer.play(entitySound, EntitySoundType.JUMP);
+            SoundPlayer.play(entitySoundS, EntitySoundType.JUMP);
             velocity.y = getJumpVelocity();
             onGround = false;
             jumping = false;

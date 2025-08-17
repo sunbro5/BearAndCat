@@ -3,15 +3,8 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.mygdx.game.level.LevelData;
 import com.mygdx.game.level.LevelLoader;
-import com.mygdx.game.screens.BeforeLevelScreen;
-import com.mygdx.game.screens.LevelScreen;
 import com.mygdx.game.screens.MainMenuScreen;
-import com.mygdx.game.sound.EntitySound;
 import com.mygdx.game.sound.MusicPlayer;
-import com.mygdx.game.sound.SoundPlayer;
-import com.sun.tools.javac.util.Pair;
-
-import java.util.List;
 
 import lombok.Getter;
 

@@ -36,7 +36,7 @@ public class MushroomEat implements EntityBehavior {
                 Integer eatFrame = controlAbleEntity.getCustomAnimationIndex();
                 if(eatFrame != null){
                     if(eatFrame == 6 && currentEatFrame != 6){
-                        SoundPlayer.play(controlAbleEntity.getEntitySound(), EntitySoundType.EAT);
+                        SoundPlayer.play(controlAbleEntity.getEntitySoundS(), EntitySoundType.EAT);
                         eatCallback.run();
                     }
                     currentEatFrame = eatFrame;

@@ -52,7 +52,7 @@ public class TreeBeeHiveStuck implements EntityBehavior {
                         Integer eatFrame = controlAbleEntity.getCustomAnimationIndex();
                         if(eatFrame != null){
                             if(eatFrame == 5 && currentEatFrame != 5){
-                                SoundPlayer.play(controlAbleEntity.getEntitySound(), EntitySoundType.EAT);
+                                SoundPlayer.play(controlAbleEntity.getEntitySoundS(), EntitySoundType.EAT);
                                 eatCallback.run();
                             }
                             currentEatFrame = eatFrame;
@@ -76,7 +76,7 @@ public class TreeBeeHiveStuck implements EntityBehavior {
                         Integer growlFrame = controlAbleEntity.getCustomAnimationIndex();
                         if(growlFrame != null){
                             if(growlFrame == 3 && currentGrowlFrame != 3){
-                                SoundPlayer.play(controlAbleEntity.getEntitySound(), EntitySoundType.GROWL);
+                                SoundPlayer.play(controlAbleEntity.getEntitySoundS(), EntitySoundType.GROWL);
                             }
                             currentGrowlFrame = growlFrame;
                         }

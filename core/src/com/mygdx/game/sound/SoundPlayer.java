@@ -4,45 +4,44 @@ import com.badlogic.gdx.audio.Sound;
 import com.mygdx.game.utils.CollectionUtils;
 
 import java.util.List;
-import java.util.Set;
 
 public class SoundPlayer {
 
-    public static void play(EntitySound entitySound, EntitySoundType entitySoundType) {
-        if (entitySound == null || entitySound.getGameData().isSoundMute()) {
+    public static void play(EntitySounds entitySoundS, EntitySoundType entitySoundType) {
+        if (entitySoundS == null || entitySoundS.getGameData().isSoundMute()) {
             return;
         }
-        Sound sound = CollectionUtils.randomObject(entitySound.getSounds().get(entitySoundType));
+        EntitySound sound = CollectionUtils.randomObject(entitySoundS.getSounds().get(entitySoundType));
         if (sound != null) {
-            sound.play(entitySound.getVolume());
+            sound.getSound().play(sound.getVolume());
         }
     }
 
-    public static Sound getSound(EntitySound entitySound, EntitySoundType entitySoundType) {
-        if (entitySound == null || entitySound.getGameData().isSoundMute()) {
+    public static EntitySound getSound(EntitySounds entitySoundS, EntitySoundType entitySoundType) {
+        if (entitySoundS == null || entitySoundS.getGameData().isSoundMute()) {
             return null;
         }
-        return CollectionUtils.randomObject(entitySound.getSounds().get(entitySoundType));
+        return CollectionUtils.randomObject(entitySoundS.getSounds().get(entitySoundType));
     }
 
-    public static Long playLoop(EntitySound entitySound, EntitySoundType entitySoundType) {
-        if (entitySound == null || entitySound.getGameData().isSoundMute()) {
+    public static Long playLoop(EntitySounds entitySoundS, EntitySoundType entitySoundType) {
+        if (entitySoundS == null || entitySoundS.getGameData().isSoundMute()) {
             return null;
         }
-        Sound sound = CollectionUtils.randomObject(entitySound.getSounds().get(entitySoundType));
+        EntitySound sound = CollectionUtils.randomObject(entitySoundS.getSounds().get(entitySoundType));
         if (sound != null) {
-            return sound.loop(entitySound.getVolume());
+            return sound.getSound().loop(sound.getVolume());
         }
         return null;
     }
 
-    public static void stopPlayLoop(EntitySound entitySound, EntitySoundType entitySoundType, Long id) {
-        if (entitySound == null || id == null || entitySound.getGameData().isSoundMute()) {
+    public static void stopPlayLoop(EntitySounds entitySoundS, EntitySoundType entitySoundType, Long id) {
+        if (entitySoundS == null || id == null || entitySoundS.getGameData().isSoundMute()) {
             return;
         }
-        Sound sound = CollectionUtils.randomObject(entitySound.getSounds().get(entitySoundType));
+        EntitySound sound = CollectionUtils.randomObject(entitySoundS.getSounds().get(entitySoundType));
         if (sound != null) {
-            sound.stop(id);
+            sound.getSound().stop(id);
         }
     }
 
@@ -60,13 +59,13 @@ public class SoundPlayer {
         sound.setPitch(id, pitch);
     }
 
-    public static void stopAll(EntitySound entitySound) {
-        if (entitySound == null) {
+    public static void stopAll(EntitySounds entitySoundS) {
+        if (entitySoundS == null) {
             return;
         }
-        for (List<Sound> sounds : entitySound.getSounds().values()) {
-            for (Sound sound : sounds) {
-                sound.stop();
+        for (List<EntitySound> sounds : entitySoundS.getSounds().values()) {
+            for (EntitySound sound : sounds) {
+                sound.getSound().stop();
             }
         }
     }

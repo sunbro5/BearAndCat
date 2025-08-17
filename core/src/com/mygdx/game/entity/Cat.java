@@ -12,7 +12,7 @@ import com.mygdx.game.physics.collision.LandOnTopSleepStrategy;
 import com.mygdx.game.physics.collision.LandOnTopStrategy;
 import com.mygdx.game.physics.collision.PushStrategy;
 import com.mygdx.game.renderer.AnimationType;
-import com.mygdx.game.sound.EntitySound;
+import com.mygdx.game.sound.EntitySounds;
 import com.mygdx.game.utils.TextureUtils;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.Set;
 
 public class Cat extends ControlAbleEntity {
 
-    public Cat(float x, float y, Texture texture, EntitySound entitySound) {
+    public Cat(float x, float y, Texture texture, EntitySounds entitySoundS) {
         super(new Rectangle(x, y, 24, 10), new Rectangle(-3, 0, 5, 0));
 
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 10, texture.getHeight() / 3);
@@ -37,7 +37,7 @@ public class Cat extends ControlAbleEntity {
         TextureRegion[] idleFrames = new TextureRegion[]{tmp[2][0], tmp[2][1], tmp[2][2], tmp[2][3], tmp[2][4], tmp[2][5], tmp[2][6], tmp[2][7]};
         animations.put(AnimationType.IDLE, new Animation<>(1f / ((float) idleFrames.length), idleFrames));
 
-        this.entitySound = entitySound;
+        this.entitySoundS = entitySoundS;
         setState(new MoveSound());
     }
 

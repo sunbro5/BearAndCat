@@ -1,7 +1,5 @@
 package com.mygdx.game.entity;
 
-import static com.mygdx.game.level.LevelLoader.TILE_SIZE;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -41,6 +39,6 @@ public class Star extends PickAbleEntity {
     public void onPick(LevelData levelData, ControlAbleEntity controlAbleEntity) {
         levelData.setScore(levelData.getScore() + 1);
         levelData.getPickAbleEntities().remove(this);
-        SoundPlayer.play(controlAbleEntity.getEntitySound(), EntitySoundType.HIT_STAR);
+        SoundPlayer.play(controlAbleEntity.getEntitySoundS(), EntitySoundType.HIT_STAR);
     }
 }

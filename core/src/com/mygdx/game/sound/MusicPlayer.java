@@ -93,8 +93,8 @@ public class MusicPlayer implements Disposable {
     @Getter
     @RequiredArgsConstructor
     enum MusicType {
-        PIANO_INTRO("Pinecone_Ambiance_MP3.mp3"),
         PIANO_1("Piano1.mp3"),
+        PIANO_INTRO("Pinecone_Ambiance_MP3.mp3"),
         PIANO_2("Piano2.mp3"),
         PIANO_3("Piano3.mp3"),
         PIANO_4("Piano4.mp3"),

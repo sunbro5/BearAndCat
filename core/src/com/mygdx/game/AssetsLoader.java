@@ -5,19 +5,16 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygdx.game.sound.EntitySound;
+import com.mygdx.game.sound.EntitySounds;
 import com.mygdx.game.sound.EntitySoundType;
-import com.mygdx.game.sound.SoundPlayer;
 import com.mygdx.game.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import lombok.Getter;
 
@@ -55,16 +52,16 @@ public class AssetsLoader {
     private final Map<TextureType, Texture> textures = new HashMap<>();
 
     @Getter
-    private EntitySound bearSound;
+    private EntitySounds bearSound;
 
     @Getter
-    private EntitySound catSound;
+    private EntitySounds catSound;
 
     @Getter
-    private EntitySound boxSound;
+    private EntitySounds boxSound;
 
     @Getter
-    private List<EntitySound> entitiesSounds = new ArrayList<>();
+    private List<EntitySounds> entitiesSounds = new ArrayList<>();
 
     public AssetsLoader(GameData gameData) {
         atlas = new TextureAtlas(Gdx.files.internal("clean-crispy-ui.atlas"));
@@ -83,79 +80,79 @@ public class AssetsLoader {
     }
 
     private void loadSounds(GameData gameData){
-        Map<EntitySoundType, List<Sound>> bears = new HashMap<>();
+        Map<EntitySoundType, List<EntitySound>> bears = new HashMap<>();
         bears.put(EntitySoundType.WALK, CollectionUtils.listOf(
-                loadSound("BEAR_WALK_01_LOOP.wav"),
-                loadSound("BEAR_WALK_02_LOOP.wav")
+                loadSound("BEAR_WALK_01_LOOP.wav", 0.6f),
+                loadSound("BEAR_WALK_02_LOOP.wav", 0.6f)
         ));
         bears.put(EntitySoundType.JUMP, CollectionUtils.listOf(
-                loadSound("BEAR_JUMP_01.wav"),
-                loadSound("BEAR_JUMP_01.wav"),
-                loadSound("BEAR_JUMP_03.wav")
+                loadSound("BEAR_JUMP_01.wav", 0.8f),
+                loadSound("BEAR_JUMP_01.wav", 0.8f),
+                loadSound("BEAR_JUMP_03.wav", 0.8f)
         ));
         bears.put(EntitySoundType.HIT_STAR, CollectionUtils.listOf(
-                loadSound("STAR_COLLECT_01.wav"),
-                loadSound("STAR_COLLECT_02.wav"),
-                loadSound("STAR_COLLECT_03.wav"),
-                loadSound("STAR_COLLECT_04.wav")
+                loadSound("STAR_COLLECT_01.wav", 0.8f),
+                loadSound("STAR_COLLECT_02.wav", 0.8f),
+                loadSound("STAR_COLLECT_03.wav", 0.8f),
+                loadSound("STAR_COLLECT_04.wav", 0.8f)
         ));
         bears.put(EntitySoundType.SLEEP, CollectionUtils.listOf(
-                loadSound("BEAR_SNORE_01_LOOP.wav"),
-                loadSound("BEAR_SNORE_02_LOOP.wav"),
-                loadSound("BEAR_SNORE_03_LOOP.wav")
+                loadSound("BEAR_SNORE_01_LOOP.wav", 0.8f),
+                loadSound("BEAR_SNORE_02_LOOP.wav", 0.8f),
+                loadSound("BEAR_SNORE_03_LOOP.wav", 0.8f)
         ));
         bears.put(EntitySoundType.LAND, CollectionUtils.listOf(
-                loadSound("BEAR_LAND_01.wav"),
-                loadSound("BEAR_LAND_02.wav"),
-                loadSound("BEAR_LAND_03.wav")
+                loadSound("BEAR_LAND_01.wav", 0.6f),
+                loadSound("BEAR_LAND_02.wav", 0.6f),
+                loadSound("BEAR_LAND_03.wav", 0.6f)
         ));
         bears.put(EntitySoundType.EAT, CollectionUtils.listOf(
-                loadSound("BEAR_EAT_01.wav"),
-                loadSound("BEAR_EAT_02.wav"),
-                loadSound("BEAR_EAT_03.wav"),
-                loadSound("BEAR_EAT_04.wav")
+                loadSound("BEAR_EAT_01.wav", 0.7f),
+                loadSound("BEAR_EAT_02.wav", 0.7f),
+                loadSound("BEAR_EAT_03.wav", 0.7f),
+                loadSound("BEAR_EAT_04.wav", 0.7f)
         ));
         bears.put(EntitySoundType.GROWL, CollectionUtils.listOf(
-                loadSound("BEAR_GROWL_01.wav"),
-                loadSound("BEAR_GROWL_02.wav")
+                loadSound("BEAR_GROWL_01.wav", 0.8f),
+                loadSound("BEAR_GROWL_02.wav", 0.8f)
         ));
-        bearSound = new EntitySound(bears, 1f, gameData);
+        bearSound = new EntitySounds(bears, gameData);
 
 
-        Map<EntitySoundType, List<Sound>> cats = new HashMap<>();
+        Map<EntitySoundType, List<EntitySound>> cats = new HashMap<>();
         cats.put(EntitySoundType.WALK, CollectionUtils.listOf(
-                loadSound("CAT_WALK_01_LOOP.wav"),
-                loadSound("CAT_WALK_02_LOOP.wav")
+                loadSound("CAT_WALK_01_LOOP.wav", 0.5f),
+                loadSound("CAT_WALK_02_LOOP.wav", 0.5f)
         ));
         cats.put(EntitySoundType.JUMP, CollectionUtils.listOf(
-                loadSound("CAT_JUMP_01.wav"),
-                loadSound("CAT_JUMP_01.wav"),
-                loadSound("CAT_JUMP_03.wav")
+                loadSound("CAT_JUMP_01.wav", 0.7f),
+                loadSound("CAT_JUMP_01.wav", 0.7f),
+                loadSound("CAT_JUMP_03.wav", 0.7f)
         ));
         cats.put(EntitySoundType.HIT_STAR, CollectionUtils.listOf(
-                loadSound("STAR_COLLECT_01.wav"),
-                loadSound("STAR_COLLECT_02.wav"),
-                loadSound("STAR_COLLECT_03.wav"),
-                loadSound("STAR_COLLECT_04.wav")
+                loadSound("STAR_COLLECT_01.wav", 0.8f),
+                loadSound("STAR_COLLECT_02.wav", 0.8f),
+                loadSound("STAR_COLLECT_03.wav", 0.8f),
+                loadSound("STAR_COLLECT_04.wav", 0.8f)
         ));
         cats.put(EntitySoundType.LAND, CollectionUtils.listOf(
-                loadSound("CAT_LAND_01.wav"),
-                loadSound("CAT_LAND_02.wav"),
-                loadSound("CAT_LAND_03.wav")
+                loadSound("CAT_LAND_01.wav", 0.6f),
+                loadSound("CAT_LAND_02.wav", 0.6f),
+                loadSound("CAT_LAND_03.wav", 0.6f)
         ));
-        catSound = new EntitySound(cats, 1f, gameData);
+        catSound = new EntitySounds(cats, gameData);
 
-        Map<EntitySoundType, List<Sound>> boxes = new HashMap<>();
+        Map<EntitySoundType, List<EntitySound>> boxes = new HashMap<>();
 
         boxes.put(EntitySoundType.LAND, CollectionUtils.listOf(
-                loadSound("BEAR_LAND_01.wav"),
-                loadSound("BEAR_LAND_02.wav"),
-                loadSound("BEAR_LAND_03.wav")
+                loadSound("BEAR_LAND_01.wav", 0.9f),
+                loadSound("BEAR_LAND_02.wav", 0.9f),
+                loadSound("BEAR_LAND_03.wav", 0.9f)
         ));
         boxes.put(EntitySoundType.WALK, CollectionUtils.listOf(
-                loadSound("PUSH_BOX_01_LOOP_V2.wav")
+                loadSound("PUSH_BOX_01_LOOP_V2.wav", 1f)
         ));
-        boxSound = new EntitySound(boxes, 1f, gameData);
+        boxSound = new EntitySounds(boxes, gameData);
 
         entitiesSounds.add(bearSound);
         entitiesSounds.add(catSound);
@@ -163,8 +160,8 @@ public class AssetsLoader {
     }
 
 
-    public static Sound loadSound(String name) {
-        return Gdx.audio.newSound(Gdx.files.internal("sound/" + name));
+    public static EntitySound loadSound(String name, float volume) {
+        return new EntitySound(Gdx.audio.newSound(Gdx.files.internal("sound/" + name)), volume);
     }
 
     public Texture getTexture(TextureType textureType) {
@@ -177,8 +174,8 @@ public class AssetsLoader {
         }
         atlas.dispose();
         skin.dispose();
-        for (EntitySound entitySound : entitiesSounds){
-            entitySound.dispose();
+        for (EntitySounds entitySoundS : entitiesSounds){
+            entitySoundS.dispose();
         }
     }
 

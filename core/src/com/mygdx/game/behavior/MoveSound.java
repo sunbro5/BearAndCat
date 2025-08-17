@@ -2,7 +2,6 @@ package com.mygdx.game.behavior;
 
 import static com.mygdx.game.behavior.BehaviorType.MOVE_SOUND;
 
-import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.sound.EntitySoundType;
@@ -26,16 +25,16 @@ public class MoveSound implements EntityBehavior {
     public BehaviorResult update(MoveAbleEntity moveAbleEntity, WorldPhysics worldPhysics) {
         boolean isMoving = moveAbleEntity.getVelocity().x > MOVE_OFFSET_CHECK || moveAbleEntity.getVelocity().x < -MOVE_OFFSET_CHECK;
         if (isMoving && !playing && moveAbleEntity.isOnGround()) {
-            walkSoundId = SoundPlayer.playLoop(moveAbleEntity.getEntitySound(), EntitySoundType.WALK);
+            walkSoundId = SoundPlayer.playLoop(moveAbleEntity.getEntitySoundS(), EntitySoundType.WALK);
             playing = true;
         }
         if (!isMoving || !moveAbleEntity.isOnGround()) {
-            SoundPlayer.stopPlayLoop(moveAbleEntity.getEntitySound(), EntitySoundType.WALK, walkSoundId);
+            SoundPlayer.stopPlayLoop(moveAbleEntity.getEntitySoundS(), EntitySoundType.WALK, walkSoundId);
             playing = false;
         }
 
         if (lastInAir && !moveAbleEntity.inAir()) {
-            SoundPlayer.play(moveAbleEntity.getEntitySound(), EntitySoundType.LAND);
+            SoundPlayer.play(moveAbleEntity.getEntitySoundS(), EntitySoundType.LAND);
         }
         lastInAir = moveAbleEntity.inAir();
         return new BehaviorResult(moveAbleEntity.getVelocity());

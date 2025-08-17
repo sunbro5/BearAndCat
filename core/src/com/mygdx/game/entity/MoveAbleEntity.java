@@ -9,7 +9,7 @@ import com.mygdx.game.behavior.EntityBehavior;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.physics.collision.CollisionHandler;
 import com.mygdx.game.physics.collision.CollisionStrategy;
-import com.mygdx.game.sound.EntitySound;
+import com.mygdx.game.sound.EntitySounds;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +55,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
     protected final List<CollisionStrategy> possibleCollisionStrategies;
 
     @Getter
-    protected EntitySound entitySound;
+    protected EntitySounds entitySoundS;
 
     private final int id;
 

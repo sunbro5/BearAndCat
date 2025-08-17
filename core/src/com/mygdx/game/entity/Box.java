@@ -10,7 +10,7 @@ import com.mygdx.game.physics.collision.CollisionStrategy;
 import com.mygdx.game.physics.collision.LandOnTopSleepStrategy;
 import com.mygdx.game.physics.collision.LandOnTopStrategy;
 import com.mygdx.game.physics.collision.PushStrategy;
-import com.mygdx.game.sound.EntitySound;
+import com.mygdx.game.sound.EntitySounds;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,10 +20,10 @@ import java.util.Set;
 public class Box extends MoveAbleEntity {
     private final Texture texture;
 
-    public Box(Rectangle rectangle, Texture texture, EntitySound entitySound) {
+    public Box(Rectangle rectangle, Texture texture, EntitySounds entitySoundS) {
         super(rectangle, rectangle);
         this.texture = texture;
-        this.entitySound = entitySound;
+        this.entitySoundS = entitySoundS;
         setState(new MoveSound());
     }
 

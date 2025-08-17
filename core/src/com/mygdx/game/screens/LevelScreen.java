@@ -170,8 +170,8 @@ public class LevelScreen implements Screen {
 
     @Override
     public void dispose() {
-        SoundPlayer.stopAll(levelData.getBear().getEntitySound());
-        SoundPlayer.stopAll(levelData.getCat().getEntitySound());
+        SoundPlayer.stopAll(levelData.getBear().getEntitySoundS());
+        SoundPlayer.stopAll(levelData.getCat().getEntitySoundS());
         worldRenderer.dispose();
     }
 
