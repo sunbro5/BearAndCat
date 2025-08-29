@@ -9,7 +9,7 @@ import lombok.Getter;
 public enum Level {
     INTRO("intro.tmx", "Intro", false, "", false, false, false),
     //LEVELX("levelx1.tmx", "Level 1", true, "", true, true),
-    LEVEL1("level1.tmx", "Level 1", true, "Find bear and get back home.", true, false, true),
+    LEVEL1("level1.tmx", "Level 1", true, "Find bear and return home.", true, false, true),
     LEVEL2("level2.tmx", "Level 2", false, "", false, false, true),
     LEVEL3("level3.tmx", "Level 3", false, "", false, false, false),
     LEVEL4("level4.tmx", "Level 4", false, "", false, true, false),
