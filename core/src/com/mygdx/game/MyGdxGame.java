@@ -30,7 +30,9 @@ public class MyGdxGame extends Game {
     }
 
     public LevelData getGameLevelData() {
-        return levelLoader.getLevel(gameData.getGameLevel());
+        LevelData levelData = levelLoader.getLevel(gameData.getGameLevel());
+        gameData.setCurrentLeveData(levelData);
+        return levelData;
     }
 
     public boolean levelFinished(int score, int starsCount) {

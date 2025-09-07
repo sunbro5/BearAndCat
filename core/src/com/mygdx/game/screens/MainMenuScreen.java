@@ -76,7 +76,7 @@ public class MainMenuScreen implements Screen {
         continueButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                LevelUtils.setLevelScreen(game);
+                LevelUtils.continueLevelScreen(game);
                 dispose();
             }
         });

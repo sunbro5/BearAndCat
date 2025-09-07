@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.mygdx.game.level.LevelData;
+
 import lombok.Data;
 
 @Data
@@ -12,6 +14,7 @@ public class GameData {
 
     private int finalScore;
     private int maxFinalScore;
+    private LevelData currentLeveData;
 
     public void resetGameLevel() {
         gameLevel = 0;

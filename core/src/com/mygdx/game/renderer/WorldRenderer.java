@@ -47,7 +47,8 @@ public class WorldRenderer implements Disposable {
     private final Viewport backgroundViewport;
 
     private final Viewport uiViewport;
-    private final Stage stage;
+    @Getter
+    private final Stage uiStage;
     private final Label label;
 
     @Getter
@@ -79,11 +80,11 @@ public class WorldRenderer implements Disposable {
         uiViewport = new FitViewport(2000, 1000, uiCamera);
         uiViewport.apply();
 
-        stage = new Stage(uiViewport);
+        uiStage = new Stage(uiViewport);
         label = new Label("", assetsLoader.getSkin());
         label.setFontScale(3f);
         label.setPosition(50, 900);
-        stage.addActor(label);
+        uiStage.addActor(label);
     }
 
     public void render(float delta, LevelData levelData) {
@@ -194,8 +195,8 @@ public class WorldRenderer implements Disposable {
 
     public void renderScore(LevelData levelData) {
         label.setText("Stars: " + levelData.getScore() + " / " + levelData.getStarsCount());
-        stage.act();
-        stage.draw();
+        uiStage.act();
+        uiStage.draw();
     }
 
     private void renderGameMap() {
@@ -220,6 +221,6 @@ public class WorldRenderer implements Disposable {
     public void dispose() {
         spriteBatch.dispose();
         backgroundSpriteBatch.dispose();
-        stage.dispose();
+        uiStage.dispose();
     }
 }

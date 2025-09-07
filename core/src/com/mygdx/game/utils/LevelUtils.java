@@ -19,4 +19,13 @@ public class LevelUtils {
             game.setScreen(new LevelScreen(game, data));
         }
     }
+
+    public static void continueLevelScreen(MyGdxGame game) {
+        LevelData levelData = game.getGameData().getCurrentLeveData();
+        if (levelData != null) {
+            game.setScreen(new LevelScreen(game, levelData));
+        } else {
+            setLevelScreen(game);
+        }
+    }
 }
