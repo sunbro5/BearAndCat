@@ -1,4 +1,4 @@
-package com.mygdx.game.utils;
+package com.mygdx.game;
 
 import com.badlogic.gdx.InputAdapter;
 import com.mygdx.game.entity.ControlAbleEntity;
@@ -6,11 +6,18 @@ import com.mygdx.game.entity.ControlAbleEntity;
 import lombok.Getter;
 
 public class ScreenInputProcessor extends InputAdapter {
+
+    private static final int MAX_SPEED_LENGTH = 100;
+
+    private static final int MIN_SPEED_LENGTH = 5;
     private float screenWidth;
     private float startX;
 
     @Getter
     private ControlAbleEntity.Move move = ControlAbleEntity.Move.STAND;
+
+    @Getter
+    private int moveSpeedPercent;
 
     private int leftPointer = -1;
     private int rightPointer = -1;
@@ -43,12 +50,19 @@ public class ScreenInputProcessor extends InputAdapter {
         if (pointer == leftPointer) {
             float dx = screenX - startX;
 
-            if (dx > 60) {
+            if (dx > MIN_SPEED_LENGTH) {
                 move = ControlAbleEntity.Move.RIGHT;
-            } else if (dx < -60) {
+                moveSpeedPercent = Math.min(
+                        100,
+                        (int) (((dx - MIN_SPEED_LENGTH) / (MAX_SPEED_LENGTH - MIN_SPEED_LENGTH)) * 100));
+            } else if (dx < -MIN_SPEED_LENGTH) {
                 move = ControlAbleEntity.Move.LEFT;
+                moveSpeedPercent = Math.min(
+                        100,
+                        (int) (((-dx - MIN_SPEED_LENGTH) / (MAX_SPEED_LENGTH - MIN_SPEED_LENGTH)) * 100));
             } else {
                 move = ControlAbleEntity.Move.STAND;
+                moveSpeedPercent = 0;
             }
         }
         return true;

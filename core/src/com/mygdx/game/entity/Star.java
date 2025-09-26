@@ -1,5 +1,7 @@
 package com.mygdx.game.entity;
 
+import static com.mygdx.game.screens.LevelScreen.STEP;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,6 +24,8 @@ public class Star extends PickAbleEntity {
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 13, texture.getHeight());
         TextureRegion[] frames = tmp[0];
         animation = new Animation<>(1f / ((float) frames.length), frames);
+        stateTime += STEP;
+        currentFrame = animation.getKeyFrame(stateTime, true);
     }
 
     @Override

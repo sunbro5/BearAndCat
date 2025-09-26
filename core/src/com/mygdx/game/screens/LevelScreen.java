@@ -4,7 +4,6 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.game.MyGdxGame;
@@ -12,50 +11,53 @@ import com.mygdx.game.behavior.BehaviorType;
 import com.mygdx.game.behavior.EndWalk;
 import com.mygdx.game.entity.Bear;
 import com.mygdx.game.entity.Cat;
+import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.level.LevelData;
 import com.mygdx.game.physics.WorldPhysics;
 import com.mygdx.game.renderer.WorldRenderer;
 import com.mygdx.game.sound.SoundPlayer;
 import com.mygdx.game.utils.CirclePauseButton;
 import com.mygdx.game.utils.CircleSwitchButton;
-import com.mygdx.game.utils.CircleSwitchButton2;
 import com.mygdx.game.utils.LevelUtils;
-import com.mygdx.game.utils.ScreenInputProcessor;
+import com.mygdx.game.ScreenInputProcessor;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class LevelScreen implements Screen {
+import lombok.Getter;
+
+public class LevelScreen implements TypedScreen {
 
     private final MyGdxGame game;
     private final WorldPhysics worldPhysics;
     private final WorldRenderer worldRenderer;
-    private final LevelData levelData;
-    private final AtomicBoolean renderDebug = new AtomicBoolean(false);
+    private LevelData levelData;
     private final ScreenInputProcessor screenInputProcessor;
 
-    public LevelScreen(MyGdxGame game, LevelData levelData) {
-        this.game = game;
-        this.worldPhysics = new WorldPhysics(levelData);
-        this.worldRenderer = new WorldRenderer(levelData, renderDebug, game.getAssetsLoader());
-        this.levelData = levelData;
-        this.screenInputProcessor = new ScreenInputProcessor(Gdx.graphics.getWidth(), handleJump());
+    private boolean loaded = false;
 
+    private float accumulator = 0f;
+    public static final float STEP = 1f / 60f;
+
+    public LevelScreen(MyGdxGame game) {
+        this.game = game;
+        this.worldPhysics = new WorldPhysics();
+        this.worldRenderer = new WorldRenderer(game.getGameData().getRenderDebug(), game.getAssetsLoader());
+        this.screenInputProcessor = new ScreenInputProcessor(Gdx.graphics.getWidth(), handleJump());
     }
 
     @Override
     public void show() {
+        this.levelData = game.getGameData().getCurrentLeveData();
+        worldPhysics.setLevelData(levelData);
+        worldRenderer.setLevelData(levelData);
         game.getMusicPlayer().next();
 
-        // Tlačítko menu
         CirclePauseButton menuBtn = new CirclePauseButton(100, 700, 80, () -> {
-            game.setScreen(new MainMenuScreen(game));
-            Gdx.app.postRunnable(this::dispose);
+            game.setScreenSafe(ScreenType.MAIN_MENU);
         }, () -> {
             LevelUtils.setLevelScreen(game);
-            Gdx.app.postRunnable(this::dispose);
         });
 
-        // Tlačítko změna postavy
         CircleSwitchButton changeBtn = new CircleSwitchButton(1700, 700, 80);
         changeBtn.addListener(new ClickListener() {
             @Override
@@ -68,39 +70,38 @@ public class LevelScreen implements Screen {
         worldRenderer.getUiStage().addActor(menuBtn);
         worldRenderer.getUiStage().addActor(changeBtn);
 
-        // Multiplexer - spojuje Stage (UI) a náš input
         InputMultiplexer multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(worldRenderer.getUiStage());     // nejdřív UI
-        multiplexer.addProcessor(screenInputProcessor); // pak herní ovládání
+        multiplexer.addProcessor(worldRenderer.getUiStage());
+        multiplexer.addProcessor(screenInputProcessor);
         Gdx.input.setInputProcessor(multiplexer);
+        worldPhysics.update(STEP);
+        loaded = true;
     }
 
     @Override
     public void render(float delta) {
-        //update
+        if (!loaded) {
+            return;
+        }
+
         handleControls();
         worldPhysics.update(delta);
+
         worldRenderer.getCameraPosition().lerp(levelData.getControlEntity().getCameraPositionVector(), 10 * delta);
 
         //render
         worldRenderer.render(delta, levelData);
         handleFinish();
         handleRestartKeys();
+
     }
 
     private void handleRestartKeys() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            this.game.setScreen(new MainMenuScreen(game));
-            Gdx.app.postRunnable(() -> {
-                dispose();
-            });
-            dispose();
+            this.game.setScreenSafe(ScreenType.MAIN_MENU);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             LevelUtils.setLevelScreen(game);
-            Gdx.app.postRunnable(() -> {
-                dispose();
-            });
         }
     }
 
@@ -129,15 +130,22 @@ public class LevelScreen implements Screen {
                 Gdx.app.log("", "Score : " + game.getGameData().getFinalScore() + " / " + game.getGameData().getMaxFinalScore());
                 LevelUtils.setLevelScreen(game);
             } else {
-                game.setScreen(new WinnerScreen(game));
+                game.setScreenSafe(ScreenType.WIN);
             }
-            dispose();
         }
     }
 
     private void handleControls() {
-        levelData.getControlEntity().move(screenInputProcessor.getMove());
-
+        levelData.getControlEntity().move(screenInputProcessor.getMove(), screenInputProcessor.getMoveSpeedPercent());
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            levelData.getControlEntity().move(ControlAbleEntity.Move.LEFT);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            levelData.getControlEntity().move(ControlAbleEntity.Move.RIGHT);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            levelData.getControlEntity().jump();
+        }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT)) {
             switchControlEntity();
         }
@@ -151,8 +159,8 @@ public class LevelScreen implements Screen {
             game.toggleMuteSound();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-            renderDebug.set(!renderDebug.get());
-            if (renderDebug.get()) {
+            game.getGameData().getRenderDebug().set(!game.getGameData().getRenderDebug().get());
+            if (game.getGameData().getRenderDebug().get()) {
                 Gdx.app.setLogLevel(Application.LOG_DEBUG);
             } else {
                 Gdx.app.setLogLevel(Application.LOG_INFO);
@@ -200,14 +208,19 @@ public class LevelScreen implements Screen {
 
     @Override
     public void hide() {
-
+        Gdx.input.setInputProcessor(null);
+        SoundPlayer.stopAll(levelData.getBear().getEntitySoundS());
+        SoundPlayer.stopAll(levelData.getCat().getEntitySoundS());
+        loaded = false;
     }
 
     @Override
     public void dispose() {
-        SoundPlayer.stopAll(levelData.getBear().getEntitySoundS());
-        SoundPlayer.stopAll(levelData.getCat().getEntitySoundS());
         worldRenderer.dispose();
     }
 
+    @Override
+    public ScreenType getType() {
+        return ScreenType.LEVEL;
+    }
 }

@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -38,7 +38,6 @@ public class WorldRenderer implements Disposable {
     private final OrthographicCamera backGroundCamera;
     private final OrthographicCamera uiCamera;
     private final FPSLogger fpsLogger;
-    private final OrthogonalTiledMapRenderer renderer;
     private final AtomicBoolean renderDebug;
     private final ShapeRenderer debugRenderer;
 
@@ -51,21 +50,21 @@ public class WorldRenderer implements Disposable {
     private final Stage uiStage;
     private final Label label;
 
+    private final BitmapFont font;
+
+    private final SpriteBatch debugBatch;
+
     @Getter
     @Setter
     private boolean lerpCamera = false;
 
-    public WorldRenderer(LevelData levelData, AtomicBoolean renderDebug, AssetsLoader assetsLoader) {
+    public WorldRenderer(AtomicBoolean renderDebug, AssetsLoader assetsLoader) {
         spriteBatch = new SpriteBatch();
         backgroundSpriteBatch = new SpriteBatch();
         camera = new OrthographicCamera();
-        camera.position.x = levelData.getCat().getPosition().x;
-        camera.position.y = levelData.getCat().getPosition().y;
         backGroundCamera = new OrthographicCamera();
         backGroundCamera.setToOrtho(false, 2000, 1000);
         fpsLogger = new FPSLogger();
-
-        renderer = new OrthogonalTiledMapRenderer(levelData.getTerrain(), 1);
 
         this.renderDebug = renderDebug;
         debugRenderer = new ShapeRenderer();
@@ -85,6 +84,16 @@ public class WorldRenderer implements Disposable {
         label.setFontScale(3f);
         label.setPosition(50, 900);
         uiStage.addActor(label);
+
+        font = new BitmapFont();
+        font.setColor(Color.GOLD);
+        font.getData().setScale(2f);
+        debugBatch = new SpriteBatch();
+    }
+
+    public void setLevelData(LevelData levelData){
+        camera.position.x = levelData.getCat().getPosition().x;
+        camera.position.y = levelData.getCat().getPosition().y;
     }
 
     public void render(float delta, LevelData levelData) {
@@ -95,7 +104,7 @@ public class WorldRenderer implements Disposable {
         backgroundSpriteBatch.setProjectionMatrix(backGroundCamera.combined);
 
         renderBackGround(levelData);
-        renderGameMap();
+        renderGameMap(levelData);
 
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
@@ -121,7 +130,7 @@ public class WorldRenderer implements Disposable {
         backgroundSpriteBatch.setProjectionMatrix(backGroundCamera.combined);
 
         renderBackGround(levelData);
-        renderGameMap();
+        renderGameMap(levelData);
 
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
@@ -180,6 +189,12 @@ public class WorldRenderer implements Disposable {
         }
         fpsLogger.log();
         debugRenderer.end();
+
+        debugBatch.setProjectionMatrix(uiCamera.combined);
+        debugBatch.begin();
+        font.draw(debugBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 1700, 500);
+
+        debugBatch.end();
     }
 
     public void renderFade(LevelData levelData) {
@@ -199,9 +214,9 @@ public class WorldRenderer implements Disposable {
         uiStage.draw();
     }
 
-    private void renderGameMap() {
-        renderer.setView(camera);
-        renderer.render();
+    private void renderGameMap(LevelData levelData) {
+        levelData.getMapRenderer().setView(camera);
+        levelData.getMapRenderer().render();
     }
 
     private void renderBackGround(LevelData levelData) {
@@ -222,5 +237,9 @@ public class WorldRenderer implements Disposable {
         spriteBatch.dispose();
         backgroundSpriteBatch.dispose();
         uiStage.dispose();
+        debugBatch.dispose();
+        debugRenderer.dispose();
+        shapeRenderer.dispose();
+
     }
 }

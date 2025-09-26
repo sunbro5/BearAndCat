@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.AssetsLoader;
 import com.mygdx.game.behavior.BehaviorType;
@@ -58,11 +59,11 @@ public class LevelLoader {
     }
 
     private LevelData loadLevel(Level level) {
-        TiledMap map = new TmxMapLoader().load(level.getName());
-        return buildLevel(map, level);
+        AssetsLoader.RendererAndMap rendererAndMap = assetsLoader.getMaps().get(level);
+        return buildLevel(rendererAndMap.getMap(), level, rendererAndMap.getRenderer());
     }
 
-    private LevelData buildLevel(TiledMap map, Level level) {
+    private LevelData buildLevel(TiledMap map, Level level, OrthogonalTiledMapRenderer mapRenderer) {
         List<MoveAbleEntity> moveAbleEntities = new ArrayList<>();
         List<PickAbleEntity> pickAbleEntities = new ArrayList<>();
         List<DrawableEntity> drawableEntities = new ArrayList<>();
@@ -150,7 +151,7 @@ public class LevelLoader {
             controlEntity = bear;
         }
 
-        LevelData levelData = new LevelData(bear, cat, controlEntity, moveAbleEntities, pickAbleEntities, drawableEntities, actionEntities, endRectangle, wallTileset, map, backGround, frontBackGround, 0, stars.size(), level, 0);
+        LevelData levelData = new LevelData(bear, cat, controlEntity, moveAbleEntities, pickAbleEntities, drawableEntities, actionEntities, endRectangle, wallTileset, map, backGround, frontBackGround, 0, stars.size(), level, 0, mapRenderer);
         cat.setState(new StartFade(levelData));
 
         return levelData;

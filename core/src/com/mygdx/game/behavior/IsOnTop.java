@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class IsOnTop implements EntityBehavior {
 
-    private final float CHECK_OFFSET = -6f;
-    private final float POSITION_OFFSET = 2f;
+    private static final float CHECK_OFFSET = -6f;
+    private static final float POSITION_OFFSET = 2f;
 
     private final MoveAbleEntity entity;
 
@@ -44,9 +44,29 @@ public class IsOnTop implements EntityBehavior {
                 moveAbleEntity.getPosition().height);
 
         if (!checkHaveOnTopPosition.overlaps(checkPosition) || WorldPhysics.overlapsWith2Precision(entity.getPosition(), position)) {
+            // TODO workaround fix calculation, think about getting information who is in control and order of processing of update
+            if (entity.getVelocity().y <= 0f) {
+                checkHaveOnTopPosition = new Rectangle(
+                        entity.getPosition().x + entity.getVelocity().x,
+                        entity.getPosition().y + entity.getVelocity().y,
+                        entity.getPosition().width,
+                        entity.getPosition().height);
+                checkPosition = new Rectangle(
+                        moveAbleEntity.getPosition().x + moveAbleEntity.getVelocity().x,
+                        moveAbleEntity.getPosition().y + moveAbleEntity.getVelocity().y + CHECK_OFFSET + entity.getVelocity().y,
+                        moveAbleEntity.getPosition().width,
+                        moveAbleEntity.getPosition().height);
+                if (checkHaveOnTopPosition.overlaps(checkPosition) && !WorldPhysics.overlapsWith2Precision(entity.getPosition(), position)) {
+                    Vector2 velocity = new Vector2(moveAbleEntity.getVelocity());
+                    return new BehaviorResult(velocity);
+                }
+            }
+
             Gdx.app.debug("", "Not on top");
             moveAbleEntity.getStates().remove(getType());
             return new BehaviorResult(moveAbleEntity.getVelocity());
+
+
         }
         Vector2 velocity = new Vector2(moveAbleEntity.getVelocity());
         return new BehaviorResult(velocity);

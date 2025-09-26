@@ -46,7 +46,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
 
     @Getter
     protected boolean moved = false;
-    protected int maxFallSpeed = 50;
+    protected int maxFallSpeed = -40;
 
     @Getter
     protected final Map<BehaviorType, EntityBehavior> states = new HashMap<>();
@@ -94,7 +94,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         }
         this.velocity = effectOfGravity(delta, this.velocity);
         this.velocity = move(this.velocity, worldPhysics);
-        setFinalPosition();
+        setFinalPosition(delta);
         this.velocity.x = 0;
     }
 
@@ -118,7 +118,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
             }
         }
         Vector2 resultVelocity = new Vector2(move(forceVelocity, worldPhysics));
-        setFinalPosition();
+        setFinalPosition(worldPhysics.getLastDelta());
         if (wasAlreadyMoved) {
             this.velocity.y = yVelocityBefore;
         }
@@ -147,7 +147,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         return this.velocity;
     }
 
-    protected void setFinalPosition() {
+    protected void setFinalPosition(float delta) {
         if (this.velocity.y == 0 && this.velocity.x == 0) {
             return;
         }
@@ -157,10 +157,10 @@ public abstract class MoveAbleEntity implements DrawableEntity {
     }
 
     protected Vector2 effectOfGravity(float delta, Vector2 velocity) {
-        if (velocity.y > maxFallSpeed) {
+        if (velocity.y < maxFallSpeed) {
             return velocity;
         }
-        float deltaGravity = Math.round(WorldPhysics.GRAVITY * delta * 100f) / 100f;
+        float deltaGravity = WorldPhysics.GRAVITY * delta;
         velocity.y -= deltaGravity;
         return velocity;
     }

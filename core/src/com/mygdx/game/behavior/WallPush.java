@@ -1,5 +1,6 @@
 package com.mygdx.game.behavior;
 
+import com.badlogic.gdx.Gdx;
 import com.mygdx.game.entity.MoveAbleEntity;
 import com.mygdx.game.physics.WorldPhysics;
 
@@ -12,7 +13,7 @@ public class WallPush implements EntityBehavior {
     private final MoveAbleEntity entity;
 
     @Getter
-    protected int forcePushCount = 0;
+    protected float forcePushCount = 0;
 
     @Getter
     protected boolean wasPushed = false;
@@ -35,9 +36,9 @@ public class WallPush implements EntityBehavior {
     @Override
     public void onCollision(MoveAbleEntity moveAbleEntity) {
         wasPushed = true;
-        forcePushCount++; // TODO DELTA ?
+        forcePushCount += Gdx.graphics.getDeltaTime();
 
-        if (forcePushCount > 20) {
+        if (forcePushCount > 1) {
             moveAbleEntity.getStates().remove(getType());
             WorldPhysics.swapEntities(entity, moveAbleEntity);
         }

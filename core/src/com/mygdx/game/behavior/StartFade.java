@@ -21,7 +21,7 @@ public class StartFade implements EntityBehavior {
 
     @Override
     public BehaviorResult update(MoveAbleEntity moveAbleEntity, WorldPhysics worldPhysics) {
-        seconds += Gdx.graphics.getDeltaTime();
+        seconds += worldPhysics.getLastDelta();
         levelData.setFadeOverlay(1 - Math.min(seconds / DURATION, 1f));
         if (isFinished()) {
             moveAbleEntity.getStates().remove(BehaviorType.START_FADE);

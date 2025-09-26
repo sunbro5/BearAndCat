@@ -3,6 +3,7 @@ package com.mygdx.game.level;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.Disposable;
 import com.mygdx.game.entity.ActionEntity;
@@ -38,7 +39,7 @@ public class LevelData implements Disposable {
     private int starsCount;
     private Level metadata;
     private float fadeOverlay;
-
+    private OrthogonalTiledMapRenderer mapRenderer;
     public List<DrawableEntity> getAllDrawEntities(){
         List<DrawableEntity> collEntities = new ArrayList<>();
         if (getControlEntity() == getBear()) {
@@ -56,6 +57,7 @@ public class LevelData implements Disposable {
 
     @Override
     public void dispose() {
-        terrain.dispose();
+
     }
+
 }

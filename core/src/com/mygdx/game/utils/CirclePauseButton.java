@@ -96,7 +96,7 @@ public class CirclePauseButton extends Actor {
         shapeRenderer.end();
 
         // Progres výplň (arc)
-        if (holding || triggered) {
+        if (holding) {
             float progress = Math.min(holdTime / requiredHold, 1f);
 
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

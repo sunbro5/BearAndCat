@@ -20,7 +20,7 @@ import com.mygdx.game.AssetsLoader;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.utils.LevelUtils;
 
-public class MainMenuScreen implements Screen {
+public class MainMenuScreen implements TypedScreen {
     private MyGdxGame game;
     private OrthographicCamera camera;
     private SpriteBatch spriteBatch;
@@ -50,7 +50,6 @@ public class MainMenuScreen implements Screen {
     @Override
     public void show() {
         game.getMusicPlayer().stop();
-        Gdx.input.setInputProcessor(stage);
 
         //Create Table
         Table mainTable = new Table();
@@ -67,9 +66,9 @@ public class MainMenuScreen implements Screen {
 
         Label header = new Label("Silly Paws", skin);
         header.setFontScale(1.5f);
-        Label footer = new Label("Move: Arrows, Jump: Space", skin);
+        Label footer = new Label("Move: Left screen drag, Jump: Right screen touch", skin);
         footer.setFontScale(0.7f);
-        Label footer2 = new Label("Change character: Alt, Restart: R", skin);
+        Label footer2 = new Label("Menu: Touch left button, Restart: Hold left button, Change character: Right button", skin);
         footer2.setFontScale(0.7f);
 
         //Add listeners to buttons
@@ -77,7 +76,6 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 LevelUtils.continueLevelScreen(game);
-                dispose();
             }
         });
         playButton.addListener(new ClickListener() {
@@ -85,21 +83,18 @@ public class MainMenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 game.resetGameLevel();
                 LevelUtils.setLevelScreen(game);
-                dispose();
             }
         });
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new SettingsScreen(game));
-                dispose();
+                game.setScreenSafe(ScreenType.SETTINGS);
             }
         });
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.exit();
-                dispose();
             }
         });
 
@@ -122,6 +117,7 @@ public class MainMenuScreen implements Screen {
 
         //Add table to stage
         stage.addActor(mainTable);
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -136,7 +132,6 @@ public class MainMenuScreen implements Screen {
         stage.draw();
         if (Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
             LevelUtils.setLevelScreen(game);
-            dispose();
         }
     }
 
@@ -160,7 +155,8 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void hide() {
-
+        Gdx.input.setInputProcessor(null);
+        stage.clear();
     }
 
     @Override
@@ -168,5 +164,10 @@ public class MainMenuScreen implements Screen {
         stage.dispose();
         spriteBatch.dispose();
 
+    }
+
+    @Override
+    public ScreenType getType() {
+        return ScreenType.MAIN_MENU;
     }
 }

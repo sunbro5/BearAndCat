@@ -5,7 +5,11 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.mygdx.game.level.Level;
 import com.mygdx.game.sound.EntitySound;
 import com.mygdx.game.sound.EntitySounds;
 import com.mygdx.game.sound.EntitySoundType;
@@ -17,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
+import lombok.Value;
 
 
 public class AssetsLoader {
@@ -42,6 +47,7 @@ public class AssetsLoader {
         TextureType(String name) {
             this.name = name;
         }
+
         private final String name;
     }
 
@@ -63,6 +69,9 @@ public class AssetsLoader {
     @Getter
     private List<EntitySounds> entitiesSounds = new ArrayList<>();
 
+    @Getter
+    private Map<Level, RendererAndMap> maps = new HashMap<>(); // TODO narvat sem ten Tiled map renderer
+
     public AssetsLoader(GameData gameData) {
         atlas = new TextureAtlas(Gdx.files.internal("clean-crispy-ui.atlas"));
         skin = new Skin(Gdx.files.internal("clean-crispy-ui.json"), atlas);
@@ -70,6 +79,15 @@ public class AssetsLoader {
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         loadTextures();
         loadSounds(gameData);
+        loadMaps();
+    }
+
+    private void loadMaps() {
+        TmxMapLoader mapLoader = new TmxMapLoader();
+        for (Level level : Level.values()) {
+            TiledMap tiledMap = mapLoader.load(level.getName());
+            maps.put(level, new RendererAndMap(tiledMap, new OrthogonalTiledMapRenderer(tiledMap)));
+        }
     }
 
     private void loadTextures() {
@@ -79,7 +97,7 @@ public class AssetsLoader {
         }
     }
 
-    private void loadSounds(GameData gameData){
+    private void loadSounds(GameData gameData) {
         Map<EntitySoundType, List<EntitySound>> bears = new HashMap<>();
         bears.put(EntitySoundType.WALK, CollectionUtils.listOf(
                 loadSound("BEAR_WALK_01_LOOP.wav", 0.6f),
@@ -174,9 +192,21 @@ public class AssetsLoader {
         }
         atlas.dispose();
         skin.dispose();
-        for (EntitySounds entitySoundS : entitiesSounds){
+        for (EntitySounds entitySoundS : entitiesSounds) {
             entitySoundS.dispose();
         }
+        for (RendererAndMap rendererAndMap : maps.values()) {
+            rendererAndMap.getRenderer().dispose();
+            rendererAndMap.getMap().dispose();
+        }
+
+    }
+
+    @Value
+    public class RendererAndMap {
+        TiledMap map;
+        OrthogonalTiledMapRenderer renderer;
+
     }
 
 }

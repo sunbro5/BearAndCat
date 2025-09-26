@@ -50,7 +50,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
     private boolean haveControl = true;
 
     @Setter
-    private Speed speed;
+    private float speed;
 
     public ControlAbleEntity(Rectangle position, Rectangle drawRectangle) {
         super(position, drawRectangle);
@@ -85,11 +85,11 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
                 calculateIdle(delta);
             }
         } else if (move == Move.LEFT) {
-            velocity.x = -getMoveVelocity();
+            velocity.x = - speed;
             currentFrame = walkAnimation.getKeyFrame(stateTime, true);
             direction = Direction.LEFT;
         } else if (move == Move.RIGHT) {
-            velocity.x = getMoveVelocity();
+            velocity.x = speed;
             currentFrame = walkAnimation.getKeyFrame(stateTime, true);
             direction = Direction.RIGHT;
         }
@@ -164,11 +164,6 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         LEFT
     }
 
-    public enum Speed {
-        SLOW,
-        FAST
-    }
-
     public boolean isOnGround() {
         return onGround;
     }
@@ -206,6 +201,17 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
         }
         this.move = move;
         this.lastMove = move;
+        this.speed = getMoveVelocity();
+    }
+
+    public void move(Move move, int speedPercent) {
+        resetIdle();
+        if (!haveControl) {
+            return;
+        }
+        this.move = move;
+        this.lastMove = move;
+        this.speed = Math.min(getMoveVelocity() * speedPercent / 100, getMoveVelocity());
     }
 
     public void setMove(Move move) {

@@ -2,6 +2,8 @@ package com.mygdx.game;
 
 import com.mygdx.game.level.LevelData;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import lombok.Data;
 
 @Data
@@ -15,6 +17,7 @@ public class GameData {
     private int finalScore;
     private int maxFinalScore;
     private LevelData currentLeveData;
+    private final AtomicBoolean renderDebug = new AtomicBoolean(false);
 
     public void resetGameLevel() {
         gameLevel = 0;

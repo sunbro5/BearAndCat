@@ -2,6 +2,7 @@ package com.mygdx.game.physics;
 
 import static com.mygdx.game.level.LevelLoader.TILE_SIZE;
 import static com.mygdx.game.level.LevelLoader.WALL_LAYER;
+import static com.mygdx.game.screens.LevelScreen.STEP;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -34,33 +35,35 @@ public class WorldPhysics {
     public static final int GRAVITY = 20;
     private static final int COLLISION_DEPTH_CHECK = 1;
     private static final float POSITION_OFFSET = 0.1f;
-    private final Rectangle[][] walls;
-    private final int terrainPositionWidth;
-    private final int terrainPositionHeight;
-    private final LevelData levelData;
+    private Rectangle[][] walls;
+    private int terrainPositionWidth;
+    private int terrainPositionHeight;
+    private LevelData levelData;
     private List<MoveAbleEntity> collisionEntities;
 
     @Getter
     private float lastDelta;
 
-    public WorldPhysics(LevelData levelData) {
+    public WorldPhysics() {
+    }
+
+    public void setLevelData(LevelData levelData){
         this.levelData = levelData;
         TiledMapTileLayer wallLayer = (TiledMapTileLayer) levelData.getTerrain().getLayers().get(WALL_LAYER);
         terrainPositionWidth = wallLayer.getWidth();
         terrainPositionHeight = wallLayer.getHeight();
         walls = levelData.getWalls();
     }
-
     public void update(float delta) {
-        if (delta * WorldPhysics.GRAVITY > 5) { // accidental gap when resize
-            Gdx.app.log("NO UPDATE", "NO UPDATE");
+        if (delta * WorldPhysics.GRAVITY > 500) { // accidental gap when resize
             return;
         }
         //Gdx.app.debug("","TICK");
         this.lastDelta = delta;
         collisionEntities = getSortedCollisionEntities(levelData);
+
         for (DrawableEntity entity : new ArrayList<>(levelData.getAllDrawEntities())) {
-            entity.update(delta, this);
+            entity.update(STEP, this);
         }
         for (DrawableEntity entity : levelData.getAllDrawEntities()) {
             entity.afterUpdate();

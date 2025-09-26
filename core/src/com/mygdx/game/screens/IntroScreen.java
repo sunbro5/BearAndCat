@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.behavior.BehaviorType;
 import com.mygdx.game.behavior.Idle;
+import com.mygdx.game.behavior.Slow;
 import com.mygdx.game.behavior.SlowDown;
 import com.mygdx.game.entity.ControlAbleEntity;
 import com.mygdx.game.level.LevelData;
@@ -20,12 +21,12 @@ import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
-public class IntroScreen implements Screen {
+public class IntroScreen implements TypedScreen {
 
     private final MyGdxGame game;
     private final WorldPhysics worldPhysics;
     private final WorldRenderer worldRenderer;
-    private final LevelData levelData;
+    private LevelData levelData;
 
     private float sleepTime;
 
@@ -35,17 +36,12 @@ public class IntroScreen implements Screen {
     private float targetHeight = 180f;
     private float speed = 100f;
 
-    public IntroScreen(MyGdxGame game, LevelData levelData) {
-        this.game = game;
-        this.worldPhysics = new WorldPhysics(levelData);
-        this.worldRenderer = new WorldRenderer(levelData, new AtomicBoolean(false), game.getAssetsLoader());
-        this.levelData = levelData;
+    private boolean loaded = false;
 
-        levelData.getBear().setState(new SlowDown(2));
-        levelData.getBear().setAnimation(AnimationType.SLEEP, true);
-        levelData.getCat().setState(new Idle());
-        levelData.getCat().setIdleValue(-1);
-        worldRenderer.getCameraPosition().set(levelData.getCat().getCameraPositionVector());
+    public IntroScreen(MyGdxGame game) {
+        this.game = game;
+        this.worldPhysics = new WorldPhysics();
+        this.worldRenderer = new WorldRenderer(new AtomicBoolean(false), game.getAssetsLoader());
 
         states.add(bearWait(2));
         states.add(bearMoveLeft());
@@ -107,13 +103,24 @@ public class IntroScreen implements Screen {
 
     @Override
     public void show() {
+        this.levelData = game.getGameData().getCurrentLeveData();
+        levelData.getBear().setState(new Slow(2));
+        levelData.getBear().setAnimation(AnimationType.SLEEP, true);
+        levelData.getCat().setState(new Idle());
+        levelData.getCat().setIdleValue(-1);
+        worldRenderer.getCameraPosition().set(levelData.getCat().getCameraPositionVector());
+        worldPhysics.setLevelData(game.getGameData().getCurrentLeveData());
+        worldRenderer.setLevelData(game.getGameData().getCurrentLeveData());
         game.getMusicPlayer().next();
+        loaded = true;
     }
 
 
     @Override
     public void render(float delta) {
-
+        if (!loaded){
+            return;
+        }
         Function<LevelData, Boolean> stateFunction = states.peek();
         if (stateFunction != null) {
             boolean stateFinished = stateFunction.apply(levelData);
@@ -127,8 +134,6 @@ public class IntroScreen implements Screen {
             }
 
             worldPhysics.update(delta);
-
-            levelData.getBear().getStates().get(BehaviorType.SLOW).onCollision(levelData.getCat());
             //render
             worldRenderer.renderIntro(delta, levelData, barHeight);
 
@@ -137,7 +142,6 @@ public class IntroScreen implements Screen {
 
             game.levelFinished(0, 0);
             LevelUtils.setLevelScreen(game);
-            dispose();
         }
     }
 
@@ -145,7 +149,6 @@ public class IntroScreen implements Screen {
         if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.S)) {
             game.levelFinished(0, 0);
             LevelUtils.setLevelScreen(game);
-            dispose();
         }
     }
 
@@ -166,7 +169,8 @@ public class IntroScreen implements Screen {
 
     @Override
     public void hide() {
-
+        Gdx.input.setInputProcessor(null);
+        loaded = false;
     }
 
     @Override
@@ -176,4 +180,8 @@ public class IntroScreen implements Screen {
         worldRenderer.dispose();
     }
 
+    @Override
+    public ScreenType getType() {
+        return ScreenType.INTRO;
+    }
 }

@@ -1,5 +1,6 @@
 package com.mygdx.game.screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -24,7 +25,7 @@ import com.mygdx.game.AssetsLoader;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.utils.LevelUtils;
 
-public class SettingsScreen implements Screen {
+public class SettingsScreen implements TypedScreen {
     private MyGdxGame game;
     private OrthographicCamera camera;
     private SpriteBatch spriteBatch;
@@ -53,6 +54,7 @@ public class SettingsScreen implements Screen {
 
     @Override
     public void show() {
+        stage.clear();
         game.getMusicPlayer().stop();
         Gdx.input.setInputProcessor(stage);
 
@@ -69,11 +71,14 @@ public class SettingsScreen implements Screen {
         soundsCheckBox.setChecked(!game.getGameData().isSoundMute());
         CheckBox musicCheckBox = new CheckBox("Music", skin);
         musicCheckBox.setChecked(!game.getGameData().isMusicMute());
+        CheckBox debugCheckbox = new CheckBox("Debug", skin);
+        debugCheckbox.setChecked(game.getGameData().getRenderDebug().get());
 
         Table checkBoxTable = new Table();
         checkBoxTable.left();
         checkBoxTable.add(soundsCheckBox).left().padBottom(5).row();
         checkBoxTable.add(musicCheckBox).left().row();
+        checkBoxTable.add(debugCheckbox).left().row();
 
         Label header = new Label("Settings", skin);
         header.setFontScale(1.5f);
@@ -81,8 +86,7 @@ public class SettingsScreen implements Screen {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MainMenuScreen(game));
-                dispose();
+                game.setScreenSafe(ScreenType.MAIN_MENU);
             }
         });
 
@@ -97,6 +101,18 @@ public class SettingsScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.getGameData().setSoundMute(!soundsCheckBox.isChecked());
+            }
+        });
+
+        debugCheckbox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.getGameData().getRenderDebug().set(!game.getGameData().getRenderDebug().get());
+                if (game.getGameData().getRenderDebug().get()) {
+                    Gdx.app.setLogLevel(Application.LOG_DEBUG);
+                } else {
+                    Gdx.app.setLogLevel(Application.LOG_INFO);
+                }
             }
         });
 
@@ -146,7 +162,7 @@ public class SettingsScreen implements Screen {
 
     @Override
     public void hide() {
-
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
@@ -154,5 +170,10 @@ public class SettingsScreen implements Screen {
         stage.dispose();
         spriteBatch.dispose();
 
+    }
+
+    @Override
+    public ScreenType getType() {
+        return ScreenType.SETTINGS;
     }
 }

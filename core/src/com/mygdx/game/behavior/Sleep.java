@@ -32,7 +32,7 @@ public class Sleep implements EntityBehavior {
             if (!sleepAnimationSet) {
                 sound = SoundPlayer.getSound(controlAbleEntity.getEntitySoundS(), EntitySoundType.SLEEP);
                 soundId = SoundPlayer.playLoop(controlAbleEntity.getEntitySoundS(), EntitySoundType.SLEEP);
-                SoundPlayer.setPitch(sound.getSound(), soundId, 0.8f);
+                SoundPlayer.setPitch(sound, soundId, 0.8f);
                 controlAbleEntity.setAnimation(AnimationType.SLEEP, true);
                 sleepAnimationSet = true;
                 moveAbleEntity.getPossibleStates().add(BehaviorType.HAVE_ON_TOP);
@@ -44,7 +44,7 @@ public class Sleep implements EntityBehavior {
 
     @Override
     public void onCollision(MoveAbleEntity moveAbleEntity) {
-        SoundPlayer.stopPlayLoop(sound.getSound(), soundId);
+        SoundPlayer.stopPlayLoop(sound, soundId);
     }
 
     @Override

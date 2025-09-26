@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.AssetsLoader;
 import com.mygdx.game.MyGdxGame;
 
-public class WinnerScreen implements Screen {
+public class WinnerScreen implements TypedScreen {
     private MyGdxGame game;
     private OrthographicCamera camera;
     private SpriteBatch spriteBatch;
@@ -83,8 +83,7 @@ public class WinnerScreen implements Screen {
         stage.draw();
         if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
             game.resetGameLevel();
-            game.setScreen(new MainMenuScreen(game));
-            dispose();
+            game.setScreenSafe(ScreenType.MAIN_MENU);
         }
     }
 
@@ -105,12 +104,17 @@ public class WinnerScreen implements Screen {
 
     @Override
     public void hide() {
-
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
     public void dispose() {
         //font.dispose();
         spriteBatch.dispose();
+    }
+
+    @Override
+    public ScreenType getType() {
+        return ScreenType.WIN;
     }
 }

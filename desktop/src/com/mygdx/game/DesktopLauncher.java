@@ -11,6 +11,9 @@ public class DesktopLauncher {
 		config.setForegroundFPS(60);
 		config.setTitle("Silly Paws");
 		config.setWindowIcon("icon.png");
+		config.useVsync(false);
+
+		config.setForegroundFPS(120);
 		new Lwjgl3Application(new MyGdxGame(), config);
 	}
 }

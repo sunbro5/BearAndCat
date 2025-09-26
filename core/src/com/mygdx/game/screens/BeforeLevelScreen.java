@@ -2,7 +2,6 @@ package com.mygdx.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,7 +15,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.AssetsLoader;
 import com.mygdx.game.MyGdxGame;
 
-public class BeforeLevelScreen implements Screen {
+public class BeforeLevelScreen implements TypedScreen {
     private MyGdxGame game;
     private OrthographicCamera camera;
     private SpriteBatch spriteBatch;
@@ -24,6 +23,8 @@ public class BeforeLevelScreen implements Screen {
     private Stage stage;
     private Skin skin;
     private Viewport viewport;
+    private Label text1;
+    private Label text3;
 
     public BeforeLevelScreen(final MyGdxGame game) {
         this.game = game;
@@ -39,21 +40,18 @@ public class BeforeLevelScreen implements Screen {
         spriteBatch.setProjectionMatrix(camera.combined);
 
         stage = new Stage(viewport);
-    }
 
-    @Override
-    public void show() {
         //Create Table
         Table mainTable = new Table();
         //Set table to fill stage
         mainTable.setFillParent(true);
         //Set alignment of contents in the table.
         mainTable.center();
-        
 
-        Label text1 = new Label(game.getGameLevelData().getMetadata().getDisplayName() , skin);
+
+        text1 = new Label("" , skin);
         text1.setFontScale(1.5f);
-        Label text3 = new Label(game.getGameLevelData().getMetadata().getText(), skin);
+        text3 = new Label("", skin);
         text3.setFontScale(1.5f);
         Label text2 = new Label("Press anything to continue", skin);
         text2.setFontScale(1.5f);
@@ -70,6 +68,12 @@ public class BeforeLevelScreen implements Screen {
     }
 
     @Override
+    public void show() {
+        text1.setText(game.getGameData().getCurrentLeveData().getMetadata().getDisplayName());
+        text3.setText(game.getGameData().getCurrentLeveData().getMetadata().getText());
+    }
+
+    @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0.2f, 1);
 
@@ -79,8 +83,7 @@ public class BeforeLevelScreen implements Screen {
         stage.act();
         stage.draw();
         if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-            game.setScreen(new LevelScreen(game, game.getGameLevelData()));
-            dispose();
+            game.setScreenSafe(ScreenType.LEVEL);
         }
     }
 
@@ -101,12 +104,17 @@ public class BeforeLevelScreen implements Screen {
 
     @Override
     public void hide() {
-
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
     public void dispose() {
         spriteBatch.dispose();
         stage.dispose();
+    }
+
+    @Override
+    public ScreenType getType() {
+        return ScreenType.BEFORE_LEVEL;
     }
 }

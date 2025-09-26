@@ -29,7 +29,7 @@ public class EndWalk implements EntityBehavior {
         if (moveAbleEntity instanceof ControlAbleEntity) {
             ((ControlAbleEntity) moveAbleEntity).setMove(ControlAbleEntity.Move.RIGHT);
             if (main) {
-                seconds += Gdx.graphics.getDeltaTime();
+                seconds += worldPhysics.getLastDelta();
                 levelData.setFadeOverlay(Math.min(seconds / DURATION, 1f));
             }
         }

@@ -6,24 +6,25 @@ import com.mygdx.game.level.LevelData;
 import com.mygdx.game.screens.BeforeLevelScreen;
 import com.mygdx.game.screens.IntroScreen;
 import com.mygdx.game.screens.LevelScreen;
+import com.mygdx.game.screens.ScreenType;
 
 public class LevelUtils {
 
     public static void setLevelScreen(MyGdxGame game) {
-        LevelData data = game.getGameLevelData();
+        LevelData data = game.loadLevelData();
         if (data.getMetadata() == Level.INTRO) {
-            game.setScreen(new IntroScreen(game, data));
+            game.setScreenSafe(ScreenType.INTRO);
         } else if (data.getMetadata().isBeforeLevelScreen()) {
-            game.setScreen(new BeforeLevelScreen(game));
+            game.setScreenSafe(ScreenType.BEFORE_LEVEL);
         } else {
-            game.setScreen(new LevelScreen(game, data));
+            game.setScreenSafe(ScreenType.LEVEL);
         }
     }
 
     public static void continueLevelScreen(MyGdxGame game) {
         LevelData levelData = game.getGameData().getCurrentLeveData();
         if (levelData != null) {
-            game.setScreen(new LevelScreen(game, levelData));
+            game.setScreenSafe(ScreenType.LEVEL);
         } else {
             setLevelScreen(game);
         }
