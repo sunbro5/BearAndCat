@@ -1,7 +1,8 @@
 android {
-    namespace "com.mygdx.game"
+    namespace "cz.mares.game"
     buildToolsVersion "33.0.2"
-    compileSdkVersion 34
+    compileSdkVersion 35
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -12,17 +13,18 @@ android {
             assets.srcDirs = ['../assets']
             jniLibs.srcDirs = ['libs']
         }
-
     }
+
     packagingOptions {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
+
     defaultConfig {
-        applicationId "com.mygdx.game"
-        minSdkVersion 34
-        targetSdkVersion 34
-        versionCode 1
-        versionName "1.0"
+        applicationId "cz.mares.game" // unikátní balíček
+        minSdkVersion 21               // doporučeno ne příliš vysoko
+        targetSdkVersion 35
+        versionCode 2
+        versionName "1.1"
     }
     buildTypes {
         release {
@@ -32,10 +34,9 @@ android {
     }
 }
 
-
-// called every time gradle gets executed, takes the native dependencies of
-// the natives configuration, and extracts them to the proper libs/ folders
-// so they get packed with the APK.
+// -----------------------------------------------------------------------------
+// Kopírování nativních knihoven pro LibGDX
+// -----------------------------------------------------------------------------
 tasks.register('copyAndroidNatives') {
     doFirst {
         file("libs/armeabi-v7a/").mkdirs()
@@ -64,26 +65,23 @@ tasks.matching { it.name.contains("merge") && it.name.contains("JniLibFolders") 
     packageTask.dependsOn 'copyAndroidNatives'
 }
 
+// -----------------------------------------------------------------------------
+// Spuštění hry přes ADB
+// -----------------------------------------------------------------------------
 tasks.register('run', Exec) {
     def path
     def localProperties = project.file("../local.properties")
     if (localProperties.exists()) {
         Properties properties = new Properties()
-        localProperties.withInputStream { instr ->
-            properties.load(instr)
-        }
+        localProperties.withInputStream { instr -> properties.load(instr) }
         def sdkDir = properties.getProperty('sdk.dir')
-        if (sdkDir) {
-            path = sdkDir
-        } else {
-            path = "$System.env.ANDROID_HOME"
-        }
+        path = sdkDir ?: "$System.env.ANDROID_HOME"
     } else {
         path = "$System.env.ANDROID_HOME"
     }
 
     def adb = path + "/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.mygdx.game/com.mygdx.game.AndroidLauncher'
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'cz.mares.game/cz.mares.game.AndroidLauncher'
 }
 
 eclipse.project.name = appName + "-android"
