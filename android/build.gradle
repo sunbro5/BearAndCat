@@ -10,7 +10,7 @@ android {
             aidl.srcDirs = ['src']
             renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
-            assets.srcDirs = ['../assets']
+            assets.srcDirs = ['../core/assets']
             jniLibs.srcDirs = ['libs']
         }
     }
@@ -23,8 +23,9 @@ android {
         applicationId "cz.mares.game" // unikátní balíček
         minSdkVersion 21               // doporučeno ne příliš vysoko
         targetSdkVersion 35
-        versionCode 2
+        versionCode 15
         versionName "1.1"
+        multiDexEnabled true
     }
     buildTypes {
         release {

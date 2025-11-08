@@ -57,13 +57,14 @@ public class CircleSwitchButton extends Actor {
 
         // levá čárka
         shapeRenderer.rect(
-                centerX - lineLength, centerY - lineThickness / 2f + offset,
+                centerX - lineLength + 10f , centerY - lineThickness / 2f + offset,
+
                 lineLength, lineThickness
         );
 
         // pravá čárka
         shapeRenderer.rect(
-                centerX, centerY - lineThickness / 2f - offset,
+                centerX - 10f, centerY - lineThickness / 2f - offset,
                 lineLength, lineThickness
         );
 

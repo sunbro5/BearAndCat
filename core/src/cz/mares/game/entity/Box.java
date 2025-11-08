@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import cz.mares.game.behavior.BehaviorType;
+import cz.mares.game.behavior.BoxMoveSound;
 import cz.mares.game.behavior.MoveSound;
 import cz.mares.game.physics.WorldPhysics;
 import cz.mares.game.physics.collision.CollisionStrategy;
@@ -24,7 +25,7 @@ public class Box extends MoveAbleEntity {
         super(rectangle, rectangle);
         this.texture = texture;
         this.entitySoundS = entitySoundS;
-        setState(new MoveSound());
+        setState(new BoxMoveSound());
     }
 
     @Override

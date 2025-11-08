@@ -1,9 +1,13 @@
 package cz.mares.game;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.backends.android.AndroidAudio;
+import com.badlogic.gdx.backends.android.AsynchronousAndroidAudio;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
@@ -11,5 +15,10 @@ public class AndroidLauncher extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		initialize(new MyGdxGame(), config);
+	}
+
+	@Override
+	public AndroidAudio createAudio(Context context, AndroidApplicationConfiguration config) {
+		return new AsynchronousAndroidAudio(context, config);
 	}
 }

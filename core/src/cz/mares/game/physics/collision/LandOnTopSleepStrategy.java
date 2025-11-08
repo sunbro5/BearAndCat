@@ -25,7 +25,7 @@ public class LandOnTopSleepStrategy implements CollisionStrategy {
             controlAbleEntity.setAnimation(null, false);
             controlAbleEntity.resetIdle();
         }
-        collision.getMoveAbleEntity().getStates().get(BehaviorType.SLEEP).onCollision(entity);
+        collision.getMoveAbleEntity().getStates().get(BehaviorType.SLEEP).onCollision(collision.getMoveAbleEntity());
         collision.getMoveAbleEntity().getStates().remove(BehaviorType.SLEEP);
         return new CollisionHandlerResult(entity.getVelocity());
     }

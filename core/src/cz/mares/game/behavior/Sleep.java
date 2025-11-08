@@ -11,7 +11,6 @@ import cz.mares.game.sound.SoundPlayer;
 
 public class Sleep implements EntityBehavior {
     private boolean sleepAnimationSet = false;
-    private Long soundId;
     private EntitySound sound;
 
     public Sleep() {
@@ -30,8 +29,7 @@ public class Sleep implements EntityBehavior {
 
             if (!sleepAnimationSet) {
                 sound = SoundPlayer.getSound(controlAbleEntity.getEntitySoundS(), EntitySoundType.SLEEP);
-                soundId = SoundPlayer.playLoop(controlAbleEntity.getEntitySoundS(), EntitySoundType.SLEEP);
-                SoundPlayer.setPitch(sound, soundId, 0.8f);
+                SoundPlayer.playLoop(sound, controlAbleEntity.getEntitySoundS().getGameData(), 0.8f);
                 controlAbleEntity.setAnimation(AnimationType.SLEEP, true);
                 sleepAnimationSet = true;
                 moveAbleEntity.getPossibleStates().add(BehaviorType.HAVE_ON_TOP);
@@ -43,7 +41,7 @@ public class Sleep implements EntityBehavior {
 
     @Override
     public void onCollision(MoveAbleEntity moveAbleEntity) {
-        SoundPlayer.stopPlayLoop(sound, soundId);
+        SoundPlayer.stop(sound);
     }
 
     @Override

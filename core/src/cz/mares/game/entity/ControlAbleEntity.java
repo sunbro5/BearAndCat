@@ -1,5 +1,6 @@
 package cz.mares.game.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -85,11 +86,11 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
                 calculateIdle(delta);
             }
         } else if (move == Move.LEFT) {
-            velocity.x = - speed * delta;
+            velocity.x = - speed;
             currentFrame = walkAnimation.getKeyFrame(stateTime, true);
             direction = Direction.LEFT;
         } else if (move == Move.RIGHT) {
-            velocity.x = speed * delta;
+            velocity.x = speed;
             currentFrame = walkAnimation.getKeyFrame(stateTime, true);
             direction = Direction.RIGHT;
         }
@@ -100,7 +101,9 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
             jumping = false;
         }
         if (jumping) {
+            Gdx.app.debug("", "JUMP: " + this.getClass().getName());
             SoundPlayer.play(entitySoundS, EntitySoundType.JUMP);
+            this.accel.y = 0;
             velocity.y = getJumpVelocity();
             onGround = false;
             jumping = false;
@@ -217,6 +220,7 @@ public abstract class ControlAbleEntity extends MoveAbleEntity {
     public void setMove(Move move) {
         this.move = move;
         this.lastMove = move;
+        this.speed = getMoveVelocity() / 2;
     }
 
 }

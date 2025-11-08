@@ -39,6 +39,9 @@ public abstract class MoveAbleEntity implements DrawableEntity {
     protected Vector2 velocity = new Vector2();
 
     @Getter
+    protected Vector2 accel = new Vector2();
+
+    @Getter
     @Setter
     protected int forcePushCount = 0;
 
@@ -59,6 +62,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
     @Getter
     protected EntitySounds entitySoundS;
 
+    @Getter
     private final int id;
 
     public MoveAbleEntity(Rectangle position, Rectangle drawRectangle) {
@@ -94,9 +98,12 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         if (wasForceMoved) {
             return;
         }
-        this.velocity = effectOfGravity(delta, this.velocity);
+        this.accel = effectOfGravity(delta, this.accel);
+        this.velocity.add(accel.x, accel.y);
+        this.velocity.scl(delta);
         this.velocity = move(this.velocity, worldPhysics);
         setFinalPosition(delta);
+        this.velocity.scl(1.0f / delta);
         this.velocity.x = 0;
     }
 
@@ -105,27 +112,30 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         moved = false;
     }
 
-    public Vector2 forceMove(Vector2 velocity, WorldPhysics worldPhysics, boolean yVelocity) {
+    public Vector2 forceMove(Vector2 velocity, WorldPhysics worldPhysics, boolean useYVelocity) {
         this.wasForceMoved = true;
         boolean wasAlreadyMoved = moved;
         float yVelocityBefore = this.velocity.y;
         Vector2 forceVelocity;
-        if (yVelocity) {
+        if (useYVelocity) {
             forceVelocity = new Vector2(velocity.x, velocity.y);
         } else {
             if (wasAlreadyMoved) {
                 forceVelocity = new Vector2(velocity.x, 0);
             } else {
-                forceVelocity = new Vector2(velocity.x, effectOfGravity(worldPhysics.getLastDelta(), this.velocity).y);
+                this.accel = effectOfGravity(worldPhysics.getLastDelta(), this.accel);
+                float yVelocity = (this.velocity.y + accel.y) * worldPhysics.getLastDelta();
+                forceVelocity = new Vector2(velocity.x,  yVelocity);
             }
         }
         Vector2 resultVelocity = new Vector2(move(forceVelocity, worldPhysics));
         setFinalPosition(worldPhysics.getLastDelta());
+
+        this.velocity.x = 0;
+        this.velocity.scl(1.0f / worldPhysics.getLastDelta());
         if (wasAlreadyMoved) {
             this.velocity.y = yVelocityBefore;
         }
-        //this.velocity.y = 0;
-        this.velocity.x = 0;
         return resultVelocity;
     }
 
@@ -153,18 +163,15 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         if (this.velocity.y == 0 && this.velocity.x == 0) {
             return;
         }
-        Gdx.app.debug("", "Velocity " + this.getClass().getName() + " id: " + id + " = " + velocity + " position:" + position + " velocity: " + velocity + ", forced: " + isWasForceMoved() + ", states " + getStates().keySet());
+        Gdx.app.debug("", " " + this.getClass().getName() + " id: " + id + " velocity: " + velocity + " accel :" + accel + " delta:" + delta);
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
     }
 
-    protected Vector2 effectOfGravity(float delta, Vector2 velocity) {
-        if (velocity.y < maxFallSpeed) {
-            return velocity;
-        }
-        float deltaGravity = WorldPhysics.GRAVITY * delta;
-        velocity.y -= deltaGravity;
-        return velocity;
+    protected Vector2 effectOfGravity(float delta, Vector2 accel) {
+        accel.y -= WorldPhysics.GRAVITY;
+        accel.scl(delta);
+        return accel;
     }
 
     public void setState(EntityBehavior state) {

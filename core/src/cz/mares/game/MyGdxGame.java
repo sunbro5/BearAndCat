@@ -48,6 +48,7 @@ public class MyGdxGame extends Game {
     }
 
     public void create() {
+
         this.gameData = tryLoadGameData();
         this.assetsLoader = new AssetsLoader(gameData);
         this.levelLoader = new LevelLoader(assetsLoader);

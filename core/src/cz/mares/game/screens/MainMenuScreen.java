@@ -67,8 +67,10 @@ public class MainMenuScreen implements TypedScreen {
         header.setFontScale(1.5f);
         Label footer = new Label("Move: Left screen drag, Jump: Right screen touch", skin);
         footer.setFontScale(0.7f);
-        Label footer2 = new Label("Menu: Touch left button, Restart: Hold left button, Change character: Right button", skin);
+        Label footer2 = new Label("Menu: Touch left button, Restart: Hold left button", skin);
         footer2.setFontScale(0.7f);
+        Label footer3 = new Label("Change character: Right button", skin);
+        footer3.setFontScale(0.7f);
 
         //Add listeners to buttons
         continueButton.addListener(new ClickListener() {
@@ -113,6 +115,8 @@ public class MainMenuScreen implements TypedScreen {
         mainTable.add(footer).padTop(10);
         mainTable.row();
         mainTable.add(footer2);
+        mainTable.row();
+        mainTable.add(footer3);
 
         //Add table to stage
         stage.addActor(mainTable);

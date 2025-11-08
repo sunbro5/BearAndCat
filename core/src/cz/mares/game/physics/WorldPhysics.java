@@ -22,9 +22,12 @@ import lombok.Value;
 
 public class WorldPhysics {
 
-    public static final int GRAVITY = 20;
+    public static final int GRAVITY = 1200;
     private static final int COLLISION_DEPTH_CHECK = 1;
-    private static final float POSITION_OFFSET = 0.1f;
+    private static final float POSITION_OFFSET = 0.01f;
+    private static final float TERRAIN_POSITION_OFFSET = 0f;
+
+    private static final float MIN_UPS = 1f / 60f;
     private Rectangle[][] walls;
     private int terrainPositionWidth;
     private int terrainPositionHeight;
@@ -46,9 +49,10 @@ public class WorldPhysics {
     }
     public void update(float delta) {
         //Gdx.app.log("","DELTA " + delta * WorldPhysics.GRAVITY);
-        if (delta * WorldPhysics.GRAVITY > 10) { // accidental gap when resize
+        if (delta > 0.05f) { // accidental gap when resize
             return;
         }
+        //delta = Math.min(delta, MIN_UPS);
         //Gdx.app.debug("","TICK");
         this.lastDelta = delta;
         collisionEntities = getSortedCollisionEntities(levelData);
@@ -123,15 +127,15 @@ public class WorldPhysics {
         Vector2 velocityToCollision = new Vector2(entityToMove.getVelocity());
 
         if (verticalDirection == VerticalDirection.UP) {
-            velocityToCollision.y = entity.getPosition().y - (entityToMove.getPosition().y + entityToMove.getPosition().height);
+            velocityToCollision.y = entity.getPosition().y - (entityToMove.getPosition().y + entityToMove.getPosition().height + POSITION_OFFSET);
         } else if (verticalDirection == VerticalDirection.DOWN) {
-            velocityToCollision.y = -(entityToMove.getPosition().y - (entity.getPosition().y + entity.getPosition().height));
+            velocityToCollision.y = -(entityToMove.getPosition().y - (entity.getPosition().y + entity.getPosition().height + POSITION_OFFSET));
         }
 
         if (horizontalDirection == HorizontalDirection.LEFT) {
-            velocityToCollision.x = -(entityToMove.getPosition().x - (entity.getPosition().x + entity.getPosition().width));
+            velocityToCollision.x = -(entityToMove.getPosition().x - (entity.getPosition().x + entity.getPosition().width + POSITION_OFFSET));
         } else if (horizontalDirection == HorizontalDirection.RIGHT) {
-            velocityToCollision.x = entity.getPosition().x - (entityToMove.getPosition().x + entityToMove.getPosition().width);
+            velocityToCollision.x = entity.getPosition().x - (entityToMove.getPosition().x + entityToMove.getPosition().width + POSITION_OFFSET);
         }
         return velocityToCollision;
     }
@@ -218,19 +222,19 @@ public class WorldPhysics {
                     switch (direction) {
                         case RIGHT:
                             rectangle.x = checkedRectangle.x - rectangle.width;
-                            resultVelocity.x = checkedRectangle.x - (position.x + position.width);
+                            resultVelocity.x = checkedRectangle.x - (position.x + position.width + TERRAIN_POSITION_OFFSET);
                             break;
                         case LEFT:
                             rectangle.x = checkedRectangle.x + checkedRectangle.width;
-                            resultVelocity.x = -(position.x - (checkedRectangle.x + checkedRectangle.width));
+                            resultVelocity.x = -(position.x - (checkedRectangle.x + checkedRectangle.width + TERRAIN_POSITION_OFFSET));
                             break;
                         case UP:
                             rectangle.y = checkedRectangle.y - rectangle.height;
-                            resultVelocity.y = checkedRectangle.y - (position.y + position.height);
+                            resultVelocity.y = checkedRectangle.y - (position.y + position.height + TERRAIN_POSITION_OFFSET);
                             break;
                         case DOWN:
                             rectangle.y = checkedRectangle.y + checkedRectangle.height;
-                            resultVelocity.y = -(position.y - (checkedRectangle.y + checkedRectangle.height));
+                            resultVelocity.y = -(position.y - (checkedRectangle.y + checkedRectangle.height + TERRAIN_POSITION_OFFSET));
                             break;
                     }
                     return true;

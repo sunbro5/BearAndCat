@@ -69,7 +69,7 @@ public class AssetsLoader {
     private List<EntitySounds> entitiesSounds = new ArrayList<>();
 
     @Getter
-    private Map<Level, RendererAndMap> maps = new HashMap<>(); // TODO narvat sem ten Tiled map renderer
+    private Map<Level, RendererAndMap> maps = new HashMap<>();
 
     public AssetsLoader(GameData gameData) {
         atlas = new TextureAtlas(Gdx.files.internal("clean-crispy-ui.atlas"));

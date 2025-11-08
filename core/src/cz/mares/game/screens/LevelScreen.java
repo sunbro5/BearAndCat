@@ -48,14 +48,14 @@ public class LevelScreen implements TypedScreen {
         worldRenderer.setLevelData(levelData);
         game.getMusicPlayer().next();
 
-        CirclePauseButton menuBtn = new CirclePauseButton(100, 700, 80, () -> {
+        CirclePauseButton menuBtn = new CirclePauseButton(100, 660, 100, () -> {
             game.saveGameData();
             game.setScreenSafe(ScreenType.MAIN_MENU);
         }, () -> {
             LevelUtils.setLevelScreen(game);
         });
 
-        CircleSwitchButton changeBtn = new CircleSwitchButton(1700, 700, 80);
+        CircleSwitchButton changeBtn = new CircleSwitchButton(1700, 660, 100);
         changeBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -80,6 +80,7 @@ public class LevelScreen implements TypedScreen {
         if (!loaded) {
             return;
         }
+        //delta = Math.min(0.06f, Gdx.graphics.getDeltaTime());
 
         handleControls();
         worldPhysics.update(delta);

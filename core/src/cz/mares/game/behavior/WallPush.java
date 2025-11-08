@@ -38,7 +38,7 @@ public class WallPush implements EntityBehavior {
         wasPushed = true;
         forcePushCount += Gdx.graphics.getDeltaTime();
 
-        if (forcePushCount > 1) {
+        if (forcePushCount > 0.7f) {
             moveAbleEntity.getStates().remove(getType());
             WorldPhysics.swapEntities(entity, moveAbleEntity);
         }
