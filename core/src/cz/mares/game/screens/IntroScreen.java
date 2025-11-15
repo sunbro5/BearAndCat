@@ -169,6 +169,8 @@ public class IntroScreen implements TypedScreen {
     public void hide() {
         Gdx.input.setInputProcessor(null);
         loaded = false;
+        SoundPlayer.stopAll(levelData.getBear().getEntitySoundS());
+        SoundPlayer.stopAll(levelData.getCat().getEntitySoundS());
     }
 
     @Override

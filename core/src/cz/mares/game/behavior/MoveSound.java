@@ -12,7 +12,7 @@ import cz.mares.game.sound.SoundPlayer;
 
 public class MoveSound implements EntityBehavior {
 
-    private final static float MOVE_OFFSET_CHECK = 1;
+    private final static float MOVE_OFFSET_CHECK = 000.1f;
 
     private boolean playing;
 
