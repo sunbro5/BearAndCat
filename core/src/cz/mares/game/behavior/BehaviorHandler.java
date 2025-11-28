@@ -1,6 +1,7 @@
 package cz.mares.game.behavior;
 
 import com.badlogic.gdx.math.Vector2;
+
 import cz.mares.game.entity.MoveAbleEntity;
 import cz.mares.game.physics.WorldPhysics;
 import cz.mares.game.physics.collision.CollisionHandler;
@@ -14,7 +15,13 @@ public class BehaviorHandler {
         Vector2 resultVelocity = new Vector2(moveAbleEntity.getVelocity());
         for (Map.Entry<BehaviorType, EntityBehavior> state : new HashSet<>(states.entrySet())) {
             BehaviorResult result = state.getValue().update(moveAbleEntity, worldPhysics);
-            CollisionHandler.setSmallerValueToVelocity(resultVelocity, result.getVelocity());
+            if (result.isForceVelocity()) {
+                resultVelocity = result.getVelocity();
+                return resultVelocity;
+            } else {
+                CollisionHandler.setSmallerValueToVelocity(resultVelocity, result.getVelocity());
+            }
+
         }
         return resultVelocity;
     }

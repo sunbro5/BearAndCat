@@ -11,6 +11,6 @@ public enum BehaviorType {
     SLOW,
     END_WALK,
     START_FADE,
-
-    MOVE_SOUND
+    MOVE_SOUND,
+    FLY_UP
 }

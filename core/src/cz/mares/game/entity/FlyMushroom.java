@@ -3,19 +3,19 @@ package cz.mares.game.entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import cz.mares.game.behavior.BehaviorType;
-import cz.mares.game.behavior.MushroomEat;
-import cz.mares.game.behavior.Sleep;
-import cz.mares.game.level.LevelData;
 
+import cz.mares.game.behavior.BehaviorType;
+import cz.mares.game.behavior.FlyUp;
+import cz.mares.game.behavior.MushroomEat;
+import cz.mares.game.level.LevelData;
 import lombok.Getter;
 
-public class Mushroom extends PickAbleEntity {
+public class FlyMushroom extends PickAbleEntity {
 
     @Getter
     protected final Rectangle drawRectangle;
 
-    public Mushroom(Rectangle position, Rectangle drawRectangle, Texture texture) {
+    public FlyMushroom(Rectangle position, Rectangle drawRectangle, Texture texture) {
         super(position, texture);
         this.drawRectangle = drawRectangle;
     }
@@ -24,8 +24,7 @@ public class Mushroom extends PickAbleEntity {
     public void onPick(LevelData levelData, ControlAbleEntity controlAbleEntity) {
         if (controlAbleEntity.getPossibleStates().contains(BehaviorType.MUSHROOM_EAT) && !controlAbleEntity.getStates().containsKey(BehaviorType.MUSHROOM_EAT)) {
             PickAbleEntity pickAbleEntity = this;
-            controlAbleEntity.setState(new MushroomEat(new Sleep(), () -> levelData.getPickAbleEntities().remove(pickAbleEntity)));
-
+            controlAbleEntity.setState(new MushroomEat(new FlyUp(), () -> levelData.getPickAbleEntities().remove(pickAbleEntity)));
         }
     }
 

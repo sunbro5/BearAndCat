@@ -6,6 +6,11 @@
    <property name="typ" value="box"/>
   </properties>
  </tile>
+ <tile id="97">
+  <properties>
+   <property name="typ" value="flymushroom"/>
+  </properties>
+ </tile>
  <tile id="112">
   <properties>
    <property name="typ" value="ironbox"/>

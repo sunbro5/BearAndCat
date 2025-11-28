@@ -151,7 +151,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         this.velocity = CollisionHandler.handleCollision(this, entityCollisions, possibleCollisionStrategies, worldPhysics);
         this.velocity = BehaviorHandler.handleBehavior(states, this, worldPhysics);
 
-        if (response.getVelocity().y == this.velocity.y) {
+        if (response.getVelocity().y != this.velocity.y) {
             response = worldPhysics.entityMoveWithTerrain(this.position, this.velocity);
             this.velocity = response.getVelocity();
         }
@@ -168,7 +168,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         this.position.y += this.velocity.y;
     }
 
-    protected Vector2 effectOfGravity(float delta, Vector2 accel) {
+    public Vector2 effectOfGravity(float delta, Vector2 accel) {
         accel.y -= WorldPhysics.GRAVITY;
         accel.scl(delta);
         return accel;

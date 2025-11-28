@@ -51,6 +51,7 @@ public class Bear extends ControlAbleEntity {
         behaviors.add(BehaviorType.IS_ON_TOP);
         behaviors.add(BehaviorType.MUSHROOM_EAT);
         behaviors.add(BehaviorType.BEE_HIVE_TREE_STUCK);
+        behaviors.add(BehaviorType.FLY_UP);
         return behaviors;
     }
 

@@ -39,6 +39,7 @@ public class AssetsLoader {
         FRONT_BACKGROUND("Middleground.png"),
         STAR("Star.png"),
         MUSHROOM("mushroom.png"),
+        FLY_MUSHROOM("flymushroom.png"),
         BEE_HIVE("beehive.png"),
 
         WEB("web.png");
@@ -119,9 +120,9 @@ public class AssetsLoader {
                 loadSound("BEAR_SNORE_03_LOOP.wav", 0.8f)
         ));
         bears.put(EntitySoundType.LAND, CollectionUtils.listOf(
-                loadSound("BEAR_LAND_01.wav", 0.6f),
-                loadSound("BEAR_LAND_02.wav", 0.6f),
-                loadSound("BEAR_LAND_03.wav", 0.6f)
+                loadSound("BEAR_LAND_01.wav", 0.4f),
+                loadSound("BEAR_LAND_02.wav", 0.4f),
+                loadSound("BEAR_LAND_03.wav", 0.4f)
         ));
         bears.put(EntitySoundType.EAT, CollectionUtils.listOf(
                 loadSound("BEAR_EAT_01.wav", 0.7f),

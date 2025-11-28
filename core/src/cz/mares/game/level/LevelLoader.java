@@ -21,6 +21,7 @@ import cz.mares.game.entity.Box;
 import cz.mares.game.entity.Cat;
 import cz.mares.game.entity.ControlAbleEntity;
 import cz.mares.game.entity.DrawableEntity;
+import cz.mares.game.entity.FlyMushroom;
 import cz.mares.game.entity.IronBox;
 import cz.mares.game.entity.MoveAbleEntity;
 import cz.mares.game.entity.Mushroom;
@@ -96,6 +97,12 @@ public class LevelLoader {
         for (Rectangle mushroom : mushrooms) {
             Rectangle mushroomCollide = new Rectangle(mushroom.x + 4, mushroom.y, mushroom.width -8, mushroom.height - 8);
             pickAbleEntities.add(new Mushroom(mushroomCollide, mushroom, assetsLoader.getTexture(AssetsLoader.TextureType.MUSHROOM)));
+        }
+
+        List<Rectangle> flyMushrooms = getOrEmpty(terrainEntitiesByType, "flymushroom");
+        for (Rectangle mushroom : flyMushrooms) {
+            Rectangle mushroomCollide = new Rectangle(mushroom.x + 4, mushroom.y, mushroom.width -8, mushroom.height - 8);
+            pickAbleEntities.add(new FlyMushroom(mushroomCollide, mushroom, assetsLoader.getTexture(AssetsLoader.TextureType.FLY_MUSHROOM)));
         }
 
         List<Rectangle> beehives = getOrEmpty(terrainEntitiesByType, "beehive");

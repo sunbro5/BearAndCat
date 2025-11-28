@@ -1,6 +1,7 @@
 package cz.mares.game.behavior;
 
 import com.badlogic.gdx.math.Vector2;
+
 import cz.mares.game.entity.ControlAbleEntity;
 import cz.mares.game.entity.MoveAbleEntity;
 import cz.mares.game.physics.WorldPhysics;
@@ -13,9 +14,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MushroomEat implements EntityBehavior {
 
+    private final EntityBehavior afterEatEntityBehavior;
+
     private final Runnable eatCallback;
     private boolean mushroomEat = false;
     private int currentEatFrame = 0;
+
     @Override
     public BehaviorType getType() {
         return BehaviorType.MUSHROOM_EAT;
@@ -34,8 +38,8 @@ public class MushroomEat implements EntityBehavior {
                 moveAbleEntity.getPossibleStates().remove(BehaviorType.HAVE_ON_TOP);
             } else {
                 Integer eatFrame = controlAbleEntity.getCustomAnimationIndex();
-                if(eatFrame != null){
-                    if(eatFrame == 6 && currentEatFrame != 6){
+                if (eatFrame != null) {
+                    if (eatFrame == 6 && currentEatFrame != 6) {
                         SoundPlayer.play(controlAbleEntity.getEntitySoundS(), EntitySoundType.EAT);
                         eatCallback.run();
                     }
@@ -43,8 +47,10 @@ public class MushroomEat implements EntityBehavior {
                 }
             }
             if (controlAbleEntity.isCustomAnimationFinished()) {
+                controlAbleEntity.setHaveControl(true);
+                controlAbleEntity.setAnimation(null, false);
                 controlAbleEntity.getStates().remove(BehaviorType.MUSHROOM_EAT);
-                controlAbleEntity.setState(new Sleep());
+                controlAbleEntity.setState(afterEatEntityBehavior);
 
             }
         }
