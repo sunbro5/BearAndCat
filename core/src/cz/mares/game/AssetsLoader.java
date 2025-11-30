@@ -42,7 +42,8 @@ public class AssetsLoader {
         FLY_MUSHROOM("flymushroom.png"),
         BEE_HIVE("beehive.png"),
 
-        WEB("web.png");
+        WEB("web.png"),
+        INSTRUCTION("instructionBR.png");
 
         TextureType(String name) {
             this.name = name;

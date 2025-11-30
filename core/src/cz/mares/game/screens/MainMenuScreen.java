@@ -109,8 +109,8 @@ public class MainMenuScreen implements TypedScreen {
         mainTable.add(playButton).minWidth(100);
         mainTable.row();
         mainTable.add(settingsButton).minWidth(100);
-        mainTable.row();
-        mainTable.add(exitButton).minWidth(100);
+//        mainTable.row();
+//        mainTable.add(exitButton).minWidth(100);
         mainTable.row();
         mainTable.add(footer).padTop(10);
         mainTable.row();

@@ -12,7 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
 import cz.mares.game.AssetsLoader;
+import cz.mares.game.GameData;
 import cz.mares.game.MyGdxGame;
 
 public class BeforeLevelScreen implements TypedScreen {
@@ -24,7 +26,13 @@ public class BeforeLevelScreen implements TypedScreen {
     private Skin skin;
     private Viewport viewport;
     private Label text1;
+    private Label text2;
     private Label text3;
+
+    private boolean instructionShow;
+    private Texture instruction;
+
+    private float instructionTime;
 
     public BeforeLevelScreen(final MyGdxGame game) {
         this.game = game;
@@ -32,6 +40,7 @@ public class BeforeLevelScreen implements TypedScreen {
         spriteBatch = new SpriteBatch();
         camera.setToOrtho(false, 500, 250);
         backGround = game.getAssetsLoader().getTexture(AssetsLoader.TextureType.BACKGROUND);
+        instruction = game.getAssetsLoader().getTexture(AssetsLoader.TextureType.INSTRUCTION);
         skin = game.getAssetsLoader().getSkin();
         viewport = new FillViewport(500, 250, camera);
         viewport.apply();
@@ -49,19 +58,20 @@ public class BeforeLevelScreen implements TypedScreen {
         mainTable.center();
 
 
-        text1 = new Label("" , skin);
+        text1 = new Label("", skin);
         text1.setFontScale(1.5f);
-        text3 = new Label("", skin);
-        text3.setFontScale(1.5f);
-        Label text2 = new Label("Press anything to continue", skin);
+        text2 = new Label("", skin);
         text2.setFontScale(1.5f);
+        text3 = new Label("Press anything to continue", skin);
+        text3.setFontScale(1.5f);
+
 
         //Add buttons to table
         mainTable.add(text1);
         mainTable.row();
-        mainTable.add(text3).padTop(10);
-        mainTable.row();
         mainTable.add(text2).padTop(10);
+        mainTable.row();
+        mainTable.add(text3).padTop(10);
 
         //Add table to stage
         stage.addActor(mainTable);
@@ -69,22 +79,36 @@ public class BeforeLevelScreen implements TypedScreen {
 
     @Override
     public void show() {
+        instructionShow = false;
         text1.setText(game.getGameData().getCurrentLeveData().getMetadata().getDisplayName());
-        text3.setText(game.getGameData().getCurrentLeveData().getMetadata().getText());
+        text2.setText(game.getGameData().getCurrentLeveData().getMetadata().getText());
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0.2f, 1);
+        if (instructionShow) {
+            instructionTime += delta;
+            spriteBatch.begin();
+            spriteBatch.draw(instruction, 0, 0, 500, 250);
+            if (instructionTime > 0.5f) {
+                if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
+                    game.setScreenSafe(ScreenType.LEVEL);
+                }
+            }
+            spriteBatch.end();
 
-        spriteBatch.begin();
-        spriteBatch.draw(backGround, 0, 0, 500, 250);
-        spriteBatch.end();
-        stage.act();
-        stage.draw();
-        if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-            game.setScreenSafe(ScreenType.LEVEL);
+        } else {
+            spriteBatch.begin();
+            spriteBatch.draw(backGround, 0, 0, 500, 250);
+            spriteBatch.end();
+            stage.act();
+            stage.draw();
+            if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
+                instructionShow = true;
+            }
         }
+
     }
 
     @Override

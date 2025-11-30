@@ -199,13 +199,15 @@ public class WorldRenderer implements Disposable {
 
     public void renderFade(LevelData levelData) {
         float fadeOverlay = levelData.getFadeOverlay();
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        shapeRenderer.setProjectionMatrix(uiViewport.getCamera().combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0, 0, 0, fadeOverlay);
-        shapeRenderer.rect(0, 0, 2000, 1000);
-        shapeRenderer.end();
-        Gdx.gl.glDisable(GL20.GL_BLEND);
+        if (fadeOverlay > 0.001) {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            shapeRenderer.setProjectionMatrix(uiViewport.getCamera().combined);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(0, 0, 0, fadeOverlay);
+            shapeRenderer.rect(0, 0, 2000, 1000);
+            shapeRenderer.end();
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+        }
     }
 
     public void renderScore(LevelData levelData) {
