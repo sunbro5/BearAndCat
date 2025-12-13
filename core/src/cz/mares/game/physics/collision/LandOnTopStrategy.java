@@ -1,5 +1,6 @@
 package cz.mares.game.physics.collision;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import cz.mares.game.behavior.BehaviorType;
 import cz.mares.game.behavior.HaveOnTop;
@@ -22,7 +23,7 @@ public class LandOnTopStrategy implements CollisionStrategy {
 
     @Override
     public CollisionHandlerResult handle(MoveAbleEntity entity, WorldPhysics.EntityCollision collision, WorldPhysics worldPhysics) {
-        //Gdx.app.debug("","Lands on top of " + collision.getMoveAbleEntity().toString());
+        Gdx.app.debug("","Lands " + entity + " on top of " + collision.getMoveAbleEntity());
         Vector2 resultVelocity = new Vector2(entity.getVelocity());
         resultVelocity.y = collision.getVelocityToCollision().y;
         if (entity.getStates().containsKey(BehaviorType.IS_ON_TOP)) {

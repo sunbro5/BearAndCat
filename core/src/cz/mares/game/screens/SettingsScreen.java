@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -21,31 +22,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import cz.mares.game.AssetsLoader;
 import cz.mares.game.MyGdxGame;
 
-public class SettingsScreen implements TypedScreen {
-    private MyGdxGame game;
-    private OrthographicCamera camera;
-    private SpriteBatch spriteBatch;
-    private Texture backGround;
-    private Stage stage;
-    private Skin skin;
-    private Viewport viewport;
+public class SettingsScreen extends AbstractUIScreen {
 
     public SettingsScreen(final MyGdxGame game) {
-
-        this.game = game;
-        camera = new OrthographicCamera();
-        spriteBatch = new SpriteBatch();
-
-        backGround = game.getAssetsLoader().getTexture(AssetsLoader.TextureType.BACKGROUND);
-        skin = game.getAssetsLoader().getSkin();
-
-        viewport = new FillViewport(500, 250, camera);
-        viewport.apply();
-        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-        camera.update();
-        spriteBatch.setProjectionMatrix(camera.combined);
-
-        stage = new Stage(viewport);
+        super(game);
     }
 
     @Override
@@ -63,18 +43,24 @@ public class SettingsScreen implements TypedScreen {
 
         //Create buttons
         TextButton backButton = new TextButton("Back", skin);
+
         CheckBox soundsCheckBox = new CheckBox("Sounds", skin);
         soundsCheckBox.setChecked(!game.getGameData().isSoundMute());
-        CheckBox musicCheckBox = new CheckBox("Music", skin);
-        musicCheckBox.setChecked(!game.getGameData().isMusicMute());
+
+        Label musicLabel = new Label("Music: ", skin);
+
+        Slider musicSlider = new Slider(0.0f, 1.0f, 0.1f, false, skin);
+        musicSlider.setValue(game.getGameData().getMusicVolume());
+
         CheckBox debugCheckbox = new CheckBox("Debug", skin);
         debugCheckbox.setChecked(game.getGameData().getRenderDebug().get());
 
         Table checkBoxTable = new Table();
-        checkBoxTable.left();
-        checkBoxTable.add(soundsCheckBox).left().padBottom(5).row();
-        checkBoxTable.add(musicCheckBox).left().row();
-        checkBoxTable.add(debugCheckbox).left().row();
+        checkBoxTable.center();
+        checkBoxTable.add(soundsCheckBox).padBottom(5).row();
+        checkBoxTable.add(musicLabel).row();
+        checkBoxTable.add(musicSlider).row();
+        checkBoxTable.add(debugCheckbox).row();
 
         Label header = new Label("Settings", skin);
         header.setFontScale(1.5f);
@@ -86,10 +72,12 @@ public class SettingsScreen implements TypedScreen {
             }
         });
 
-        musicCheckBox.addListener(new ChangeListener() {
+        musicSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.getGameData().setMusicMute(!musicCheckBox.isChecked());
+                float vol = musicSlider.getValue();
+                game.getMusicPlayer().setVolume(vol);
+                Gdx.app.debug("", "Sound volume:" + vol);
             }
         });
 
@@ -126,47 +114,6 @@ public class SettingsScreen implements TypedScreen {
         stage.addActor(mainTable);
     }
 
-    @Override
-    public void render(float delta) {
-        ScreenUtils.clear(0, 0, 0.2f, 1);
-
-        spriteBatch.begin();
-        spriteBatch.draw(backGround, 0, 0, 500, 250);
-        spriteBatch.end();
-
-        stage.act();
-        stage.draw();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height);
-        stage.getViewport().update(width, height, true);
-        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-        camera.update();
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-        Gdx.input.setInputProcessor(null);
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
-        spriteBatch.dispose();
-
-    }
 
     @Override
     public ScreenType getType() {

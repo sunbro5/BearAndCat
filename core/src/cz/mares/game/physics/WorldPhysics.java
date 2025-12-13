@@ -49,7 +49,7 @@ public class WorldPhysics {
     }
     public void update(float delta) {
         //Gdx.app.log("","DELTA " + delta * WorldPhysics.GRAVITY);
-        if (delta > 0.05f) { // accidental gap when resize
+        if (delta > 0.03f || delta == 0.0f) { // accidental gap when resize
             return;
         }
         //delta = Math.min(delta, MIN_UPS);

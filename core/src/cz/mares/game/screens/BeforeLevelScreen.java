@@ -17,14 +17,8 @@ import cz.mares.game.AssetsLoader;
 import cz.mares.game.GameData;
 import cz.mares.game.MyGdxGame;
 
-public class BeforeLevelScreen implements TypedScreen {
-    private MyGdxGame game;
-    private OrthographicCamera camera;
-    private SpriteBatch spriteBatch;
-    private Texture backGround;
-    private Stage stage;
-    private Skin skin;
-    private Viewport viewport;
+public class BeforeLevelScreen extends AbstractUIScreen {
+
     private Label text1;
     private Label text2;
     private Label text3;
@@ -35,20 +29,13 @@ public class BeforeLevelScreen implements TypedScreen {
     private float instructionTime;
 
     public BeforeLevelScreen(final MyGdxGame game) {
-        this.game = game;
-        camera = new OrthographicCamera();
-        spriteBatch = new SpriteBatch();
-        camera.setToOrtho(false, 500, 250);
-        backGround = game.getAssetsLoader().getTexture(AssetsLoader.TextureType.BACKGROUND);
-        instruction = game.getAssetsLoader().getTexture(AssetsLoader.TextureType.INSTRUCTION);
-        skin = game.getAssetsLoader().getSkin();
-        viewport = new FillViewport(500, 250, camera);
-        viewport.apply();
-        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-        camera.update();
-        spriteBatch.setProjectionMatrix(camera.combined);
+        super(game);
+    }
 
-        stage = new Stage(viewport);
+    @Override
+    public void show() {
+        instructionShow = false;
+        instruction = game.getAssetsLoader().getTexture(AssetsLoader.TextureType.INSTRUCTION);
 
         //Create Table
         Table mainTable = new Table();
@@ -75,66 +62,21 @@ public class BeforeLevelScreen implements TypedScreen {
 
         //Add table to stage
         stage.addActor(mainTable);
-    }
 
-    @Override
-    public void show() {
-        instructionShow = false;
         text1.setText(game.getGameData().getCurrentLeveData().getMetadata().getDisplayName());
         text2.setText(game.getGameData().getCurrentLeveData().getMetadata().getText());
     }
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0, 0, 0.2f, 1);
-        if (instructionShow) {
-            instructionTime += delta;
-            spriteBatch.begin();
-            spriteBatch.draw(instruction, 0, 0, 500, 250);
-            if (instructionTime > 0.5f) {
-                if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-                    game.setScreenSafe(ScreenType.LEVEL);
-                }
-            }
-            spriteBatch.end();
-
-        } else {
-            spriteBatch.begin();
-            spriteBatch.draw(backGround, 0, 0, 500, 250);
-            spriteBatch.end();
-            stage.act();
-            stage.draw();
-            if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-                instructionShow = true;
+        if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
+            if(game.getGameData().getCurrentLeveData().getMetadata().isInstruction()){
+                game.setScreenSafe(ScreenType.INSTRUCTION);
+            } else {
+                game.setScreenSafe(ScreenType.LEVEL);
             }
         }
-
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-        Gdx.input.setInputProcessor(null);
-    }
-
-    @Override
-    public void dispose() {
-        spriteBatch.dispose();
-        stage.dispose();
+        super.render(delta);
     }
 
     @Override

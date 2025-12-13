@@ -43,7 +43,7 @@ public class AssetsLoader {
         BEE_HIVE("beehive.png"),
 
         WEB("web.png"),
-        INSTRUCTION("instructionBR.png");
+        INSTRUCTION("instruction2.png");
 
         TextureType(String name) {
             this.name = name;

@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Json;
 import cz.mares.game.level.LevelData;
 import cz.mares.game.level.LevelLoader;
 import cz.mares.game.screens.BeforeLevelScreen;
+import cz.mares.game.screens.InstructionScreen;
 import cz.mares.game.screens.IntroScreen;
 import cz.mares.game.screens.LevelScreen;
 import cz.mares.game.screens.MainMenuScreen;
@@ -57,6 +58,7 @@ public class MyGdxGame extends Game {
         screens.put(ScreenType.SETTINGS, new SettingsScreen(this));
         screens.put(ScreenType.INTRO, new IntroScreen(this));
         screens.put(ScreenType.BEFORE_LEVEL, new BeforeLevelScreen(this));
+        screens.put(ScreenType.INSTRUCTION, new InstructionScreen(this));
         screens.put(ScreenType.LEVEL, new LevelScreen(this));
         screens.put(ScreenType.WIN, new WinnerScreen(this));
 
@@ -80,22 +82,8 @@ public class MyGdxGame extends Game {
         return true;
     }
 
-    public void toggleMuteMusic(){
-        if(gameData.isMusicMute()){
-            unMuteMusic();
-        } else {
-            muteMusic();
-        }
-    }
-
     public void muteMusic(){
-        gameData.setMusicMute(true);
-        musicPlayer.mute();
-    }
-
-    public void unMuteMusic(){
-        gameData.setMusicMute(false);
-        musicPlayer.unMute();
+        gameData.setMusicVolume(0f);
     }
 
     public void toggleMuteSound(){

@@ -14,30 +14,14 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import cz.mares.game.AssetsLoader;
 import cz.mares.game.MyGdxGame;
+import cz.mares.game.utils.LevelUtils;
 
-public class WinnerScreen implements TypedScreen {
-    private MyGdxGame game;
-    private OrthographicCamera camera;
-    private SpriteBatch spriteBatch;
-    private Texture backGround;
-    private Stage stage;
+public class WinnerScreen extends AbstractUIScreen {
 
-    private Skin skin;
-    private Viewport viewport;
+    private float winnerScreenTime;
 
     public WinnerScreen(final MyGdxGame game) {
-        this.game = game;
-        camera = new OrthographicCamera();
-        spriteBatch = new SpriteBatch();
-        camera.setToOrtho(false, 500, 250);
-        backGround = game.getAssetsLoader().getTexture(AssetsLoader.TextureType.BACKGROUND);
-        skin = game.getAssetsLoader().getSkin();
-        viewport = new FillViewport(500, 250, camera);
-        viewport.apply();
-        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-        camera.update();
-
-        stage = new Stage(viewport, spriteBatch);
+        super(game);
     }
 
     @Override
@@ -70,44 +54,12 @@ public class WinnerScreen implements TypedScreen {
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0, 0, 0.2f, 1);
-
-        spriteBatch.begin();
-        spriteBatch.draw(backGround, 0, 0, 500, 250);
-        spriteBatch.end();
-
-        stage.act();
-        stage.draw();
-        if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
+        if (winnerScreenTime > 0.5f && (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY))) {
             game.resetGameLevel();
             game.setScreenSafe(ScreenType.MAIN_MENU);
         }
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-        Gdx.input.setInputProcessor(null);
-    }
-
-    @Override
-    public void dispose() {
-        //font.dispose();
-        spriteBatch.dispose();
+        winnerScreenTime += delta;
+        super.render(delta);
     }
 
     @Override

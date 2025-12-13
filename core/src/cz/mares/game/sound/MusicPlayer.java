@@ -2,6 +2,7 @@ package cz.mares.game.sound;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+
 import cz.mares.game.Disposable;
 import cz.mares.game.GameData;
 
@@ -15,7 +16,6 @@ public class MusicPlayer implements Disposable {
 
     private final LinkedList<MusicType> musicTypes;
     private Music music;
-
     private final GameData gameData;
 
     public MusicPlayer(GameData gameData) {
@@ -25,35 +25,32 @@ public class MusicPlayer implements Disposable {
     }
 
     public void play() {
-        if (gameData.isMusicMute()) {
-            return;
-        }
         Gdx.app.debug("", "Playing - " + musicTypes.getFirst());
         if (music == null) {
             loadMusic(getNextMusic());
         }
         music.setLooping(false);
         music.setOnCompletionListener(onCompletionListener());
+        music.setVolume(gameData.getMusicVolume());
         music.play();
     }
 
-    public void mute() {
-        stop();
-    }
-
-    public void unMute() {
-        play();
+    public void setVolume(float volume) {
+        gameData.setMusicVolume(volume);
+        if (music != null) {
+            music.setVolume(volume);
+        }
     }
 
     public void stop() {
-        if(music != null){
+        if (music != null) {
             music.stop();
             music.dispose();
             music = null;
         }
     }
 
-    public void next(){
+    public void next() {
         stop();
         play();
     }

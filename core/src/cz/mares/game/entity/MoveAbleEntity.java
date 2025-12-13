@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+
 import cz.mares.game.behavior.BehaviorHandler;
 import cz.mares.game.behavior.BehaviorType;
 import cz.mares.game.behavior.EntityBehavior;
@@ -25,6 +26,7 @@ import lombok.Setter;
 public abstract class MoveAbleEntity implements DrawableEntity {
 
     private static final AtomicInteger idSequence = new AtomicInteger(1);
+    private static final int FORCE_COUNT_LIMIT = 10;
 
     protected final Rectangle position;
 
@@ -48,6 +50,8 @@ public abstract class MoveAbleEntity implements DrawableEntity {
     @Getter
     @Setter
     protected boolean wasForceMoved = false;
+
+    private int forceMoveCount;
 
     @Getter
     protected boolean moved = false;
@@ -110,10 +114,15 @@ public abstract class MoveAbleEntity implements DrawableEntity {
     public void afterUpdate() {
         wasForceMoved = false;
         moved = false;
+        forceMoveCount = 0;
     }
 
     public Vector2 forceMove(Vector2 velocity, WorldPhysics worldPhysics, boolean useYVelocity) {
         this.wasForceMoved = true;
+        this.forceMoveCount++;
+        if (forceMoveCount > FORCE_COUNT_LIMIT) {
+            Gdx.app.error("Force-overflow", "Entity: " + this + "force overflow hit limit.");
+        }
         boolean wasAlreadyMoved = moved;
         float yVelocityBefore = this.velocity.y;
         Vector2 forceVelocity;
@@ -125,7 +134,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
             } else {
                 this.accel = effectOfGravity(worldPhysics.getLastDelta(), this.accel);
                 float yVelocity = (this.velocity.y + accel.y) * worldPhysics.getLastDelta();
-                forceVelocity = new Vector2(velocity.x,  yVelocity);
+                forceVelocity = new Vector2(velocity.x, yVelocity);
             }
         }
         Vector2 resultVelocity = new Vector2(move(forceVelocity, worldPhysics));
@@ -188,7 +197,8 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         return "MoveAbleEntity{" + this.getClass().getName() +
                 " id :" + id +
                 //", states=" + states +
-                " , position=" + position +
+                " , position= " + position +
+                " , velocity= " + velocity +
                 '}';
     }
 }

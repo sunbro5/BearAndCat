@@ -150,7 +150,8 @@ public class LevelScreen implements TypedScreen {
             printEntities();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
-            game.toggleMuteMusic();
+            game.muteMusic();
+            game.muteSound();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
             game.toggleMuteSound();
