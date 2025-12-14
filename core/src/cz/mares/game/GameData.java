@@ -1,5 +1,6 @@
 package cz.mares.game;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import cz.mares.game.level.Level;
@@ -18,17 +19,17 @@ public class GameData {
     private float musicVolume = 1;
     boolean soundMute;
 
-    private int finalScore;
-    private int maxFinalScore;
     private transient LevelData currentLeveData;
     private final AtomicBoolean renderDebug = new AtomicBoolean(false);
-    private ObjectMap<Integer, LevelScore> levelScores = new ObjectMap<>(Level.values().length);
+    private Array<LevelScore> levelScores = new Array<>();
 
     public void resetGameLevel() {
         gameLevel = 0;
-        finalScore = 0;
-        maxFinalScore = 0;
-        levelScores = new ObjectMap<>(Level.values().length);
+        levelScores = new Array<>();
+    }
+
+    public void setScore(LevelScore score){
+        levelScores.add(score);
     }
 
 }

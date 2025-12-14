@@ -6,6 +6,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import cz.mares.game.level.LevelData;
 import cz.mares.game.level.LevelLoader;
+import cz.mares.game.level.LevelScore;
 import cz.mares.game.screens.BeforeLevelScreen;
 import cz.mares.game.screens.InstructionScreen;
 import cz.mares.game.screens.IntroScreen;
@@ -72,8 +73,12 @@ public class MyGdxGame extends Game {
     }
 
     public boolean levelFinished(int score, int starsCount) {
-        gameData.setFinalScore(gameData.getFinalScore() + score);
-        gameData.setMaxFinalScore(gameData.getMaxFinalScore() + starsCount);
+        if(starsCount != 0) {
+            LevelScore levelScore = new LevelScore();
+            levelScore.setScore(score);
+            levelScore.setMaxScore(starsCount);
+            gameData.setScore(levelScore);
+        }
         if (gameData.getGameLevel() + 1 > levelLoader.getLevelSize() - 1) {
             return false;
         }

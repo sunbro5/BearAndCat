@@ -124,7 +124,7 @@ public class LevelScreen implements TypedScreen {
     private void handleEnd() {
         if (levelData.getBear().getStates().containsKey(BehaviorType.END_WALK) && levelData.getCat().getStates().containsKey(BehaviorType.END_WALK) && levelData.getBear().getStates().get(BehaviorType.END_WALK).isFinished() && levelData.getCat().getStates().get(BehaviorType.END_WALK).isFinished()) {
             if (game.levelFinished(levelData.getScore(), levelData.getStarsCount())) {
-                Gdx.app.log("", "Score : " + game.getGameData().getFinalScore() + " / " + game.getGameData().getMaxFinalScore());
+                Gdx.app.log("", "Score : " + levelData.getScore() + " / " + levelData.getStarsCount());
                 LevelUtils.setLevelScreen(game);
             } else {
                 game.setScreenSafe(ScreenType.WIN);
