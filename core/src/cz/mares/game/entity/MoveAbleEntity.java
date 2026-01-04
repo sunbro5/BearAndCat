@@ -122,6 +122,7 @@ public abstract class MoveAbleEntity implements DrawableEntity {
         this.forceMoveCount++;
         if (forceMoveCount > FORCE_COUNT_LIMIT) {
             Gdx.app.error("Force-overflow", "Entity: " + this + "force overflow hit limit.");
+            return new Vector2(0,0);
         }
         boolean wasAlreadyMoved = moved;
         float yVelocityBefore = this.velocity.y;

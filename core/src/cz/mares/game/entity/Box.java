@@ -3,9 +3,14 @@ package cz.mares.game.entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import cz.mares.game.behavior.BehaviorType;
 import cz.mares.game.behavior.BoxMoveSound;
-import cz.mares.game.behavior.MoveSound;
 import cz.mares.game.physics.WorldPhysics;
 import cz.mares.game.physics.collision.CollisionStrategy;
 import cz.mares.game.physics.collision.LandOnTopSleepStrategy;
@@ -13,19 +18,20 @@ import cz.mares.game.physics.collision.LandOnTopStrategy;
 import cz.mares.game.physics.collision.PushStrategy;
 import cz.mares.game.sound.EntitySounds;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 public class Box extends MoveAbleEntity {
     private final Texture texture;
 
     public Box(Rectangle rectangle, Texture texture, EntitySounds entitySoundS) {
-        super(rectangle, rectangle);
+        super(offsetBox(rectangle), offsetBox(rectangle));
         this.texture = texture;
         this.entitySoundS = entitySoundS;
         setState(new BoxMoveSound());
+    }
+
+    private static Rectangle offsetBox(Rectangle rectangle){
+        Rectangle box = new Rectangle(rectangle);
+        box.height -= 1;
+        return box;
     }
 
     @Override

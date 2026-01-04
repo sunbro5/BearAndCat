@@ -24,6 +24,7 @@ public class Idle implements EntityBehavior {
             Bear bear = (Bear) moveAbleEntity;
             bear.setState(new Sleep());
             bear.getPossibleStates().remove(BehaviorType.HAVE_ON_TOP);
+            bear.getPossibleStates().remove(BehaviorType.IDLE);
             bear.getStates().remove(BehaviorType.HAVE_ON_TOP);
             bear.getStates().remove(BehaviorType.IDLE);
             return new BehaviorResult(moveAbleEntity.getVelocity());

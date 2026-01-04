@@ -22,7 +22,7 @@ import lombok.Value;
 
 public class WorldPhysics {
 
-    public static final int GRAVITY = 1200;
+    public static final int GRAVITY = 1100;
     private static final int COLLISION_DEPTH_CHECK = 1;
     private static final float POSITION_OFFSET = 0.01f;
     private static final float TERRAIN_POSITION_OFFSET = 0f;

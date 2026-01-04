@@ -49,7 +49,7 @@ public class InstructionScreen implements TypedScreen {
 
     @Override
     public void render(float delta) {
-        if (instructionTime > 0.5f) {
+        if (instructionTime > 2f) {
             if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
                 game.setScreenSafe(ScreenType.LEVEL);
             }

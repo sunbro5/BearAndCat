@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class SlowDown implements EntityBehavior {
 
     private boolean reset = true;
-    private int value = 4;
+    private int value = 3;
 
     public SlowDown(int value) {
         this.value = value;
@@ -29,7 +29,7 @@ public class SlowDown implements EntityBehavior {
             moveAbleEntity.getStates().remove(BehaviorType.SLOW);
             return new BehaviorResult(moveAbleEntity.getVelocity());
         }
-        Vector2 slowedVelocity = new Vector2(moveAbleEntity.getVelocity().x / value, moveAbleEntity.getVelocity().y / 2);
+        Vector2 slowedVelocity = new Vector2(moveAbleEntity.getVelocity().x / value, moveAbleEntity.getVelocity().y / 1.4f);
         return new BehaviorResult(slowedVelocity);
     }
 
