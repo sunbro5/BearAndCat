@@ -144,7 +144,7 @@ public class IntroScreen implements TypedScreen {
     }
 
     private void handleControls() {
-        if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+        if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
             game.levelFinished(0, 0);
             LevelUtils.setLevelScreen(game);
         }

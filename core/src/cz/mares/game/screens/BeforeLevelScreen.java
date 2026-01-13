@@ -1,5 +1,6 @@
 package cz.mares.game.screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -70,7 +71,7 @@ public class BeforeLevelScreen extends AbstractUIScreen {
     @Override
     public void render(float delta) {
         if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-            if(game.getGameData().getCurrentLeveData().getMetadata().isInstruction()){
+            if (game.getGameData().getCurrentLeveData().getMetadata().isInstruction() && Gdx.app.getType() == Application.ApplicationType.Android) {
                 game.setScreenSafe(ScreenType.INSTRUCTION);
             } else {
                 game.setScreenSafe(ScreenType.LEVEL);

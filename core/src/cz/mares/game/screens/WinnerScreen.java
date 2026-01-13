@@ -42,7 +42,7 @@ public class WinnerScreen extends AbstractUIScreen {
         for (int i = 0; i < game.getGameData().getLevelScores().size; i++) {
             LevelScore score = game.getGameData().getLevelScores().get(i);
             Label scoreLabel = new Label("Level " + (i + 1) + " Score: " + score.getScore() + "/" + score.getMaxScore(), skin);
-            scoreLabel.setFontScale(1.3f);
+            scoreLabel.setFontScale(1f);
             scores.add(scoreLabel);
             overAllScore += score.getScore();
             maxOverAllScore += score.getMaxScore();

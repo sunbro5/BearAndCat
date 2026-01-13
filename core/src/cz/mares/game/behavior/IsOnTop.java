@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class IsOnTop implements EntityBehavior {
 
-    private static final float CHECK_OFFSET = -6f;
-    private static final float POSITION_OFFSET = 2f;
+    private static final float CHECK_OFFSET = -8f;
+    private static final float POSITION_OFFSET = 3f;
 
     private final MoveAbleEntity entity;
 

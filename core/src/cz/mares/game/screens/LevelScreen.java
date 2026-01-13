@@ -48,25 +48,26 @@ public class LevelScreen implements TypedScreen {
         worldRenderer.setLevelData(levelData);
         game.getMusicPlayer().next();
 
-        CirclePauseButton menuBtn = new CirclePauseButton(100, 660, 100, () -> {
-            game.saveGameData();
-            game.setScreenSafe(ScreenType.MAIN_MENU);
-        }, () -> {
-            LevelUtils.setLevelScreen(game);
-        });
+        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+            CirclePauseButton menuBtn = new CirclePauseButton(100, 660, 100, () -> {
+                game.saveGameData();
+                game.setScreenSafe(ScreenType.MAIN_MENU);
+            }, () -> {
+                LevelUtils.setLevelScreen(game);
+            });
 
-        CircleSwitchButton changeBtn = new CircleSwitchButton(1700, 660, 100);
-        changeBtn.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                event.stop();
-                switchControlEntity();
-            }
-        });
+            CircleSwitchButton changeBtn = new CircleSwitchButton(1700, 660, 100);
+            changeBtn.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    event.stop();
+                    switchControlEntity();
+                }
+            });
+            worldRenderer.getUiStage().addActor(menuBtn);
+            worldRenderer.getUiStage().addActor(changeBtn);
 
-        worldRenderer.getUiStage().addActor(menuBtn);
-        worldRenderer.getUiStage().addActor(changeBtn);
-
+        }
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(worldRenderer.getUiStage());
         multiplexer.addProcessor(screenInputProcessor);

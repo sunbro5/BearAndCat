@@ -23,9 +23,12 @@ android {
         applicationId "cz.mares.game" // unikátní balíček
         minSdkVersion 21               // doporučeno ne příliš vysoko
         targetSdkVersion 35
-        versionCode 28
+        versionCode 33
         versionName "1.1"
         multiDexEnabled true
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a"
+        }
     }
     buildTypes {
         release {

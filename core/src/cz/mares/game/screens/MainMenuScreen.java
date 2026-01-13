@@ -1,5 +1,6 @@
 package cz.mares.game.screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -18,11 +19,16 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
 import cz.mares.game.AssetsLoader;
 import cz.mares.game.MyGdxGame;
 import cz.mares.game.utils.LevelUtils;
 
 public class MainMenuScreen extends AbstractUIScreen {
+
+    private Label footer;
+    private Label footer2;
+    private Label footer3;
 
     public MainMenuScreen(MyGdxGame game) {
         super(game);
@@ -51,11 +57,19 @@ public class MainMenuScreen extends AbstractUIScreen {
 
         Label header = new Label("Silly Paws", skin);
         header.setFontScale(1.5f);
-        Label footer = new Label("Move: Left screen drag, Jump: Right screen touch", skin);
+
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            footer = new Label("Move: Left screen drag, Jump: Right screen touch", skin);
+            footer2 = new Label("Menu: Touch left button, Restart: Hold left button", skin);
+            footer3 = new Label("Change character: Right button", skin);
+        } else {
+            footer = new Label("Move: Arrows, Jump: Space", skin);
+            footer2 = new Label("Change character: Alt, ", skin);
+            footer3 = new Label("Menu: Esc, Restart: R", skin);
+        }
+
         footer.setFontScale(0.5f);
-        Label footer2 = new Label("Menu: Touch left button, Restart: Hold left button", skin);
         footer2.setFontScale(0.5f);
-        Label footer3 = new Label("Change character: Right button", skin);
         footer3.setFontScale(0.5f);
 
         //Add listeners to buttons
